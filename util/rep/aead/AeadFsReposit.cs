@@ -13,7 +13,7 @@ namespace util.rep.aead
     {
         public const string Type = "AeadFS";
         public const int Version = 2;
-        public const string DirKeyDomain = "dir-key";
+        public const string DirKeyContext = "dir-key";
 
         public static string unifyId(string dir)
             => $"{Type}@{dir}";
@@ -28,7 +28,7 @@ namespace util.rep.aead
 
             rootDir.Create();
             pathSkip = rootDir.FullName.Length + 1;
-            dirEnc = conf.newDirCrypt(DirKeyDomain.utf8());
+            dirEnc = conf.newDirCrypt(DirKeyContext.utf8());
             nameEnc = Encoding.GetEncoding(conf.Encode);
         }
 

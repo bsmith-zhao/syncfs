@@ -97,10 +97,14 @@ namespace util
             return BitConverter.GetBytes(value);
         }
 
-        public static void copyTo(this long value, byte[] dst, int dstOff = 0)
+        public static unsafe byte[] copyTo(this long value, 
+            byte[] dst, int dstOff = 0)
         {
-            var data = BitConverter.GetBytes(value);
-            Buffer.BlockCopy(data, 0, dst, dstOff, 8);
+            fixed (byte* p = dst)
+            {
+                *((long*)(p + dstOff)) = value;
+            }
+            return dst;
         }
 
         public static long i64(this byte[] data, int offset = 0)

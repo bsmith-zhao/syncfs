@@ -341,12 +341,11 @@ namespace util.rep.aead
         }
 
         byte[] mergeNonce(long packIdx)
-        {
-            (counter + packIdx).copyTo(nonce, nonce.Length - 8);
-            return nonce;
-        }
+            => (counter + packIdx).copyTo(nonce, nonce.Length - 8);
 
-        byte[] attachData(long packIdx) => packIdx.bytes();
+        byte[] aad = new byte[8];
+        byte[] attachData(long packIdx)
+            => packIdx.copyTo(aad);
 
         public void encryptPack(byte[] plain, int plainOff, int plainLen,
                                 long packIdx,
