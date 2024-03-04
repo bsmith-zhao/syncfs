@@ -1,5 +1,0 @@
-.pdb
-.bak
-.log
-.conf
-current
