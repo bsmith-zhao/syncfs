@@ -156,15 +156,12 @@ namespace util.rep.aead
                 throw new Error(this, "FileExist", path);
 
             var encPath = settlePath(dir, encryptName(name));
-            return new AeadFsStream
-            {
-                fs = new FileStream(encPath,
+            return new AeadFsStream(new FileStream(encPath,
                                     FileMode.CreateNew,
                                     FileAccess.ReadWrite,
                                     FileShare.Read | FileShare.Delete,
-                                    conf.packSize()),
-                conf = conf,
-            }.create();
+                                    conf.packSize()), conf)
+                                    .create();
         }
 
         //public override Stream writeFile(string path)
@@ -206,15 +203,12 @@ namespace util.rep.aead
             if (!locateToFile(path, out var encFile))
                 throw new Error(this, "FileNotExist", path);
 
-            return new AeadFsStream
-            {
-                fs = new FileStream(encFile.FullName,
+            return new AeadFsStream(new FileStream(encFile.FullName,
                                     FileMode.Open,
                                     fileAccess(write),
                                     fileShare(write),
-                                    conf.packSize()),
-                conf = conf,
-            }.open();
+                                    conf.packSize()), conf)
+                                    .open();
         }
 
         string encryptName(string name)
@@ -302,7 +296,7 @@ namespace util.rep.aead
             : throw new Error(this, "SubIsFile", name);
 
         protected override long getFileSize(FileInfo fi)
-            => AeadFsStream.dataSize(fi.Length, conf);
+            => AeadFsStream.getDataSize(fi.Length, conf);
 
         public override string parsePath(FileSystemInfo fi)
             => fi?.FullName.TrimEnd('\\', '/').jump(pathSkip)

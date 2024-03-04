@@ -15,17 +15,28 @@ namespace util.rep.aead
         public const short Version = 1;
         public static byte[] FileKeyDomain = "file-key".utf8();
 
-        public Stream fs;
-        public AeadFsConf conf;
+        Stream fs;
+        AeadFsConf conf;
+        int headSize;
 
-        public static long dataSize(long fileSize, AeadFsConf conf)
+        public AeadFsStream(Stream fs, AeadFsConf conf)
         {
-            var packTotal = fileSize - headSize(conf);
+            this.fs = fs;
+            this.conf = conf;
+
+            headSize = getHeadSize(conf);
+        }
+
+        string fsPath => (fs is FileStream f) ? f.Name : null;
+
+        public static long getDataSize(long fileSize, AeadFsConf conf)
+        {
+            var packTotal = fileSize - getHeadSize(conf);
             return (packTotal / conf.packSize()) * conf.BlockSize
                     + ((packTotal % conf.packSize()) - conf.tagSize()).max(0);
         }
 
-        public static int headSize(AeadFsConf conf)
+        public static int getHeadSize(AeadFsConf conf)
             => Type.Length + 2 + conf.FileIdSize + conf.nonceSize();
 
         byte[] fileId;
@@ -33,7 +44,7 @@ namespace util.rep.aead
         public AeadFsStream create()
         {
             fileId = conf.FileIdSize.aesRnd();
-            nonce = aeadEnc.NonceSize.aesRnd();
+            nonce = aead.NonceSize.aesRnd();
 
             var header = Type.utf8().merge(Version.bytes(), fileId, nonce);
             fs.write(header);
@@ -43,39 +54,44 @@ namespace util.rep.aead
 
         public AeadFsStream open()
         {
-            var header = new byte[prefix];
-            if (fs.readFull(header) != header.Length
-                || header.utf8(0, Type.Length) != Type)
-                throw new Error(this, "InvalidType");
+            var header = new byte[headSize];
+            if (fs.readFull(header) != header.Length)
+                throwIOError("HeaderShort");
+            if (header.utf8(0, Type.Length) != Type)
+                throwIOError("InvalidType");
             var ver = header.i16(Type.Length);
             if (ver > Version)
-                throw new Error(this, "InvalidVersion", ver);
+                throwIOError("InvalidVersion", ver);
 
             fileId = header.sub(Type.Length + 2, conf.FileIdSize);
-            nonce = header.tail(aeadEnc.NonceSize);
-            streamLen = dataSize(fs.Length, conf);
+            nonce = header.tail(aead.NonceSize);
+            streamLen = getDataSize(fs.Length, conf);
 
             return this;
         }
 
-        int? pre;
-        int prefix => (int)(pre ?? (pre = headSize(conf)));
-        int packSize => blockSize + tagSize;
-        int blockSize => conf.BlockSize;
-        int tagSize => aeadEnc.TagSize;
+        void throwIOError(string key, params object[] args)
+            => throw new IOException(this.trans(key, args));
 
-        AeadCrypt ae;
-        AeadCrypt aeadEnc => ae ?? (ae = conf.newCrypt());
-        PackCrypt pke;
-        PackCrypt packEnc => pke ?? (pke = new PackCrypt(aeadEnc.setKey(conf.deriveEncKey(FileKeyDomain.merge(fileId), aeadEnc.KeySize)), nonce));
+        int tagSize => aead.TagSize;
+        int blockSize => conf.BlockSize;
+        int packSize => blockSize + tagSize;
+
+        AeadCrypt _aead;
+        AeadCrypt aead => _aead ?? (_aead = conf.newCrypt());
+
+        PackCrypt _pke;
+        PackCrypt packEnc => _pke ?? (_pke = new PackCrypt(this, 
+                aead.setKey(conf.deriveEncKey(FileKeyDomain.merge(fileId), aead.KeySize)), 
+                nonce));
 
         long actionPos;
 
-        byte[] pk;
-        byte[] pack => pk ?? (pk = new byte[packSize]);
+        byte[] _pack;
+        byte[] pack => _pack ?? (_pack = new byte[packSize]);
         
-        byte[] blk;
-        byte[] block => blk ?? (blk = new byte[blockSize]);
+        byte[] _block;
+        byte[] block => _block ?? (_block = new byte[blockSize]);
 
         long blockIdx => actionPos / blockSize;
         int blockOff => (int)(actionPos % blockSize);
@@ -108,7 +124,7 @@ namespace util.rep.aead
         }
 
         void seekFile(long packIdx)
-            => fs.Position = prefix + packIdx * packSize;
+            => fs.Position = headSize + packIdx * packSize;
 
         int readFile(byte[] dst, int dstLen, long packIdx)
         {
@@ -144,7 +160,10 @@ namespace util.rep.aead
                 dataLen = seekPack() - tagSize;
                 readLen = remain.min(dataLen - blockOff);
                 if (readLen <= 0)
-                    throw new Error(this, "DataShort", remain, dataLen, blockOff);
+                    throwIOError("DataShort",
+                                remain,
+                                dataLen,
+                                blockOff);
 
                 if (blockOff == 0 && dataLen <= remain)
                     decryptPack(dataLen, dst, offset);
@@ -184,7 +203,7 @@ namespace util.rep.aead
                 {
                     var dataLen = readFile(pack, pack.Length, blockIdx) - tagSize;
                     if (dataLen != (actionLen - blockIdx * blockSize).min(blockSize))
-                        throw new Error(this, "DataError", 
+                        throwIOError("DataError",
                                     dataLen, 
                                     actionLen - blockIdx * blockSize);
 
@@ -224,18 +243,17 @@ namespace util.rep.aead
             return Position = pos;
         }
 
-        public override void SetLength(long value)
+        public override void SetLength(long len)
         {
-            if (value == 0)
+            if (len == 0)
             {
-                var fsLen = headSize(conf);
-                fs.SetLength(fsLen);
-                fs.Position = fsLen;
+                fs.SetLength(headSize);
+                fs.Position = headSize;
                 streamLen = 0;
                 streamPos = 0;
             }
             else
-                throw new Error(this, "UnsupportLength", value);
+                throwIOError("UnsupportLength", len);
         }
 
         public override bool CanRead => fs.CanRead;
@@ -250,7 +268,7 @@ namespace util.rep.aead
             set
             {
                 if (value < 0 || value > Length)
-                    throw new Error(this, "OutOfRange", value, Length);
+                    throwIOError("OutOfRange", value, Length);
                 streamPos = value;
             }
         }
@@ -259,6 +277,52 @@ namespace util.rep.aead
         {
             fs?.Close();
             fs = null;
+        }
+
+        public class PackCrypt
+        {
+            AeadFsStream fs;
+
+            public PackCrypt(AeadFsStream fs, AeadCrypt aead, byte[] nonce)
+            {
+                this.fs = fs;
+                this.aead = aead;
+                this.nonce = nonce.jclone();
+                counter = nonce.i64(nonce.Length - 8);
+            }
+
+            AeadCrypt aead;
+            byte[] nonce;
+            long counter;
+
+            public void encrypt(byte[] plain, int plainOff, int plainLen,
+                                long packIdx,
+                                byte[] cipher, int cipherOff = 0)
+            {
+                aead.encrypt(plain, plainOff, plainLen,
+                            makeNonce(packIdx),
+                            cipher, cipherOff,
+                            attachData(packIdx));
+            }
+
+            public void decrypt(byte[] cipher, int cipherOff, int cipherLen,
+                                long packIdx,
+                                byte[] plain, int plainOff = 0)
+            {
+                if (!aead.decrypt(cipher, cipherOff, cipherLen,
+                                makeNonce(packIdx),
+                                plain, plainOff,
+                                attachData(packIdx)))
+                    fs.throwIOError("VerifyFail", packIdx);
+            }
+
+            byte[] makeNonce(long index)
+            {
+                (counter + index).copyTo(nonce, nonce.Length - 8);
+                return nonce;
+            }
+
+            byte[] attachData(long index) => index.bytes();
         }
     }
 }

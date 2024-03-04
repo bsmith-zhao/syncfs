@@ -61,7 +61,7 @@ namespace util.rep.aead
         }
 
         public AeadCrypt newCrypt()
-            => util.crypt.AeadCrypt.create(DataCrypt);
+            => AeadCrypt.create(DataCrypt);
 
         AeadCrypt _aead;
         AeadCrypt aead => _aead ?? (_aead = newCrypt());
