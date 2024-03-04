@@ -8,8 +8,13 @@ namespace util
 {
     public static class Bytes
     {
-        [DllImport("msvcrt.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int memcmp(byte[] src, byte[] dst, int size);
+        public static bool allZero(this byte[] src, int off, int cnt)
+        {
+            while (cnt-- > 0)
+                if (src[off++] != 0)
+                    return false;
+            return true;
+        }
 
         public static void copyTo(this byte[] src, int srcIdx, byte[] dst, int dstIdx = 0, int? count = null)
         {
@@ -138,5 +143,9 @@ namespace util
 
         public static byte[] makeBuff(this int size, ref byte[] buff)
             => buff ?? (buff = new byte[size]);
+
+        [DllImport("msvcrt.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int memcmp(byte[] src, byte[] dst, int size);
+
     }
 }

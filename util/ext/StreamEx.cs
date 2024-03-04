@@ -79,8 +79,7 @@ namespace util.ext
         {
             int actual = readFull(fin, data, offset, count);
             if (actual != count)
-                throw new Error(typeof(Stream), 
-                    "ReadMismatch", count, actual);
+                throw new IOException(typeof(Stream).trans("ReadMismatch", count, actual));
         }
 
         public static int readFull(this Stream fin, byte[] data)

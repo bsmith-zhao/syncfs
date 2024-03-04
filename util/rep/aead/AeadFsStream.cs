@@ -228,32 +228,98 @@ namespace util.rep.aead
         public override long Seek(long offset, SeekOrigin origin)
         {
             var pos = streamPos;
-            switch (origin)
-            {
-                case SeekOrigin.Begin:
-                    pos = offset;
-                    break;
-                case SeekOrigin.Current:
-                    pos += offset;
-                    break;
-                case SeekOrigin.End:
-                    pos = streamLen - offset;
-                    break;
-            }
+
+            if (origin == SeekOrigin.Begin)
+                pos = offset;
+            else if (origin == SeekOrigin.Current)
+                pos += offset;
+            else if (origin == SeekOrigin.End)
+                pos = streamLen - offset;
+
             return Position = pos;
+            //switch (origin)
+            //{
+            //    case SeekOrigin.Begin:
+            //        pos = offset;
+            //        break;
+            //    case SeekOrigin.Current:
+            //        pos += offset;
+            //        break;
+            //    case SeekOrigin.End:
+            //        pos = streamLen - offset;
+            //        break;
+            //}
+            //return Position = pos;
         }
 
         public override void SetLength(long len)
         {
-            if (len == 0)
+            if (len < 0)
+                throwIOError("NegativeLength", len);
+
+            var oldPos = streamPos;
+            if (len > streamLen)
             {
-                fs.SetLength(headSize);
-                fs.Position = headSize;
-                streamLen = 0;
-                streamPos = 0;
+                // front padding range
+                var frontPad = streamLen % blockSize;
+                if (frontPad > 0)
+                {
+                    frontPad = (blockSize - frontPad).min(len - streamLen);
+                    appendData(new byte[frontPad]);
+                }
+                // zero spare pack range
+                var spareCount = (len - streamLen) / blockSize;
+                if (spareCount > 0)
+                {
+                    if (frontPad == 0)
+                    {
+                        // move inner stream pos to end
+                        fs.Position = headSize + (streamLen / blockSize) * packSize;
+                    }
+                    var zero = new byte[packSize];
+                    while (spareCount-- > 0)
+                    {
+                        // direct write zero pack to inner stream
+                        fs.write(zero);
+                        streamLen += blockSize;
+                    }
+                }
+                // last padding range
+                var lastPad = len - streamLen;
+                if (lastPad > 0)
+                {
+                    appendData(new byte[lastPad]);
+                }
+                streamLen = len;
+                streamPos = oldPos;
             }
-            else
-                throwIOError("UnsupportLength", len);
+            else if (len < streamLen)
+            {
+                var blockCount = len / blockSize;
+                var blockEnd = blockCount * blockSize;
+                var padSize = len - blockEnd;
+                byte[] padBuff = null;
+                if (padSize > 0)
+                {
+                    padBuff = new byte[padSize];
+                    streamPos = blockEnd;
+                    this.readExact(padBuff);
+                }
+                fs.SetLength(headSize + blockCount * packSize);
+                if (padBuff != null)
+                {
+                    streamLen = blockEnd;
+                    appendData(padBuff);
+                }
+                streamLen = len;
+                streamPos = oldPos.min(streamLen);
+            }
+        }
+
+        void appendData(byte[] data)
+        {
+            streamPos = streamLen;
+            Write(data, 0, data.Length);
         }
 
         public override bool CanRead => fs.CanRead;
@@ -267,8 +333,8 @@ namespace util.rep.aead
             get => streamPos;
             set
             {
-                if (value < 0 || value > Length)
-                    throwIOError("OutOfRange", value, Length);
+                if (value < 0 || value > streamLen)
+                    throwIOError("OutOfRange", value, streamLen);
                 streamPos = value;
             }
         }
@@ -309,11 +375,21 @@ namespace util.rep.aead
                                 long packIdx,
                                 byte[] plain, int plainOff = 0)
             {
-                if (!aead.decrypt(cipher, cipherOff, cipherLen,
+                // spare file, whole pack are all zero
+                if (cipherLen == fs.packSize
+                    && cipher.allZero(cipherOff, cipherLen))
+                {
+                    Buffer.BlockCopy(cipher, cipherOff,
+                                    plain, plainOff,
+                                    cipherLen - fs.tagSize);
+                }
+                else if (!aead.decrypt(cipher, cipherOff, cipherLen,
                                 makeNonce(packIdx),
                                 plain, plainOff,
                                 attachData(packIdx)))
+                {
                     fs.throwIOError("VerifyFail", packIdx);
+                }
             }
 
             byte[] makeNonce(long index)
