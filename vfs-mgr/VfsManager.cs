@@ -39,6 +39,7 @@ namespace vfs.mgr
                 propUI.ExpandAllGridItems();
             };
             listUI.SelectedIndexChanged += (s, e) => updateBtns();
+            listUI.MouseDoubleClick += ListUI_MouseDoubleClick;
 
             propUI.enhanceEdit((s, e) =>
             {
@@ -49,6 +50,22 @@ namespace vfs.mgr
             propUI.PropertySort = PropertySort.NoSort;
 
             this.StartPosition = FormStartPosition.CenterScreen;
+        }
+
+        private void ListUI_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            var tag = selTag;
+            if (tag == null)
+                return;
+
+            if (tag.mount == null)
+            {
+                mount();
+            }
+            else
+            {
+                unmount();
+            }
         }
 
         ListViewItem selItem => listUI.selItem();
@@ -284,6 +301,11 @@ namespace vfs.mgr
 
         private void mountBtn_Click(object sender, EventArgs e)
         {
+            mount();
+        }
+
+        void mount()
+        {
             if (!canMount)
                 return;
 
@@ -339,6 +361,11 @@ namespace vfs.mgr
         bool canUnmount => selMount != null;
 
         private void unmountBtn_Click(object sender, EventArgs e)
+        {
+            unmount();
+        }
+
+        void unmount()
         {
             canUnmount.and(this.trans("ConfirmUnmount", selMount.info).confirm())
                 .truedo(selMount.proc.Kill);

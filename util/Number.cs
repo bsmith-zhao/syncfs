@@ -99,8 +99,8 @@ namespace util
 
         public static void copyTo(this long value, byte[] dst, int dstOff = 0)
         {
-            var bs = BitConverter.GetBytes(value);
-            Buffer.BlockCopy(bs, 0, dst, dstOff, 8);
+            var data = BitConverter.GetBytes(value);
+            Buffer.BlockCopy(data, 0, dst, dstOff, 8);
         }
 
         public static long i64(this byte[] data, int offset = 0)

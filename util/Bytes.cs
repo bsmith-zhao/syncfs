@@ -18,12 +18,14 @@ namespace util
 
         public static void copyTo(this byte[] src, int srcIdx, byte[] dst, int dstIdx = 0, int? count = null)
         {
-            Array.Copy(src, srcIdx, dst, dstIdx, count ?? (src.Length - srcIdx));
+            Buffer.BlockCopy(src, srcIdx, dst, dstIdx, count ?? (src.Length - srcIdx));
+            //Array.Copy(src, srcIdx, dst, dstIdx, count ?? (src.Length - srcIdx));
         }
 
         public static void pasteBy(this byte[] dst, int dstIdx, byte[] src, int srcIdx = 0, int? count = null)
         {
-            Array.Copy(src, srcIdx, dst, dstIdx, count ?? (src.Length - srcIdx));
+            Buffer.BlockCopy(src, srcIdx, dst, dstIdx, count ?? (src.Length - srcIdx));
+            //Array.Copy(src, srcIdx, dst, dstIdx, count ?? (src.Length - srcIdx));
         }
 
         public static bool isSame(this byte[] src, byte[] dst, int size)

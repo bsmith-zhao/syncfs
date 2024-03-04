@@ -35,7 +35,7 @@ namespace util.rep.aead
         public bool decrypt(byte[] pwd)
         {
             mkey = new byte[Cipher.Length - aead.TagSize];
-            return getCrypt(pwd).decrypt(Cipher, 0, Cipher.Length, Nonce, mkey);
+            return getConfCrypt(pwd).decrypt(Cipher, 0, Cipher.Length, Nonce, mkey);
         }
 
         public void setMKey(byte[] mkey)
@@ -56,16 +56,19 @@ namespace util.rep.aead
         {
             Nonce = aead.NonceSize.aesRnd();
             Cipher = new byte[mkey.Length + aead.TagSize];
-            getCrypt(pwd).encrypt(mkey, 0, mkey.Length, Nonce, Cipher);
+            getConfCrypt(pwd).encrypt(mkey, 0, mkey.Length, Nonce, Cipher);
             return this;
         }
 
-        public AeadCrypt newCrypt()
+        public AeadCrypt newDataCrypt()
             => AeadCrypt.create(DataCrypt);
 
+        public AeadCrypt newDataCrypt(byte[] ctx)
+            => newDataCrypt().setKey(deriveKey(ctx, aead.KeySize));
+
         AeadCrypt _aead;
-        AeadCrypt aead => _aead ?? (_aead = newCrypt());
-        AeadCrypt getCrypt(byte[] pwd)
+        AeadCrypt aead => _aead ?? (_aead = newDataCrypt());
+        AeadCrypt getConfCrypt(byte[] pwd)
         {
             var pkey = derivePwdKey(pwd, aead.KeySize);
             return aead.setKey(pkey);
@@ -82,8 +85,11 @@ namespace util.rep.aead
             return null;
         }
         
-        public byte[] deriveEncKey(byte[] ctx, int size)
+        public byte[] deriveKey(byte[] ctx, int size)
             => (kdf ?? (kdf = newKdf())).derive(mkey, ctx, size);
+
+        //public byte[] deriveDataKey(byte[] ctx)
+        //    => deriveKey(ctx, aead.KeySize);
 
         public DirCrypt newDirCrypt(byte[] ctx)
         {
@@ -91,7 +97,7 @@ namespace util.rep.aead
             {
                 case DirCryptType.HmacIvCbc:
                     var enc = new HmacIvCbcCrypt();
-                    enc.Key = deriveEncKey(ctx, enc.KeySize);
+                    enc.Key = deriveKey(ctx, enc.KeySize);
                     return enc;
             }
             return null;

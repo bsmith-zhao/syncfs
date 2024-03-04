@@ -13,25 +13,26 @@ namespace util.rep.aead
     {
         public const string Type = "aead";
         public const short Version = 1;
-        public static byte[] FileKeyDomain = "file-key".utf8();
+        public static byte[] KeyContext = "file-key".utf8();
 
-        Stream fs;
+        FileStream fs;
         AeadFsConf conf;
         int headSize;
 
-        public AeadFsStream(Stream fs, AeadFsConf conf, bool create)
+        public AeadFsStream(FileStream fs, AeadFsConf conf, bool create)
         {
             try
             {
                 this.fs = fs;
                 this.conf = conf;
-
-                headSize = getHeadSize(conf);
+                this.headSize = getHeadSize(conf);
 
                 if (create)
                     this.create();
                 else
                     open();
+
+                counter = nonce.i64(nonce.Length - 8);
             }
             catch
             {
@@ -40,13 +41,12 @@ namespace util.rep.aead
             }
         }
 
-        string fsPath => (fs is FileStream f) ? f.Name : null;
-
         public static long getDataSize(long fileSize, AeadFsConf conf)
         {
             var packTotal = fileSize - getHeadSize(conf);
             return (packTotal / conf.packSize()) * conf.BlockSize
-                    + ((packTotal % conf.packSize()) - conf.tagSize()).max(0);
+                    + ((packTotal % conf.packSize()) - conf.tagSize())
+                    .max(0);
         }
 
         public static int getHeadSize(AeadFsConf conf)
@@ -54,10 +54,11 @@ namespace util.rep.aead
 
         byte[] fileId;
         byte[] nonce;
+        long counter;
         void create()
         {
             fileId = conf.FileIdSize.aesRnd();
-            nonce = aead.NonceSize.aesRnd();
+            nonce = conf.nonceSize().aesRnd();
 
             var header = Type.utf8().merge(Version.bytes(), fileId, nonce);
             fs.write(header);
@@ -75,26 +76,24 @@ namespace util.rep.aead
                 throwIOError("InvalidVersion", ver);
 
             fileId = header.sub(Type.Length + 2, conf.FileIdSize);
-            nonce = header.tail(aead.NonceSize);
+            nonce = header.tail(conf.nonceSize());
             streamLen = getDataSize(fs.Length, conf);
         }
 
         void throwIOError(string key, params object[] args)
-            => throw new IOException(this.trans(key, args.append(fsPath)));
+            => throw new IOException(this.trans(key, args.append(fs.Name)));
 
-        int tagSize => aead.TagSize;
+        int tagSize => conf.tagSize();//aead.TagSize;
         int blockSize => conf.BlockSize;
         int packSize => blockSize + tagSize;
 
         AeadCrypt _aead;
-        AeadCrypt aead => _aead ?? (_aead = conf.newCrypt());
+        AeadCrypt aead => _aead ?? (_aead = conf.newDataCrypt(KeyContext.merge(fileId)));
 
-        PackCrypt _pke;
-        PackCrypt packEnc => _pke ?? (_pke = new PackCrypt(this, 
-                aead.setKey(conf.deriveEncKey(FileKeyDomain.merge(fileId), aead.KeySize)), 
-                nonce));
+        //byte[] deriveKey(int size) => conf.deriveEncKey(FileKeyDomain.merge(fileId), size);
 
-        long actionPos;
+        //PackCrypt _pke;
+        //PackCrypt packEnc => _pke ?? (_pke = new PackCrypt(this, aead.setKey(newKey()), nonce));
 
         byte[] _pack;
         byte[] pack => _pack ?? (_pack = new byte[packSize]);
@@ -102,6 +101,7 @@ namespace util.rep.aead
         byte[] _block;
         byte[] block => _block ?? (_block = new byte[blockSize]);
 
+        long actionPos;
         long blockIdx => actionPos / blockSize;
         int blockOff => (int)(actionPos % blockSize);
 
@@ -147,12 +147,18 @@ namespace util.rep.aead
             return packSize.min(buffLen - buffPos);
         }
 
-        void decryptPack(int dataSize, byte[] dst, int dstOff = 0)
-            => packEnc.decrypt(buff, buffPos, dataSize + tagSize, blockIdx, dst, dstOff);
+        void decryptBuffPack(int dataSize, byte[] dst, int dstOff = 0)
+            => decryptPack(buff, buffPos, dataSize + tagSize,
+                            blockIdx,
+                            dst, dstOff);
+        //=> packEnc.decrypt(buff, buffPos, dataSize + tagSize, 
+        //                blockIdx, 
+        //                dst, dstOff);
 
-        void encryptPack(byte[] src, int srcOff, int srcLen)
+        void encryptPackToBuff(byte[] src, int srcOff, int srcLen)
         {
-            packEnc.encrypt(src, srcOff, srcLen, blockIdx, buff, buffPos);
+            encryptPack(src, srcOff, srcLen, blockIdx, buff, buffPos);
+            //packEnc.encrypt(src, srcOff, srcLen, blockIdx, buff, buffPos);
             buffPos += srcLen + tagSize;
         }
 
@@ -175,10 +181,10 @@ namespace util.rep.aead
                                 blockOff);
 
                 if (blockOff == 0 && dataLen <= remain)
-                    decryptPack(dataLen, dst, offset);
+                    decryptBuffPack(dataLen, dst, offset);
                 else
                 {
-                    decryptPack(dataLen, block);
+                    decryptBuffPack(dataLen, block);
                     Buffer.BlockCopy(block, blockOff, dst, offset, readLen);
                 }
 
@@ -206,7 +212,7 @@ namespace util.rep.aead
                     && (writeLen == blockSize // overwrite whole block
                         || writeLen >= actionLen - actionPos)) // overwrite exist block
                 {
-                    encryptPack(src, offset, writeLen);
+                    encryptPackToBuff(src, offset, writeLen);
                 }
                 else
                 {
@@ -216,10 +222,11 @@ namespace util.rep.aead
                                     dataLen, 
                                     actionLen - blockIdx * blockSize);
 
-                    packEnc.decrypt(pack, 0, dataLen + tagSize, blockIdx, block);
+                    decryptPack(pack, 0, dataLen + tagSize, blockIdx, block);
+                    //packEnc.decrypt(pack, 0, dataLen + tagSize, blockIdx, block);
                     Buffer.BlockCopy(src, offset, block, blockOff, writeLen);
 
-                    encryptPack(block, 0, dataLen.max(blockOff + writeLen));
+                    encryptPackToBuff(block, 0, dataLen.max(blockOff + writeLen));
                 }
 
                 offset += writeLen;
@@ -343,61 +350,100 @@ namespace util.rep.aead
             this.free(ref fs);
         }
 
-        public class PackCrypt
+        byte[] mergeNonce(long packIdx)
         {
-            AeadFsStream fs;
+            (counter + packIdx).copyTo(nonce, nonce.Length - 8);
+            return nonce;
+        }
 
-            public PackCrypt(AeadFsStream fs, AeadCrypt aead, byte[] nonce)
-            {
-                this.fs = fs;
-                this.aead = aead;
-                this.nonce = nonce.jclone();
-                counter = nonce.i64(nonce.Length - 8);
-            }
+        byte[] attachData(long packIdx) => packIdx.bytes();
 
-            AeadCrypt aead;
-            byte[] nonce;
-            long counter;
-
-            public void encrypt(byte[] plain, int plainOff, int plainLen,
+        public void encryptPack(byte[] plain, int plainOff, int plainLen,
                                 long packIdx,
                                 byte[] cipher, int cipherOff = 0)
-            {
-                aead.encrypt(plain, plainOff, plainLen,
-                            makeNonce(packIdx),
-                            cipher, cipherOff,
-                            attachData(packIdx));
-            }
+        {
+            aead.encrypt(plain, plainOff, plainLen,
+                        mergeNonce(packIdx),
+                        cipher, cipherOff,
+                        attachData(packIdx));
+        }
 
-            public void decrypt(byte[] cipher, int cipherOff, int cipherLen,
+        public void decryptPack(byte[] cipher, int cipherOff, int cipherLen,
                                 long packIdx,
                                 byte[] plain, int plainOff = 0)
+        {
+            // spare file, whole pack are all zero
+            if (cipherLen == packSize
+                && cipher.allZero(cipherOff, cipherLen))
             {
-                // spare file, whole pack are all zero
-                if (cipherLen == fs.packSize
-                    && cipher.allZero(cipherOff, cipherLen))
-                {
-                    new {f="dec all zero", cipherOff, cipherLen }.msgj();
-                    Buffer.BlockCopy(cipher, cipherOff,
-                                    plain, plainOff,
-                                    cipherLen - fs.tagSize);
-                }
-                else if (!aead.decrypt(cipher, cipherOff, cipherLen,
-                                makeNonce(packIdx),
+                Buffer.BlockCopy(cipher, cipherOff,
                                 plain, plainOff,
-                                attachData(packIdx)))
-                {
-                    fs.throwIOError("VerifyFail", packIdx);
-                }
+                                cipherLen - tagSize);
             }
-
-            byte[] makeNonce(long index)
+            else if (!aead.decrypt(cipher, cipherOff, cipherLen,
+                            mergeNonce(packIdx),
+                            plain, plainOff,
+                            attachData(packIdx)))
             {
-                (counter + index).copyTo(nonce, nonce.Length - 8);
-                return nonce;
+                throwIOError("VerifyFail", packIdx);
             }
-
-            byte[] attachData(long index) => index.bytes();
         }
+
+        //public class PackCrypt
+        //{
+        //    AeadFsStream fs;
+
+        //    public PackCrypt(AeadFsStream fs, AeadCrypt aead, byte[] nonce)
+        //    {
+        //        this.fs = fs;
+        //        this.aead = aead;
+        //        this.nonce = nonce.jclone();
+        //        counter = nonce.i64(nonce.Length - 8);
+        //    }
+
+        //    AeadCrypt aead;
+        //    byte[] nonce;
+        //    long counter;
+
+        //    public void encrypt(byte[] plain, int plainOff, int plainLen,
+        //                        long packIdx,
+        //                        byte[] cipher, int cipherOff = 0)
+        //    {
+        //        aead.encrypt(plain, plainOff, plainLen,
+        //                    mergeNonce(packIdx),
+        //                    cipher, cipherOff,
+        //                    attachData(packIdx));
+        //    }
+
+        //    public void decrypt(byte[] cipher, int cipherOff, int cipherLen,
+        //                        long packIdx,
+        //                        byte[] plain, int plainOff = 0)
+        //    {
+        //        // spare file, whole pack are all zero
+        //        if (cipherLen == fs.packSize
+        //            && cipher.allZero(cipherOff, cipherLen))
+        //        {
+        //            new {f="dec all zero", cipherOff, cipherLen }.msgj();
+        //            Buffer.BlockCopy(cipher, cipherOff,
+        //                            plain, plainOff,
+        //                            cipherLen - fs.tagSize);
+        //        }
+        //        else if (!aead.decrypt(cipher, cipherOff, cipherLen,
+        //                        mergeNonce(packIdx),
+        //                        plain, plainOff,
+        //                        attachData(packIdx)))
+        //        {
+        //            fs.throwIOError("VerifyFail", packIdx);
+        //        }
+        //    }
+
+        //    byte[] mergeNonce(long packIdx)
+        //    {
+        //        (counter + packIdx).copyTo(nonce, nonce.Length - 8);
+        //        return nonce;
+        //    }
+
+        //    byte[] attachData(long packIdx) => packIdx.bytes();
+        //}
     }
 }

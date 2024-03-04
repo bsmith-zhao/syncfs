@@ -42,8 +42,8 @@
             this.unmountBtn = new System.Windows.Forms.ToolStripButton();
             this.openDirBtn = new System.Windows.Forms.ToolStripButton();
             this.addAeadFSBtn = new System.Windows.Forms.ToolStripButton();
-            this.modifyPwdBtn = new System.Windows.Forms.ToolStripButton();
             this.deleteBtn = new System.Windows.Forms.ToolStripButton();
+            this.modifyPwdBtn = new System.Windows.Forms.ToolStripButton();
             this.optionBtn = new System.Windows.Forms.ToolStripButton();
             this.languageBtn = new System.Windows.Forms.ToolStripDropDownButton();
             this.refreshBtn = new System.Windows.Forms.ToolStripButton();
@@ -135,14 +135,14 @@
             // 
             this.toolbar.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.toolbar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.languageBtn,
+            this.optionBtn,
+            this.addAeadFSBtn,
             this.mountBtn,
             this.unmountBtn,
             this.openDirBtn,
-            this.addAeadFSBtn,
             this.deleteBtn,
             this.modifyPwdBtn,
-            this.optionBtn,
-            this.languageBtn,
             this.refreshBtn});
             this.toolbar.Location = new System.Drawing.Point(0, 0);
             this.toolbar.Name = "toolbar";
@@ -190,16 +190,6 @@
             this.addAeadFSBtn.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.addAeadFSBtn.Click += new System.EventHandler(this.addAeadFSBtn_Click);
             // 
-            // modifyPwdBtn
-            // 
-            this.modifyPwdBtn.Image = global::vfs.mgr.Properties.Resources.SetPwd;
-            this.modifyPwdBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.modifyPwdBtn.Name = "modifyPwdBtn";
-            this.modifyPwdBtn.Size = new System.Drawing.Size(147, 67);
-            this.modifyPwdBtn.Text = "ModifyPwd";
-            this.modifyPwdBtn.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.modifyPwdBtn.Click += new System.EventHandler(this.modifyPwdBtn_Click);
-            // 
             // deleteBtn
             // 
             this.deleteBtn.Image = global::vfs.mgr.Properties.Resources.Delete;
@@ -209,6 +199,16 @@
             this.deleteBtn.Text = "Delete";
             this.deleteBtn.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.deleteBtn.Click += new System.EventHandler(this.deleteBtn_Click);
+            // 
+            // modifyPwdBtn
+            // 
+            this.modifyPwdBtn.Image = global::vfs.mgr.Properties.Resources.SetPwd;
+            this.modifyPwdBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.modifyPwdBtn.Name = "modifyPwdBtn";
+            this.modifyPwdBtn.Size = new System.Drawing.Size(147, 67);
+            this.modifyPwdBtn.Text = "ModifyPwd";
+            this.modifyPwdBtn.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.modifyPwdBtn.Click += new System.EventHandler(this.modifyPwdBtn_Click);
             // 
             // optionBtn
             // 
