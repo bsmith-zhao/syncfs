@@ -61,9 +61,9 @@ namespace sync.app
                 rep = rep,
                 src = rep,
                 root = RootDir,
-                flt = newFilter(App.Option.Lock,
-                            Match,
-                            Backup.Directory),
+                flt = new Filter(AllowPaths, 
+                                ExcludePaths.append(Match, Backup.Directory),
+                                ExcludeNames.append(App.Option.Lock)),
             }.open(ForceUnlock);
         }
 

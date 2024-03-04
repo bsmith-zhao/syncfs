@@ -24,7 +24,7 @@ namespace sync.app.conf
                 src = src,
                 rep = src.rep,
                 root = RootDir,
-                flt = newFilter()
+                flt = new Filter(AllowPaths, ExcludePaths, ExcludeNames),
             };
     }
 }

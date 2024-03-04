@@ -1,6 +1,6 @@
-set dst="C:\bin\SyncFavor\0"
+set dst="C:\bin\syncfs\0"
 echo %dst%
 
-xcopy "C:\prj\SyncFavor\bin" %dst% /e /y /exclude:exclude.txt
+xcopy "C:\prj\syncfs\bin" %dst% /e /y /exclude:exclude.txt
 
 pause

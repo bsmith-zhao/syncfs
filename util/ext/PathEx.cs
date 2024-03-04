@@ -24,7 +24,7 @@ namespace util
         public static string[] pathUnify(this string[] paths)
             => paths?.conv(p => p.pathUnify())
             .pick(p => p?.Length > 0).ToArray()
-            .keep(arr => arr.Length > 0);
+            .retain(arr => arr.Length > 0);
 
         public static string pathUnify(this string path)
             => path?.Split('/', '\\')

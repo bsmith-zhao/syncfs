@@ -9,12 +9,13 @@ using util.prop;
 
 namespace util.ext
 {
-    public class PasteIgnore : Attribute
-    {
-    }
+    public class PasteIgnore : Attribute { }
 
     public static class ObjectEx
     {
+        public static T retain<T>(this T arr, Func<T, bool> func)
+            => func(arr) ? arr : default(T);
+
         public static T use<T>(this T obj, Action<T> func)
         {
             func(obj);

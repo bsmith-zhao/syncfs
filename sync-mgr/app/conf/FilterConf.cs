@@ -41,12 +41,12 @@ namespace sync.app
             set => excNames = value.pathUnify();
         }
 
-        public Filter newFilter(params string[] names)
-            => new Filter
-            {
-                incPaths = incPaths.pathUnify(),
-                excPaths = excsPaths.pathUnify(),
-                excNames = excNames.append(names).pathUnify(),
-            }.init();
+        //public Filter newFilter(params string[] names)
+        //    => new Filter
+        //    {
+        //        incPaths = incPaths.pathUnify(),
+        //        excPaths = excsPaths.pathUnify(),
+        //        excNames = excNames.append(names).pathUnify(),
+        //    }.init();
     }
 }

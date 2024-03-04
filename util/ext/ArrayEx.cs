@@ -9,9 +9,6 @@ namespace util.ext
 {
     public static class ArrayEx
     {
-        public static T[] keep<T>(this T[] arr, Func<T[], bool> func)
-            => func(arr) ? arr : null;
-
         public static bool empty<T>(this T[] arr)
             => arr == null || arr.Length == 0;
 

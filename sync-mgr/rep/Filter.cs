@@ -10,52 +10,70 @@ namespace util.rep
 {
     public class Filter
     {
-        public string[] incPaths;
-        public string[] excPaths;
-        public string[] excNames;
+        public string[] incs;
+        public string[] excs;
+        public string[] names;
 
         public override string ToString()
             => this.desc();
 
-        public Filter init()
+        public Filter(string[] incs, string[] excs, string[] names)
         {
-            incPaths.each(inc =>
+            this.incs = incs.pathUnify().low();
+            this.excs = excs.pathUnify().low();
+            this.names = names.pathUnify().low();
+
+            init();
+        }
+
+        void init()
+        {
+            incs.each(inc => excs.each((i, exc) =>
             {
-                excPaths.each((i, exc) =>
-                {
-                    if (contain(inc, exc))
-                        excPaths[i] = null;
-                });
-            });
-            return this;
+                if (pathBelong(inc, exc))
+                    excs[i] = null;
+            }));
+
+            excs = excs.exclude(p => p.empty())
+                .ToArray().retain(a => a.Length > 0);
         }
 
         public bool allowDir(string path)
-            => allowNode(path, true);
+            => allowPath(path, true);
 
         public bool allowFile(string path)
-            => allowNode(path, false);
+            => allowPath(path, false);
 
-        public bool allowNode(string path, bool isDir)
+        public bool allowPath(string path, bool isDir)
         {
             path = path.low();
-            if (!allow(path, isDir))
+            if (!include(path, isDir))
                 return false;
             return !exclude(path);
         }
 
-        bool allow(string path, bool isDir)
-            => !(incPaths?.Length > 0
-                && !incPaths.exist(inc => contain(path, inc)
-                            || (isDir && contain(inc, path))));
+        bool include(string path, bool isDir)
+            => !(incs?.Length > 0
+                && !incs.exist(inc => pathBelong(path, inc)
+                            || (isDir && pathBelong(inc, path))));
 
         bool exclude(string path)
-            => excPaths.exist(exc => null != exc && contain(path, exc))
-            || excNames.exist(key => path.Contains(key));
+        {
+            if (excs.exist(exc => pathBelong(path, exc)))
+                return true;
+            if (names?.Length > 0)
+            {
+                var nodes = path.Split('/');
+                return names.exist(name 
+                    => nodes.exist(node => node == name));
+            }
+            return false;
+        }
 
-        bool contain(string path, string pre)
-            => path.StartsWith(pre)
-            && (path.Length == pre.Length 
-                || path[pre.Length] == '/');
+        bool pathBelong(string path, string dir)
+            => path != null && dir != null
+            && path.StartsWith(dir)
+            && (path.Length == dir.Length 
+                || path[dir.Length] == '/');
     }
 }

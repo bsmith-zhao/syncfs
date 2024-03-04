@@ -22,6 +22,9 @@ namespace util.ext
         public static string low(this string str)
             => str?.ToLower();
 
+        public static string[] low(this string[] strs)
+            => strs.each((i, s) => strs[i] = s.low());
+
         public static string jump(this string str, int count)
             => str?.Length >= count ? str.Substring(count) : null;
 
