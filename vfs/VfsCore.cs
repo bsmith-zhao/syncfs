@@ -21,7 +21,8 @@ namespace vfs
     public class VfsCore : FileSystemBase
     {
         public Reposit rep;
-        public string name;
+        public string mount;
+        public string label;
 
         public VfsCore()
         {
@@ -55,22 +56,26 @@ namespace vfs
         public override Int32 GetVolumeInfo(
             out VolumeInfo volume)
         {
-            volume = default(VolumeInfo);
             try
             {
+                volume = default(VolumeInfo);
+
                 rep.getSpace(out var total, out var free);
                 volume.TotalSize = (UInt64)total;
                 volume.FreeSize = (UInt64)free;
-                volume.SetVolumeLabel(name);
+                volume.SetVolumeLabel(label);
+
+                return STATUS_SUCCESS;
             }
-            catch (ArgumentException)
+            catch (Exception err)
             {
-                /*
-                 * DriveInfo only supports drives and does not support UNC paths.
-                 * It would be better to use GetDiskFreeSpaceEx here.
-                 */
+                trace(err, "GetVolumeInfo");
+                throw;
             }
-            return STATUS_SUCCESS;
+            /*
+            * DriveInfo only supports drives and does not support UNC paths.
+            * It would be better to use GetDiskFreeSpaceEx here.
+            */
         }
 
         public override Int32 GetSecurityByName(
@@ -78,17 +83,25 @@ namespace vfs
             out UInt32 attrs/* or ReparsePointIndex */,
             ref Byte[] security)
         {
-            attrs = 0;
-            var item = rep.getItem(path);
-            if (item != null)
+            try
             {
-                if (item.isDir)
-                    attrs = (uint)FileAttributes.Directory;
-                else
-                    attrs = (uint)FileAttributes.Normal;
+                attrs = 0;
+                var item = rep.getItem(path);
+                if (item != null)
+                {
+                    if (item.isDir)
+                        attrs = (uint)FileAttributes.Directory;
+                    else
+                        attrs = (uint)FileAttributes.Normal;
+                }
+                security = DefaultSecurity;
+                return STATUS_SUCCESS;
             }
-            security = DefaultSecurity;
-            return STATUS_SUCCESS;
+            catch (Exception err)
+            {
+                trace(err, "GetSecurityByName");
+                throw;
+            }
         }
 
         public override Int32 Create(
@@ -133,7 +146,7 @@ namespace vfs
             catch (Exception err)
             {
                 fd?.closeFile();
-                error("create", err);
+                trace(err, "Create");
                 throw;
             }
         }
@@ -169,7 +182,7 @@ namespace vfs
             catch(Exception err)
             {
                 fd?.closeFile();
-                error("open", err);
+                trace(err, "Open");
                 throw;
             }
         }
@@ -190,15 +203,13 @@ namespace vfs
             }
             catch (Exception err)
             {
-                error("overwrite", err);
+                trace(err, "Overwrite");
                 throw;
             }
         }
 
-        void error(string func, Exception err)
-        {
-            new { f=func, err.Message, err.HResult }.msgj();
-        }
+        void trace(Exception err, string func)
+            => new { f = func, err = err.Message, mount}.msgj();
 
         public override void Cleanup(
             Object node,
@@ -206,14 +217,22 @@ namespace vfs
             String path,
             UInt32 flags)
         {
-            FileDesc fd = (FileDesc)desc;
-            if (0 != (flags & CleanupDelete))
+            try
             {
-                fd.closeFile();
-                if (fd.isDir)
-                    rep.deleteDir(fd.item.path);
-                else
-                    rep.deleteFile(fd.item.path);
+                FileDesc fd = (FileDesc)desc;
+                if (0 != (flags & CleanupDelete))
+                {
+                    fd.closeFile();
+                    if (fd.isDir)
+                        rep.deleteDir(fd.item.path);
+                    else
+                        rep.deleteFile(fd.item.path);
+                }
+            }
+            catch (Exception err)
+            {
+                trace(err, "Cleanup");
+                throw;
             }
         }
 
@@ -221,8 +240,16 @@ namespace vfs
             Object node,
             Object desc)
         {
-            FileDesc fd = (FileDesc)desc;
-            fd.closeFile();
+            try
+            {
+                FileDesc fd = (FileDesc)desc;
+                fd.closeFile();
+            }
+            catch (Exception err)
+            {
+                trace(err, "Close");
+                throw;
+            }
         }
 
         public override Int32 Read(
@@ -233,23 +260,31 @@ namespace vfs
             UInt32 total,
             out UInt32 finish)
         {
-            FileDesc fd = (FileDesc)desc;
-            var fs = fd.openRead();
-
-            if (offset >= (UInt64)fs.Length)
+            try
             {
-                finish = 0;
-                return STATUS_END_OF_FILE;
+                FileDesc fd = (FileDesc)desc;
+                var fs = fd.openRead();
+
+                if (offset >= (UInt64)fs.Length)
+                {
+                    finish = 0;
+                    return STATUS_END_OF_FILE;
+                }
+
+                fs.Position = (long)offset;
+
+                int count = (int)total;
+                var buff = getBuff(count);
+                finish = (uint)fs.Read(buff, 0, count);
+                Marshal.Copy(buff, 0, buffPtr, (int)finish);
+
+                return STATUS_SUCCESS;
             }
-
-            fs.Position = (long)offset;
-
-            int count = (int)total;
-            var buff = getBuff(count);
-            finish = (uint)fs.Read(buff, 0, count);
-            Marshal.Copy(buff, 0, buffPtr, (int)finish);
-
-            return STATUS_SUCCESS;
+            catch (Exception err)
+            {
+                trace(err, "Read");
+                throw;
+            }
         }
 
         byte[] _buff;
@@ -313,7 +348,7 @@ namespace vfs
             }
             catch (Exception err)
             {
-                error("write", err);
+                trace(err, "Write");
                 throw;
             }
         }
@@ -322,23 +357,40 @@ namespace vfs
             Object desc,
             out FileInfo info)
         {
-            FileDesc fd = (FileDesc)desc;
-            if (null == fd)
+            try
             {
-                /* we do not flush the whole volume, so just return SUCCESS */
-                info = default(FileInfo);
-                return STATUS_SUCCESS;
+                FileDesc fd = (FileDesc)desc;
+                if (null == fd)
+                {
+                    /* we do not flush the whole volume, so just return SUCCESS */
+                    info = default(FileInfo);
+                    return STATUS_SUCCESS;
+                }
+                fd.flushFile();
+                return fd.getInfo(out info);
             }
-            fd.flushFile();
-            return fd.getInfo(out info);
+            catch (Exception err)
+            {
+                trace(err, "Flush");
+                throw;
+            }
         }
+
         public override Int32 GetFileInfo(
             Object node,
             Object desc,
             out FileInfo info)
         {
-            FileDesc fd = (FileDesc)desc;
-            return fd.getInfo(out info);
+            try
+            {
+                FileDesc fd = (FileDesc)desc;
+                return fd.getInfo(out info);
+            }
+            catch (Exception err)
+            {
+                trace(err, "GetFileInfo");
+                throw;
+            }
         }
 
         public override Int32 SetBasicInfo(
@@ -351,18 +403,41 @@ namespace vfs
             UInt64 ChangeTime,
             out FileInfo info)
         {
-            FileDesc fd = (FileDesc)FileDesc0;
-            return fd.getInfo(out info);
+            try
+            {
+                FileDesc fd = (FileDesc)FileDesc0;
+                return fd.getInfo(out info);
+            }
+            catch (Exception err)
+            {
+                trace(err, "SetBasicInfo");
+                throw;
+            }
         }
 
         public override Int32 SetFileSize(
             Object node,
             Object desc,
             UInt64 newSize,
-            Boolean setAlloc,
+            Boolean setAllocSize,
             out FileInfo info)
         {
-            FileDesc fd = (FileDesc)desc;
+            try
+            {
+                FileDesc fd = (FileDesc)desc;
+                var fs = fd.openWrite();
+                if (!setAllocSize || fs.Length > (long)newSize)
+                {
+                    fs.SetLength((long)newSize);
+                }
+                return fd.getInfo(out info);
+            }
+            catch (Exception err)
+            {
+                trace(err, "SetFileSize");
+                throw;
+            }
+
             //fd.openFile(rep);
             //if (!setAlloc || (UInt64)fd.data.Length > newSize)
             //{
@@ -373,7 +448,6 @@ namespace vfs
             //     */
             //    //fd.data.SetLength((Int64)newSize);
             //}
-            return fd.getInfo(out info);
         }
 
         public override Int32 CanDelete(
@@ -411,7 +485,7 @@ namespace vfs
             }
             catch (Exception err)
             {
-                error("move", err);
+                trace(err, "Rename");
                 throw;
             }
         }
@@ -483,7 +557,7 @@ namespace vfs
             }
             catch (Exception err)
             {
-                error("list", err);
+                trace(err, "ReadDirectory");
                 throw;
             }
         }

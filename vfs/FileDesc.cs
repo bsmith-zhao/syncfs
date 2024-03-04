@@ -71,7 +71,7 @@ namespace vfs
             info.FileAttributes = (uint)(item.isDir ? FileAttributes.Directory : FileAttributes.Normal);
             info.ReparseTag = 0;
             info.FileSize = (ulong)item.size;
-            setAllocSize(ref info);
+            updateAllocSize(ref info);
             info.CreationTime = (ulong)item.createTime;
             info.LastAccessTime = (ulong)item.modifyTime;
             info.LastWriteTime = (ulong)item.modifyTime;
@@ -86,12 +86,12 @@ namespace vfs
             if (data != null)
             {
                 info.FileSize = (ulong)data.Length;
-                setAllocSize(ref info);
+                updateAllocSize(ref info);
             }
             return FileSystemBase.STATUS_SUCCESS;
         }
 
-        static void setAllocSize(ref FileInfo info)
+        static void updateAllocSize(ref FileInfo info)
             => info.AllocationSize = (info.FileSize+AllocUnit-1)/AllocUnit * AllocUnit;
 
         public const int AllocUnit = 4096;

@@ -31,8 +31,8 @@ namespace vfs
                 Environment.ExitCode = new VfsService
                 {
                     rep = rep,
-                    path = vfs.path,
-                    name = vfs.name,
+                    mount = vfs.path,
+                    label = vfs.name,
                 }.Run();
             }
             catch (Error err)
