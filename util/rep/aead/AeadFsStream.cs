@@ -19,12 +19,25 @@ namespace util.rep.aead
         AeadFsConf conf;
         int headSize;
 
-        public AeadFsStream(Stream fs, AeadFsConf conf)
+        public AeadFsStream(Stream fs, AeadFsConf conf, bool create)
         {
-            this.fs = fs;
-            this.conf = conf;
+            try
+            {
+                this.fs = fs;
+                this.conf = conf;
 
-            headSize = getHeadSize(conf);
+                headSize = getHeadSize(conf);
+
+                if (create)
+                    this.create();
+                else
+                    open();
+            }
+            catch
+            {
+                Close();
+                throw;
+            }
         }
 
         string fsPath => (fs is FileStream f) ? f.Name : null;
@@ -41,18 +54,16 @@ namespace util.rep.aead
 
         byte[] fileId;
         byte[] nonce;
-        public AeadFsStream create()
+        void create()
         {
             fileId = conf.FileIdSize.aesRnd();
             nonce = aead.NonceSize.aesRnd();
 
             var header = Type.utf8().merge(Version.bytes(), fileId, nonce);
             fs.write(header);
-
-            return this;
         }
 
-        public AeadFsStream open()
+        void open()
         {
             var header = new byte[headSize];
             if (fs.readFull(header) != header.Length)
@@ -66,12 +77,10 @@ namespace util.rep.aead
             fileId = header.sub(Type.Length + 2, conf.FileIdSize);
             nonce = header.tail(aead.NonceSize);
             streamLen = getDataSize(fs.Length, conf);
-
-            return this;
         }
 
         void throwIOError(string key, params object[] args)
-            => throw new IOException(this.trans(key, args));
+            => throw new IOException(this.trans(key, args.append(fsPath)));
 
         int tagSize => aead.TagSize;
         int blockSize => conf.BlockSize;
@@ -237,19 +246,6 @@ namespace util.rep.aead
                 pos = streamLen - offset;
 
             return Position = pos;
-            //switch (origin)
-            //{
-            //    case SeekOrigin.Begin:
-            //        pos = offset;
-            //        break;
-            //    case SeekOrigin.Current:
-            //        pos += offset;
-            //        break;
-            //    case SeekOrigin.End:
-            //        pos = streamLen - offset;
-            //        break;
-            //}
-            //return Position = pos;
         }
 
         public override void SetLength(long len)
@@ -258,60 +254,63 @@ namespace util.rep.aead
                 throwIOError("NegativeLength", len);
 
             var oldPos = streamPos;
-            if (len > streamLen)
+            try
             {
-                // front padding range
-                var frontPad = streamLen % blockSize;
-                if (frontPad > 0)
+                if (len > streamLen)
                 {
-                    frontPad = (blockSize - frontPad).min(len - streamLen);
-                    appendData(new byte[frontPad]);
-                }
-                // zero spare pack range
-                var spareCount = (len - streamLen) / blockSize;
-                if (spareCount > 0)
-                {
-                    if (frontPad == 0)
+                    // front padding range
+                    var frontPad = streamLen % blockSize;
+                    if (frontPad > 0)
                     {
-                        // move inner stream pos to end
-                        fs.Position = headSize + (streamLen / blockSize) * packSize;
+                        frontPad = (blockSize - frontPad).min(len - streamLen);
+                        appendData(new byte[frontPad]);
                     }
-                    var zero = new byte[packSize];
-                    while (spareCount-- > 0)
+                    // zero spare pack range
+                    var spareCount = (len - streamLen) / blockSize;
+                    if (spareCount > 0)
                     {
-                        // direct write zero pack to inner stream
-                        fs.write(zero);
-                        streamLen += blockSize;
+                        if (frontPad == 0)
+                        {
+                            // move inner stream pos to end
+                            fs.Position = fs.Length;
+                        }
+                        var zero = new byte[packSize];
+                        while (spareCount-- > 0)
+                        {
+                            // direct write zero pack to inner stream
+                            fs.write(zero);
+                            streamLen += blockSize;
+                        }
+                    }
+                    // last padding range
+                    var lastPad = len - streamLen;
+                    if (lastPad > 0)
+                    {
+                        appendData(new byte[lastPad]);
                     }
                 }
-                // last padding range
-                var lastPad = len - streamLen;
-                if (lastPad > 0)
+                else if (len < streamLen)
                 {
-                    appendData(new byte[lastPad]);
-                }
-                streamLen = len;
-                streamPos = oldPos;
-            }
-            else if (len < streamLen)
-            {
-                var blockCount = len / blockSize;
-                var blockEnd = blockCount * blockSize;
-                var padSize = len - blockEnd;
-                byte[] padBuff = null;
-                if (padSize > 0)
-                {
-                    padBuff = new byte[padSize];
-                    streamPos = blockEnd;
-                    this.readExact(padBuff);
-                }
-                fs.SetLength(headSize + blockCount * packSize);
-                if (padBuff != null)
-                {
+                    var blockCount = len / blockSize;
+                    var blockEnd = blockCount * blockSize;
+                    var padSize = len - blockEnd;
+                    byte[] padBuff = null;
+                    if (padSize > 0)
+                    {
+                        padBuff = new byte[padSize];
+                        streamPos = blockEnd;
+                        this.readExact(padBuff);
+                    }
+                    fs.SetLength(headSize + blockCount * packSize);
                     streamLen = blockEnd;
-                    appendData(padBuff);
+                    if (padBuff != null)
+                    {
+                        appendData(padBuff);
+                    }
                 }
-                streamLen = len;
+            }
+            finally
+            {
                 streamPos = oldPos.min(streamLen);
             }
         }
@@ -341,8 +340,7 @@ namespace util.rep.aead
         public override void Flush() => fs.Flush();
         public override void Close()
         {
-            fs?.Close();
-            fs = null;
+            this.free(ref fs);
         }
 
         public class PackCrypt
@@ -379,6 +377,7 @@ namespace util.rep.aead
                 if (cipherLen == fs.packSize
                     && cipher.allZero(cipherOff, cipherLen))
                 {
+                    new {f="dec all zero", cipherOff, cipherLen }.msgj();
                     Buffer.BlockCopy(cipher, cipherOff,
                                     plain, plainOff,
                                     cipherLen - fs.tagSize);

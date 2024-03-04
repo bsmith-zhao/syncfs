@@ -17,7 +17,7 @@ namespace test
         {
             using (rep)
             {
-                rep.open();
+                //rep.open();
 
                 fileTest("f");
                 fileTest("x/y/z");
@@ -64,7 +64,7 @@ namespace test
 
             $"addFile: by dir path".@case();
             var dirPath = path + "-dir";
-            rep.addDir(dirPath);
+            rep.createDir(dirPath);
             assertError(addFile, dirPath);
 
             $"exist: not exist".@case();
@@ -103,7 +103,7 @@ namespace test
             $"moveFile: to dir.upper/name".@case();
             noneChangeAssert(null, () =>
             {
-                var name = path.locName();
+                var name = path.pathName();
                 var newPath = path.cut(name.Length).ToUpper() + name;
                 call(rep.moveFile, path, newPath);
                 return null;
@@ -112,7 +112,7 @@ namespace test
             $"moveFile: to dir.lower/name".@case();
             noneChangeAssert(null, () =>
             {
-                var name = path.locName();
+                var name = path.pathName();
                 var newPath = path.cut(name.Length).ToLower() + name;
                 call(rep.moveFile, path, newPath);
                 return null;
@@ -120,7 +120,7 @@ namespace test
 
             $"moveFile: change name".@case();
             {
-                var newPath = path + path.locName();
+                var newPath = path + path.pathName();
                 call(rep.moveFile, path, newPath);
                 notExistAssert(path);
                 fileExistAssert(newPath);
@@ -129,7 +129,7 @@ namespace test
 
             $"moveFile: to name.upper".@case();
             {
-                var name = path.locName();
+                var name = path.pathName();
                 var newPath = path.cut(name.Length) + name.ToUpper();
                 call(rep.moveFile, path, newPath);
                 getFileAssert(path, newPath);
@@ -138,7 +138,7 @@ namespace test
 
             $"moveFile: to name.lower".@case();
             {
-                var name = path.locName();
+                var name = path.pathName();
                 var newPath = path.cut(name.Length) + name.ToLower();
                 call(rep.moveFile, path, newPath);
                 getFileAssert(path, newPath);
@@ -167,7 +167,7 @@ namespace test
 
             $"moveFile: to sub".@case();
             {
-                var newPath = path + "/" + path.locName() + "-na";
+                var newPath = path + "/" + path.pathName() + "-na";
                 assertError(rep.moveFile, path, newPath);
             }
 
@@ -184,7 +184,7 @@ namespace test
 
         void addFile(string path)
         {
-            using (var fout = rep.addFile(path)) { }
+            using (var fout = rep.createFile(path)) { }
         }
 
         void readFile(string path)

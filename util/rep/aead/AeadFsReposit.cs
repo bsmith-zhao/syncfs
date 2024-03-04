@@ -160,43 +160,8 @@ namespace util.rep.aead
                                     FileMode.CreateNew,
                                     FileAccess.ReadWrite,
                                     FileShare.Read | FileShare.Delete,
-                                    conf.packSize()), conf)
-                                    .create();
+                                    conf.packSize()), conf, create: true);
         }
-
-        //public override Stream writeFile(string path)
-        //{
-        //    if (locateToFile(path, out var encFile) == false)
-        //        throw new Error(this, "FileNotExist", path);
-
-        //    var encPath = encFile.FullName;
-        //    return new AeadFsStream
-        //    {
-        //        fs = new FileStream(encPath,
-        //                            FileMode.Open,
-        //                            FileAccess.ReadWrite,
-        //                            FileShare.Read | FileShare.Delete,
-        //                            conf.packSize()),
-        //        conf = conf,
-        //    }.open();
-        //}
-
-        //public override Stream readFile(string path)
-        //{
-        //    if (locateToFile(path, out var encFile) == false)
-        //        throw new Error(this, "FileNotExist", path);
-
-        //    var encPath = encFile.FullName;
-        //    return new AeadFsStream
-        //    {
-        //        fs = new FileStream(encPath, 
-        //                            FileMode.Open, 
-        //                            FileAccess.Read,
-        //                            FileShare.ReadWrite | FileShare.Delete,
-        //                            conf.packSize()),
-        //        conf = conf,
-        //    }.open();
-        //}
 
         protected override Stream openFile(string path, bool write)
         {
@@ -207,8 +172,7 @@ namespace util.rep.aead
                                     FileMode.Open,
                                     fileAccess(write),
                                     fileShare(write),
-                                    conf.packSize()), conf)
-                                    .open();
+                                    conf.packSize()), conf, create: false);
         }
 
         string encryptName(string name)

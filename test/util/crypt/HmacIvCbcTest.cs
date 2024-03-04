@@ -45,7 +45,7 @@ namespace util.crypt
             var c = macCbc.encrypt(d);
             c.showB64(nameof(c));
 
-            var b = macCbc.decrypt(c);
+            var b = macCbc.decrypt(c, false);
             b.showHex(nameof(b));
 
             assert(b.utf8() == s);

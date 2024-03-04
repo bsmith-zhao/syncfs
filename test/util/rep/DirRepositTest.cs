@@ -13,12 +13,12 @@ namespace test
     {
         public override void test()
         {
-            var dir = @"C:\test\dir.test".locUnify();
+            var dir = @"C:\test\dir.test".pathUnify();
             if(Directory.Exists(dir))
                 Directory.Delete(dir, true);
             Directory.CreateDirectory(dir);
 
-            var rep = new DirReposit(dir);
+            var rep = new NormalDirReposit(dir);
             new RepositTest
             {
                 rep = rep

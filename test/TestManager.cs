@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Reflection;
 using System.Windows.Forms;
 using util;
 using util.ext;
@@ -11,6 +12,13 @@ namespace test
     {
         private void TestManager_Load(object sender, EventArgs e)
         {
+            var it = typeof(ITest);
+            Assembly.GetExecutingAssembly().GetTypes().each(t => 
+            {
+                if (it.IsAssignableFrom(t) && it != t)
+                    addTest(t);
+            });
+
             treeUI.ExpandAll();
         }
 
@@ -53,7 +61,7 @@ namespace test
         List<TreeNode> getTests()
         {
             var tests = new List<TreeNode>();
-            treeUI.each(tn =>
+            treeUI.Nodes.conv<TreeNode>().each(tn =>
             {
                 if (tn.Checked && tn.Tag is Type)
                 {
@@ -75,7 +83,7 @@ namespace test
         {
             if (thd.isActive())
             {
-                $"test thread is running!!".msg();
+                $"Test thread is running!!".msg();
                 return;
             }
 
@@ -87,26 +95,22 @@ namespace test
                     if (!(tn.Tag is Type cls))
                         continue;
 
-                    $"\r\n<test>{cls.FullName}".msg();
+                    new { cls.FullName }.msgj();
 
-                    var func = cls.GetMethod("test");
-                    if (null == func)
-                        throw new Exception($"no test func in {cls.FullName}");
-
-                    var obj = cls.@new();
-                    func.Invoke(obj, null);
+                    var obj = cls.@new() as ITest;
+                    obj.test();
                 }
             },
             err =>
             {
-                if (null != err)
+                if (err != null)
                 {
-                    $"\r\n[{DateTime.Now}]<fail>{err.Message}\r\n{err.StackTrace}".msg();
+                    $"[{DateTime.Now}]<fail>{err.Message}\r\n{err.StackTrace}".msg();
                     if (null != err.InnerException)
                         $"<inner>{err.InnerException}".msg();
                 }
                 else
-                    $"\r\n[{DateTime.Now}]<pass>".msg();
+                    $"[{DateTime.Now}]<success>".msg();
             });
         }
 
