@@ -1,0 +1,415 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A5BF82E2-4729-4632-9CB0-A76259479598}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>sync.mgr</RootNamespace>
+    <AssemblyName>sync-mgr</AssemblyName>
+    <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\bin\</OutputPath>
+    <DefineConstants>
+    </DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="app\conf\MountConf.cs" />
+    <Compile Include="app\conf\AppOption.cs" />
+    <Compile Include="app\conf\AeadRepConf.cs" />
+    <Compile Include="app\conf\CompareConf.cs" />
+    <Compile Include="app\conf\DirRepConf.cs" />
+    <Compile Include="app\conf\FilterConf.cs" />
+    <Compile Include="app\conf\HashConf.cs" />
+    <Compile Include="app\conf\BackupConf.cs" />
+    <Compile Include="app\conf\RepConf.cs" />
+    <Compile Include="app\conf\ViewConf.cs" />
+    <Compile Include="app\SyncItem.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="sync\SyncEx.cs" />
+    <Compile Include="work\WorkItem.cs" />
+    <Compile Include="link\action\BaseAction.cs" />
+    <Compile Include="link\action\EditLabelAction.cs" />
+    <Compile Include="link\action\MoveAction.cs" />
+    <Compile Include="link\LinkViewApi.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="link\LinkViewGraph.cs" />
+    <Compile Include="link\LinkViewEx.cs" />
+    <Compile Include="link\LinkView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="link\func\IEditLabel.cs" />
+    <Compile Include="link\func\IHitable.cs" />
+    <Compile Include="link\func\ILine.cs" />
+    <Compile Include="link\func\IMovable.cs" />
+    <Compile Include="link\func\IPickable.cs" />
+    <Compile Include="link\item\DrawArgs.cs" />
+    <Compile Include="link\item\ILink.cs" />
+    <Compile Include="link\item\INode.cs" />
+    <Compile Include="link\item\Item.cs" />
+    <Compile Include="link\item\Label.cs" />
+    <Compile Include="link\item\Line.cs" />
+    <Compile Include="link\item\LineFrame.cs" />
+    <Compile Include="link\item\LineLink.cs" />
+    <Compile Include="link\item\Link.cs" />
+    <Compile Include="link\item\RectAnchor.cs" />
+    <Compile Include="link\item\RectFrame.cs" />
+    <Compile Include="link\item\RectItem.cs" />
+    <Compile Include="link\item\RectNode.cs" />
+    <Compile Include="rep\Backup.cs" />
+    <Compile Include="rep\Filter.cs" />
+    <Compile Include="rep\SyncReposit.cs" />
+    <Compile Include="rep\View.cs" />
+    <Compile Include="rep\ViewDirNode.cs" />
+    <Compile Include="sync\TransSumPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="sync\TransSumPanel.Designer.cs">
+      <DependentUpon>TransSumPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sync\TransSummary.cs" />
+    <Compile Include="ui\SyncManagerTag.cs" />
+    <Compile Include="ui\ArgsConf.cs" />
+    <Compile Include="app\conf\SpaceConf.cs" />
+    <Compile Include="ui\RepManager.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ui\RepManager.Designer.cs">
+      <DependentUpon>RepManager.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ui\ViewPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ui\ViewPanel.Designer.cs">
+      <DependentUpon>ViewPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ui\SyncManagerEx.cs" />
+    <Compile Include="ui\TransferDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ui\TransferDialog.Designer.cs">
+      <DependentUpon>TransferDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ui\OptionDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ui\OptionDialog.designer.cs">
+      <DependentUpon>OptionDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ui\SyncManager.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ui\SyncManager.Designer.cs">
+      <DependentUpon>SyncManager.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ui\ViewBrowser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ui\ViewBrowser.Designer.cs">
+      <DependentUpon>ViewBrowser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="sync\Compare.cs" />
+    <Compile Include="sync\DirDiff.cs" />
+    <Compile Include="sync\DirDiffLogic.cs" />
+    <Compile Include="sync\RoundDiff.cs" />
+    <Compile Include="sync\RoundDiffLogic.cs" />
+    <Compile Include="sync\RoundSync.cs" />
+    <Compile Include="sync\Transfer.cs" />
+    <Compile Include="ui\WorkRunner.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ui\WorkRunner.Designer.cs">
+      <DependentUpon>WorkRunner.cs</DependentUpon>
+    </Compile>
+    <Compile Include="work\Worker.cs" />
+    <Compile Include="work\Logic.cs" />
+    <Compile Include="work\Agent.cs" />
+    <Compile Include="hash\Hash.cs" />
+    <Compile Include="hash\ComputeHashLogic.cs" />
+    <Compile Include="hash\HashItem.cs" />
+    <Compile Include="sync\DirAdjust.cs" />
+    <Compile Include="sync\DirAdjustLogic.cs" />
+    <Compile Include="hash\ComputeHash.cs" />
+    <Compile Include="sync\FileDiffLogic.cs" />
+    <Compile Include="sync\FileDiff.cs" />
+    <Compile Include="sync\MasterSync.cs" />
+    <Compile Include="ui\BatchRunner.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ui\BatchRunner.Designer.cs">
+      <DependentUpon>BatchRunner.cs</DependentUpon>
+    </Compile>
+    <Compile Include="app\conf\SyncConf.cs" />
+    <Compile Include="sync\ConsistCheckLogic.cs" />
+    <Compile Include="sync\ConsistCheck.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="work\Work.cs" />
+    <Compile Include="sync\FileTransfer.cs" />
+    <Compile Include="sync\FileTransferLogic.cs" />
+    <Compile Include="app\App.cs" />
+    <EmbeddedResource Include="link\LinkView.resx">
+      <DependentUpon>LinkView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="sync\TransSumPanel.resx">
+      <DependentUpon>TransSumPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ui\RepManager.resx">
+      <DependentUpon>RepManager.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ui\ViewPanel.resx">
+      <DependentUpon>ViewPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ui\TransferDialog.resx">
+      <DependentUpon>TransferDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ui\OptionDialog.resx">
+      <DependentUpon>OptionDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ui\SyncManager.resx">
+      <DependentUpon>SyncManager.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ui\ViewBrowser.resx">
+      <DependentUpon>ViewBrowser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ui\WorkRunner.resx">
+      <DependentUpon>WorkRunner.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ui\BatchRunner.resx">
+      <DependentUpon>BatchRunner.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="app.manifest" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>13.0.3</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.6.1 %28x86 和 x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\util\util.csproj">
+      <Project>{6dee4979-4c60-459c-b8b7-163062381e13}</Project>
+      <Name>util</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\vfs\vfs.csproj">
+      <Project>{c527e26d-73cf-4d63-9c58-fffdaeeb35ba}</Project>
+      <Name>vfs</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CreateView.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Delete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Dir.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Down.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\EditLabel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\EvalTime.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\File.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\LinkView.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ManageFiles.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\MasterSync.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Mount.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\NormalDir96.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\OpenDir.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\OpenDirColor.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Option.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PasteArgs.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Refresh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Reset.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\RoundSync.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Run.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\RunColor.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SetPwd.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SpaceClose.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SpaceOpen.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SpreadArgs.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Stop.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\StopColor.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Unmount.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Up.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\UpLevel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\View80.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AddAeadFS.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AddNormalDir.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AddSpace.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AeadFS96.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BatchRun.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BrowseFiles.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CopyArgs.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ImportFile.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ExportFile.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Language.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

@@ -1,0 +1,193 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6DEE4979-4C60-459C-B8B7-163062381E13}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>util</RootNamespace>
+    <AssemblyName>util</AssemblyName>
+    <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\bin\</OutputPath>
+    <DefineConstants>
+    </DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BytesListBuffer.cs" />
+    <Compile Include="crypt\AeadCrypt.cs" />
+    <Compile Include="crypt\sodium\AesGcm12.cs" />
+    <Compile Include="crypt\sodium\Api32.cs" />
+    <Compile Include="crypt\sodium\Api64.cs" />
+    <Compile Include="crypt\sodium\Argon2id.cs" />
+    <Compile Include="crypt\sodium\SodiumAeadCrypt.cs" />
+    <Compile Include="crypt\sodium\XChaCha20Poly1305.cs" />
+    <Compile Include="crypt\sodium\ChaCha20Poly1305.cs" />
+    <Compile Include="crypt\DirCrypt.cs" />
+    <Compile Include="crypt\KeyDerive.cs" />
+    <Compile Include="crypt\PwdDerive.cs" />
+    <Compile Include="crypt\PackCrypt.cs" />
+    <Compile Include="crypt\sodium\Api.cs" />
+    <Compile Include="ext\DescEx.cs" />
+    <Compile Include="ext\DrawEx.cs" />
+    <Compile Include="ext\ExceptionEx.cs" />
+    <Compile Include="Bool.cs" />
+    <Compile Include="ext\ImageListEx.cs" />
+    <Compile Include="option\AeadFsOption.cs" />
+    <Compile Include="option\Argon2idOption.cs" />
+    <Compile Include="option\PBKDF2Option.cs" />
+    <Compile Include="prop\DescRefer.cs" />
+    <Compile Include="PwdDialogEx.cs" />
+    <Compile Include="rep\aead\AeadFsConf.cs" />
+    <Compile Include="rep\aead\AeadFsReposit.cs" />
+    <Compile Include="rep\aead\AeadFsStream.cs" />
+    <Compile Include="rep\DirItemEx.cs" />
+    <Compile Include="rep\FileItem.cs" />
+    <Compile Include="rep\IDirEx.cs" />
+    <Compile Include="rep\ILocalDirReposit.cs" />
+    <Compile Include="rep\NormalDirReposit.cs" />
+    <Compile Include="rep\IDir.cs" />
+    <Compile Include="rep\DirItem.cs" />
+    <Compile Include="rep\LocalDirItem.cs" />
+    <Compile Include="rep\LocalDirReposit.cs" />
+    <Compile Include="rep\RepItem.cs" />
+    <Compile Include="rep\Reposit.cs" />
+    <Compile Include="rep\RepType.cs" />
+    <Compile Include="Try.cs" />
+    <Compile Include="ext\IEnumerableEx.cs" />
+    <Compile Include="ext\FileSystemEx.cs" />
+    <Compile Include="ext\ProcessEx.cs" />
+    <Compile Include="ext\ThreadEx.cs" />
+    <Compile Include="crypt\HKDF.cs" />
+    <Compile Include="FileLogger.cs" />
+    <Compile Include="Log.cs" />
+    <Compile Include="Map.cs" />
+    <Compile Include="Member.cs" />
+    <Compile Include="PickDirDialog.cs" />
+    <Compile Include="prop\ArrayProp.cs" />
+    <Compile Include="prop\ByteSize.cs" />
+    <Compile Include="prop\EditByWheel.cs" />
+    <Compile Include="prop\ExpandProp.cs" />
+    <Compile Include="prop\IDynamicConf.cs" />
+    <Compile Include="prop\RangeLimit.cs" />
+    <Compile Include="prop\PropDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="prop\PropDialog.designer.cs">
+      <DependentUpon>PropDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="prop\UnifyPath.cs" />
+    <Compile Include="EventAgent.cs" />
+    <Compile Include="Test.cs" />
+    <Compile Include="crypt\AesCtr.cs" />
+    <Compile Include="crypt\AesEme.cs" />
+    <Compile Include="crypt\AesEx.cs" />
+    <Compile Include="crypt\HashEx.cs" />
+    <Compile Include="crypt\HmacIvCbc.cs" />
+    <Compile Include="crypt\WinProtect.cs" />
+    <Compile Include="Dialog.cs" />
+    <Compile Include="Error.cs" />
+    <Compile Include="ext\ColorEx.cs" />
+    <Compile Include="ext\ControlEx.cs" />
+    <Compile Include="Theme.cs" />
+    <Compile Include="ext\DragDropEx.cs" />
+    <Compile Include="ext\FileEx.cs" />
+    <Compile Include="ext\ListEx.cs" />
+    <Compile Include="ext\ListViewEx.cs" />
+    <Compile Include="ext\TextBoxEx.cs" />
+    <Compile Include="ext\ToolStripEx.cs" />
+    <Compile Include="ext\TreeViewEnhance.cs" />
+    <Compile Include="ext\TreeViewEx.cs" />
+    <Compile Include="Msg.cs" />
+    <Compile Include="prop\PropGridEx.cs" />
+    <Compile Include="PwdDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PwdDialog.designer.cs">
+      <DependentUpon>PwdDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ext\StreamEx.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="ext\FormEx.cs" />
+    <Compile Include="KV.cs" />
+    <Compile Include="ext\PathEx.cs" />
+    <Compile Include="Counter.cs" />
+    <Compile Include="Debug.cs" />
+    <Compile Include="prop\DirPicker.cs" />
+    <Compile Include="ext\ArrayEx.cs" />
+    <Compile Include="ext\MapEx.cs" />
+    <Compile Include="ext\StringEx.cs" />
+    <Compile Include="JSON.cs" />
+    <Compile Include="Lang.cs" />
+    <Compile Include="LDMarker.cs" />
+    <Compile Include="Bytes.cs" />
+    <Compile Include="Number.cs" />
+    <Compile Include="ext\ObjectEx.cs" />
+    <Compile Include="Permutate.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="prop\PwdView.cs" />
+    <Compile Include="ext\TimeEx.cs" />
+    <Compile Include="Status.cs" />
+    <Compile Include="TestEx.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="prop\PropDialog.resx">
+      <DependentUpon>PropDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PwdDialog.resx">
+      <DependentUpon>PwdDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>13.0.3</Version>
+    </PackageReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
