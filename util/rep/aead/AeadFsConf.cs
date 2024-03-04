@@ -74,7 +74,8 @@ namespace util.rep.aead
             return aead.setKey(pkey);
         }
 
-        KeyDerive kdf;
+        KeyDerive _kdf;
+        KeyDerive kdf => _kdf ?? (_kdf = newKdf());
         KeyDerive newKdf()
         {
             switch (KeyDerive)
@@ -86,10 +87,7 @@ namespace util.rep.aead
         }
         
         public byte[] deriveKey(byte[] ctx, int size)
-            => (kdf ?? (kdf = newKdf())).derive(mkey, ctx, size);
-
-        //public byte[] deriveDataKey(byte[] ctx)
-        //    => deriveKey(ctx, aead.KeySize);
+            => kdf.derive(mkey, ctx, size);
 
         public DirCrypt newDirCrypt(byte[] ctx)
         {

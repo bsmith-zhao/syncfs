@@ -333,7 +333,7 @@ namespace vfs
                     {
                         fs.Position = fs.Length;
                         byte[] pad = new byte[off-fs.Length];
-                        fs.Write(pad, 0, pad.Length);
+                        fs.write(pad);
                     }
                     fs.Position = off;
                 }
@@ -425,11 +425,14 @@ namespace vfs
             try
             {
                 FileDesc fd = (FileDesc)desc;
-                var fs = fd.openWrite();
-                if (!setAllocSize || fs.Length > (long)newSize)
+                
+                if (!setAllocSize)
                 {
-                    fs.SetLength((long)newSize);
+                    var fs = fd.openWrite();
+                    if (fs.Length > (long)newSize)
+                        fs.SetLength((long)newSize);
                 }
+
                 return fd.getInfo(out info);
             }
             catch (Exception err)
@@ -437,17 +440,6 @@ namespace vfs
                 trace(err, "SetFileSize");
                 throw;
             }
-
-            //fd.openFile(rep);
-            //if (!setAlloc || (UInt64)fd.data.Length > newSize)
-            //{
-            //    /*
-            //     * "FileInfo.FileSize > NewSize" explanation:
-            //     * Ptfs does not support allocation size. However if the new AllocationSize
-            //     * is less than the current FileSize we must truncate the file.
-            //     */
-            //    //fd.data.SetLength((Int64)newSize);
-            //}
         }
 
         public override Int32 CanDelete(
