@@ -1,2 +1,2 @@
 # syncfs
-Synchronized File System
+Synchronize File System
