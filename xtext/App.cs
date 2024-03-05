@@ -17,8 +17,8 @@ namespace xtext
 
     public class AppOption
     {
-        public ExtendTextOption TextFile { get; set; } 
-            = new ExtendTextOption();
+        public TextFileOption TextFile { get; set; } 
+            = new TextFileOption();
 
         public PwdDeriveOption PwdDerive { get; set; }
             = new PwdDeriveOption();

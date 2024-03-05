@@ -9,6 +9,12 @@ namespace util.ext
 {
     public static class IEnumerableEx
     {
+        public static IEnumerable<int> count(this int max)
+        {
+            for (int i = 0; i < max; i++)
+                yield return i;
+        }
+
         public static IEnumerable<T> usable<T>(this IEnumerable<T> iter)
             => iter ?? Enumerable.Empty<T>();
 

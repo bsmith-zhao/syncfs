@@ -61,6 +61,7 @@
     <Compile Include="demo\crypt\CtrGcmSpeedDemo.cs" />
     <Compile Include="demo\crypt\HashFileDemo.cs" />
     <Compile Include="demo\crypt\HmacThreadsSpeed.cs" />
+    <Compile Include="demo\WelfareLottery.cs" />
     <Compile Include="ITest.cs" />
     <Compile Include="util\crypt\AesEmeTest.cs" />
     <Compile Include="demo\crypt\AesEME.cs" />

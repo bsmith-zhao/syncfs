@@ -11,7 +11,7 @@ using util.ext;
 namespace xtext
 {
     [TypeConverter(typeof(ExpandProp))]
-    public class ExtendTextOption
+    public class TextFileOption
     {
         PwdDeriveType[] kgs = { PwdDeriveType.PBKDF2, PwdDeriveType.Argon2id };
         [TypeConverter(typeof(ArrayProp))]
