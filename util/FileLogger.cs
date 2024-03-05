@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using util.ext;
 
 namespace util
@@ -13,7 +12,8 @@ namespace util
     {
         StreamWriter writer;
 
-        public FileLogger(string path = null, 
+        public FileLogger(string path = null,
+            Action<Exception> error = null,
             int maxSize = 5 * 1024 * 1024)
         {
             try
@@ -33,8 +33,7 @@ namespace util
             }
             catch (Exception err)
             {
-                MessageBox.Show($"Fail to open log [{path}]: {err.Message}",
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                error?.Invoke(err);
             }
         }
 

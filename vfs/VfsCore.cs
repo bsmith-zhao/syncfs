@@ -209,7 +209,7 @@ namespace vfs
         }
 
         void trace(Exception err, string func)
-            => new { f = func, err = err.Message, mount}.msgj();
+            => $"<{func}>{err.Message}".log();
 
         public override void Cleanup(
             Object node,

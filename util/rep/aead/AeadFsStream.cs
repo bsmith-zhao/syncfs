@@ -341,7 +341,7 @@ namespace util.rep.aead
         }
 
         byte[] mergeNonce(long packIdx)
-            => (counter + packIdx).copyTo(nonce, nonce.Length - 8);
+            => (counter + packIdx).copyTo(nonce, -8);
 
         byte[] aad = new byte[8];
         byte[] attachData(long packIdx)

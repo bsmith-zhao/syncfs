@@ -48,7 +48,7 @@ namespace vfs
                 proc = p;
                 before?.Invoke(p);
             }, after: after,
-            stdout: (str) => 
+            stdout: str => 
             {
                 if (str.StartsWith(PubKey))
                 {
@@ -60,7 +60,14 @@ namespace vfs
                 }
                 else
                     stdout?.Invoke(str);
-            }, stderr: stderr);
+            }, stderr: err => 
+            {
+                if (stderr != null)
+                {
+                    err = this.trygetQuiet(err.obj<ErrorJson>).str() ?? err;
+                    stderr?.Invoke(err);
+                }
+            });
         }
     }
 }

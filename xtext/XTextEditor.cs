@@ -179,8 +179,8 @@ namespace xtext
                 pwd = p;
             }
 
-            var conf = App.Option.ExtendText.createText();
-            var pds = App.Option.PwdDerive.newPwdDerives(App.Option.ExtendText.PwdDerives);
+            var conf = App.Option.TextFile.createText();
+            var pds = App.Option.PwdDerive.newPwdDerives(App.Option.TextFile.PwdDerives);
 
             conf.setData(textUI.Text.utf8());
 
@@ -222,7 +222,7 @@ namespace xtext
                 {
                     var key = "123abc".utf8();
                     var args = dlg.getArgs<AppOption>();
-                    args.PwdDerive.newPwdDerives(args.ExtendText.PwdDerives)
+                    args.PwdDerive.newPwdDerives(args.TextFile.PwdDerives)
                     .each(kg => key = kg.deriveKey(key, 32));
                 });
             });

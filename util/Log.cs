@@ -12,6 +12,9 @@ namespace util
     {
         public static LogOutput output;
 
+        public static void log(this object src)
+            => output?.Invoke($"[{DateTime.Now}]{src}");
+
         public static void log(this Exception err)
             => output?.Invoke($"[{DateTime.Now}]{err.Message}", 
                 err.StackTrace);

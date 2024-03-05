@@ -240,6 +240,4 @@ RoundSync.FileMoveConfuses =
 RoundSync.FileNameConflicts = 
 RoundSync.DirMoveConfuses = 
 
-VfsDrive.MountExist = [{0}] Mount path Exist!
-VfsDrive.MountFail = Mount Fail by code: {0}
-VfsDrive.Error = Mount Error: {0}
+VfsService.PathExist = Mount failed, path [{0}] alread exist!

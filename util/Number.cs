@@ -100,6 +100,8 @@ namespace util
         public static unsafe byte[] copyTo(this long value, 
             byte[] dst, int dstOff = 0)
         {
+            if (dstOff < 0)
+                dstOff = dst.Length + dstOff;
             fixed (byte* p = dst)
             {
                 *((long*)(p + dstOff)) = value;
