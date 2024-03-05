@@ -10,7 +10,7 @@ using util.rep.aead;
 
 namespace xtext
 {
-    public class ExtendText
+    public class TextFile
     {
         public const string FileType = "xtext";
         public const int MaxVersion = 1;
@@ -25,13 +25,13 @@ namespace xtext
         public byte[] Nonce;
         public byte[] Cipher;
 
-        public static ExtendText load(string path)
+        public static TextFile load(string path)
         {
             if (!path.fileExist())
                 return null;
-            var txt = path.readText().obj<ExtendText>();
+            var txt = path.readText().obj<TextFile>();
             if (txt.Type != FileType)
-                throw new Error<ExtendText>("InvalidType", txt.Type);
+                throw new Error<TextFile>("InvalidType", txt.Type);
             if (txt.Version > MaxVersion)
                 throw new Error<AeadFsConf>("InvalidVersion",
                     txt.Version, MaxVersion);
@@ -75,7 +75,7 @@ namespace xtext
             json.bakSaveTo(path);
         }
 
-        public ExtendText encrypt(byte[] pwd)
+        public TextFile encrypt(byte[] pwd)
         {
             Nonce = aead.NonceSize.aesRnd();
             Cipher = new byte[data.Length + aead.TagSize];

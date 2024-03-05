@@ -1,6 +1,6 @@
 ﻿namespace xtext
 {
-    partial class TextForm
+    partial class TextEditor
     {
         /// <summary>
         /// 必需的设计器变量。
@@ -51,9 +51,9 @@
             this.saveBtn,
             this.saveAsBtn,
             this.setPwdBtn});
-            this.toolbar.Location = new System.Drawing.Point(5, 5);
+            this.toolbar.Location = new System.Drawing.Point(0, 0);
             this.toolbar.Name = "toolbar";
-            this.toolbar.Size = new System.Drawing.Size(1116, 70);
+            this.toolbar.Size = new System.Drawing.Size(1126, 70);
             this.toolbar.TabIndex = 8;
             this.toolbar.Text = "toolStrip1";
             // 
@@ -75,6 +75,7 @@
             this.newBtn.Size = new System.Drawing.Size(71, 67);
             this.newBtn.Text = "New";
             this.newBtn.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.newBtn.Click += new System.EventHandler(this.newBtn_Click);
             // 
             // openBtn
             // 
@@ -114,38 +115,39 @@
             this.setPwdBtn.Size = new System.Drawing.Size(104, 67);
             this.setPwdBtn.Text = "SetPwd";
             this.setPwdBtn.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.setPwdBtn.Click += new System.EventHandler(this.setPwdBtn_Click);
             // 
             // textUI
             // 
             this.textUI.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textUI.Location = new System.Drawing.Point(5, 75);
+            this.textUI.Location = new System.Drawing.Point(0, 70);
             this.textUI.Multiline = true;
             this.textUI.Name = "textUI";
             this.textUI.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textUI.Size = new System.Drawing.Size(814, 541);
+            this.textUI.Size = new System.Drawing.Size(824, 551);
             this.textUI.TabIndex = 9;
             // 
             // msgUI
             // 
             this.msgUI.Dock = System.Windows.Forms.DockStyle.Right;
-            this.msgUI.Location = new System.Drawing.Point(829, 75);
+            this.msgUI.Location = new System.Drawing.Point(834, 70);
             this.msgUI.Multiline = true;
             this.msgUI.Name = "msgUI";
             this.msgUI.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.msgUI.Size = new System.Drawing.Size(292, 541);
+            this.msgUI.Size = new System.Drawing.Size(292, 551);
             this.msgUI.TabIndex = 10;
             // 
             // splitUI
             // 
             this.splitUI.Cursor = System.Windows.Forms.Cursors.SizeWE;
             this.splitUI.Dock = System.Windows.Forms.DockStyle.Right;
-            this.splitUI.Location = new System.Drawing.Point(819, 75);
+            this.splitUI.Location = new System.Drawing.Point(824, 70);
             this.splitUI.Name = "splitUI";
-            this.splitUI.Size = new System.Drawing.Size(10, 541);
+            this.splitUI.Size = new System.Drawing.Size(10, 551);
             this.splitUI.TabIndex = 11;
             this.splitUI.TabStop = false;
             // 
-            // TextForm
+            // TextEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -154,8 +156,8 @@
             this.Controls.Add(this.splitUI);
             this.Controls.Add(this.msgUI);
             this.Controls.Add(this.toolbar);
-            this.Name = "TextForm";
-            this.Text = "ExtendText";
+            this.Name = "TextEditor";
+            this.Text = "TextEditor";
             this.Load += new System.EventHandler(this.NoteForm_Load);
             this.toolbar.ResumeLayout(false);
             this.toolbar.PerformLayout();

@@ -54,18 +54,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.cs" />
-    <Compile Include="ExtendText.cs" />
     <Compile Include="ExtendTextOption.cs" />
-    <Compile Include="TextForm.cs">
+    <Compile Include="TextFile.cs" />
+    <Compile Include="TextEditor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TextForm.Designer.cs">
-      <DependentUpon>TextForm.cs</DependentUpon>
+    <Compile Include="TextEditor.Designer.cs">
+      <DependentUpon>TextEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="TextForm.resx">
-      <DependentUpon>TextForm.cs</DependentUpon>
+    <EmbeddedResource Include="TextEditor.resx">
+      <DependentUpon>TextEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

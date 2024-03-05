@@ -18,7 +18,7 @@ namespace xtext
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            new TextForm().launch();
+            new TextEditor().launch();
         }
     }
 }

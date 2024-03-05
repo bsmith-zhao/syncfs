@@ -32,11 +32,11 @@ namespace xtext
         public AeadCryptType DataCrypt { get; set; }
             = AeadCryptType.XChaCha20Poly1305;
 
-        public ExtendText createText()
-            => new ExtendText
+        public TextFile createText()
+            => new TextFile
             {
-                Type = ExtendText.FileType,
-                Version = ExtendText.MaxVersion,
+                Type = TextFile.FileType,
+                Version = TextFile.MaxVersion,
                 KeyDerive = KeyDerive,
                 DataCrypt = DataCrypt,
             };
