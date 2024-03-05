@@ -56,16 +56,16 @@
     <Compile Include="App.cs" />
     <Compile Include="ExtendTextOption.cs" />
     <Compile Include="TextFile.cs" />
-    <Compile Include="TextEditor.cs">
+    <Compile Include="XTextEditor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TextEditor.Designer.cs">
-      <DependentUpon>TextEditor.cs</DependentUpon>
+    <Compile Include="XTextEditor.Designer.cs">
+      <DependentUpon>XTextEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="TextEditor.resx">
-      <DependentUpon>TextEditor.cs</DependentUpon>
+    <EmbeddedResource Include="XTextEditor.resx">
+      <DependentUpon>XTextEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

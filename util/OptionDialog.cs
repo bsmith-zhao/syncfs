@@ -83,7 +83,7 @@ namespace util
 
         private void openDirBtn_Click(object sender, EventArgs e)
         {
-            Path.pathDir().dirOpen();
+            this.trydo(Path.pathDir().dirOpen);
         }
     }
 }
