@@ -45,12 +45,12 @@
             // 
             this.toolbar.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.toolbar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.optionBtn,
             this.newBtn,
             this.openBtn,
             this.saveBtn,
             this.saveAsBtn,
-            this.setPwdBtn});
+            this.setPwdBtn,
+            this.optionBtn});
             this.toolbar.Location = new System.Drawing.Point(0, 0);
             this.toolbar.Name = "toolbar";
             this.toolbar.Size = new System.Drawing.Size(1126, 70);

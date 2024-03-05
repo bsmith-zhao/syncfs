@@ -38,14 +38,14 @@
             this.typeHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.sourceHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.toolbar = new System.Windows.Forms.ToolStrip();
+            this.languageBtn = new System.Windows.Forms.ToolStripDropDownButton();
+            this.optionBtn = new System.Windows.Forms.ToolStripButton();
+            this.addAeadFSBtn = new System.Windows.Forms.ToolStripButton();
             this.mountBtn = new System.Windows.Forms.ToolStripButton();
             this.unmountBtn = new System.Windows.Forms.ToolStripButton();
             this.openDirBtn = new System.Windows.Forms.ToolStripButton();
-            this.addAeadFSBtn = new System.Windows.Forms.ToolStripButton();
             this.deleteBtn = new System.Windows.Forms.ToolStripButton();
             this.modifyPwdBtn = new System.Windows.Forms.ToolStripButton();
-            this.optionBtn = new System.Windows.Forms.ToolStripButton();
-            this.languageBtn = new System.Windows.Forms.ToolStripDropDownButton();
             this.refreshBtn = new System.Windows.Forms.ToolStripButton();
             this.panel1 = new System.Windows.Forms.Panel();
             this.descSplit = new System.Windows.Forms.Splitter();
@@ -135,20 +135,49 @@
             // 
             this.toolbar.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.toolbar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.languageBtn,
-            this.optionBtn,
             this.addAeadFSBtn,
             this.mountBtn,
             this.unmountBtn,
             this.openDirBtn,
             this.deleteBtn,
             this.modifyPwdBtn,
-            this.refreshBtn});
+            this.refreshBtn,
+            this.optionBtn,
+            this.languageBtn});
             this.toolbar.Location = new System.Drawing.Point(0, 0);
             this.toolbar.Name = "toolbar";
             this.toolbar.Size = new System.Drawing.Size(1454, 70);
             this.toolbar.TabIndex = 7;
             this.toolbar.Text = "toolStrip1";
+            // 
+            // languageBtn
+            // 
+            this.languageBtn.Image = global::vfs.mgr.Properties.Resources.Language;
+            this.languageBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.languageBtn.Name = "languageBtn";
+            this.languageBtn.Size = new System.Drawing.Size(148, 67);
+            this.languageBtn.Text = "Language";
+            this.languageBtn.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            // 
+            // optionBtn
+            // 
+            this.optionBtn.Image = global::vfs.mgr.Properties.Resources.Option;
+            this.optionBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.optionBtn.Name = "optionBtn";
+            this.optionBtn.Size = new System.Drawing.Size(98, 67);
+            this.optionBtn.Text = "Option";
+            this.optionBtn.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.optionBtn.Click += new System.EventHandler(this.optionBtn_Click);
+            // 
+            // addAeadFSBtn
+            // 
+            this.addAeadFSBtn.Image = global::vfs.mgr.Properties.Resources.AddAeadFS;
+            this.addAeadFSBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.addAeadFSBtn.Name = "addAeadFSBtn";
+            this.addAeadFSBtn.Size = new System.Drawing.Size(151, 67);
+            this.addAeadFSBtn.Text = "AddAeadFS";
+            this.addAeadFSBtn.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.addAeadFSBtn.Click += new System.EventHandler(this.addAeadFSBtn_Click);
             // 
             // mountBtn
             // 
@@ -180,16 +209,6 @@
             this.openDirBtn.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.openDirBtn.Click += new System.EventHandler(this.openDirBtn_Click);
             // 
-            // addAeadFSBtn
-            // 
-            this.addAeadFSBtn.Image = global::vfs.mgr.Properties.Resources.AddAeadFS;
-            this.addAeadFSBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.addAeadFSBtn.Name = "addAeadFSBtn";
-            this.addAeadFSBtn.Size = new System.Drawing.Size(151, 67);
-            this.addAeadFSBtn.Text = "AddAeadFS";
-            this.addAeadFSBtn.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.addAeadFSBtn.Click += new System.EventHandler(this.addAeadFSBtn_Click);
-            // 
             // deleteBtn
             // 
             this.deleteBtn.Image = global::vfs.mgr.Properties.Resources.Delete;
@@ -209,25 +228,6 @@
             this.modifyPwdBtn.Text = "ModifyPwd";
             this.modifyPwdBtn.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.modifyPwdBtn.Click += new System.EventHandler(this.modifyPwdBtn_Click);
-            // 
-            // optionBtn
-            // 
-            this.optionBtn.Image = global::vfs.mgr.Properties.Resources.Option;
-            this.optionBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.optionBtn.Name = "optionBtn";
-            this.optionBtn.Size = new System.Drawing.Size(98, 67);
-            this.optionBtn.Text = "Option";
-            this.optionBtn.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.optionBtn.Click += new System.EventHandler(this.optionBtn_Click);
-            // 
-            // languageBtn
-            // 
-            this.languageBtn.Image = global::vfs.mgr.Properties.Resources.Language;
-            this.languageBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.languageBtn.Name = "languageBtn";
-            this.languageBtn.Size = new System.Drawing.Size(148, 67);
-            this.languageBtn.Text = "Language";
-            this.languageBtn.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             // 
             // refreshBtn
             // 

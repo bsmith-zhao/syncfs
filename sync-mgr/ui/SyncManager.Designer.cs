@@ -30,16 +30,6 @@ namespace sync.ui
         private void InitializeComponent()
         {
             this.toolbar = new System.Windows.Forms.ToolStrip();
-            this.treeUI = new System.Windows.Forms.TreeView();
-            this.propUI = new System.Windows.Forms.PropertyGrid();
-            this.msgUI = new System.Windows.Forms.TextBox();
-            this.splitter1 = new System.Windows.Forms.Splitter();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.descSplit = new System.Windows.Forms.Splitter();
-            this.descUI = new System.Windows.Forms.TextBox();
-            this.splitter3 = new System.Windows.Forms.Splitter();
-            this.splitter4 = new System.Windows.Forms.Splitter();
-            this.linkUI = new link.LinkView();
             this.languageBtn = new System.Windows.Forms.ToolStripDropDownButton();
             this.optionBtn = new System.Windows.Forms.ToolStripButton();
             this.upBtn = new System.Windows.Forms.ToolStripButton();
@@ -64,6 +54,16 @@ namespace sync.ui
             this.openDirBtn = new System.Windows.Forms.ToolStripButton();
             this.runBtn = new System.Windows.Forms.ToolStripButton();
             this.batchRunBtn = new System.Windows.Forms.ToolStripButton();
+            this.treeUI = new System.Windows.Forms.TreeView();
+            this.propUI = new System.Windows.Forms.PropertyGrid();
+            this.msgUI = new System.Windows.Forms.TextBox();
+            this.splitter1 = new System.Windows.Forms.Splitter();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.descSplit = new System.Windows.Forms.Splitter();
+            this.descUI = new System.Windows.Forms.TextBox();
+            this.splitter3 = new System.Windows.Forms.Splitter();
+            this.splitter4 = new System.Windows.Forms.Splitter();
+            this.linkUI = new link.LinkView();
             this.toolbar.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -72,8 +72,6 @@ namespace sync.ui
             // 
             this.toolbar.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.toolbar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.languageBtn,
-            this.optionBtn,
             this.upBtn,
             this.downBtn,
             this.addSpaceBtn,
@@ -95,122 +93,15 @@ namespace sync.ui
             this.unmountBtn,
             this.openDirBtn,
             this.runBtn,
-            this.batchRunBtn});
+            this.batchRunBtn,
+            this.optionBtn,
+            this.languageBtn});
             this.toolbar.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
             this.toolbar.Location = new System.Drawing.Point(0, 0);
             this.toolbar.Name = "toolbar";
             this.toolbar.Padding = new System.Windows.Forms.Padding(8, 6, 8, 6);
             this.toolbar.Size = new System.Drawing.Size(1611, 152);
             this.toolbar.TabIndex = 1;
-            // 
-            // treeUI
-            // 
-            this.treeUI.Dock = System.Windows.Forms.DockStyle.Left;
-            this.treeUI.Location = new System.Drawing.Point(0, 152);
-            this.treeUI.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.treeUI.Name = "treeUI";
-            this.treeUI.Size = new System.Drawing.Size(377, 663);
-            this.treeUI.TabIndex = 2;
-            // 
-            // propUI
-            // 
-            this.propUI.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.propUI.HelpVisible = false;
-            this.propUI.Location = new System.Drawing.Point(0, 0);
-            this.propUI.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.propUI.Name = "propUI";
-            this.propUI.PropertySort = System.Windows.Forms.PropertySort.NoSort;
-            this.propUI.Size = new System.Drawing.Size(376, 496);
-            this.propUI.TabIndex = 4;
-            this.propUI.ToolbarVisible = false;
-            // 
-            // msgUI
-            // 
-            this.msgUI.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.msgUI.Location = new System.Drawing.Point(387, 658);
-            this.msgUI.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.msgUI.Multiline = true;
-            this.msgUI.Name = "msgUI";
-            this.msgUI.Size = new System.Drawing.Size(838, 157);
-            this.msgUI.TabIndex = 5;
-            // 
-            // splitter1
-            // 
-            this.splitter1.Cursor = System.Windows.Forms.Cursors.SizeWE;
-            this.splitter1.Location = new System.Drawing.Point(377, 152);
-            this.splitter1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.splitter1.Name = "splitter1";
-            this.splitter1.Size = new System.Drawing.Size(10, 663);
-            this.splitter1.TabIndex = 5;
-            this.splitter1.TabStop = false;
-            // 
-            // panel1
-            // 
-            this.panel1.Controls.Add(this.propUI);
-            this.panel1.Controls.Add(this.descSplit);
-            this.panel1.Controls.Add(this.descUI);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel1.Location = new System.Drawing.Point(1235, 152);
-            this.panel1.Margin = new System.Windows.Forms.Padding(2);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(376, 663);
-            this.panel1.TabIndex = 9;
-            // 
-            // descSplit
-            // 
-            this.descSplit.Cursor = System.Windows.Forms.Cursors.SizeNS;
-            this.descSplit.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.descSplit.Location = new System.Drawing.Point(0, 496);
-            this.descSplit.Margin = new System.Windows.Forms.Padding(2);
-            this.descSplit.Name = "descSplit";
-            this.descSplit.Size = new System.Drawing.Size(376, 10);
-            this.descSplit.TabIndex = 1;
-            this.descSplit.TabStop = false;
-            // 
-            // descUI
-            // 
-            this.descUI.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.descUI.Location = new System.Drawing.Point(0, 506);
-            this.descUI.Margin = new System.Windows.Forms.Padding(2);
-            this.descUI.Multiline = true;
-            this.descUI.Name = "descUI";
-            this.descUI.ReadOnly = true;
-            this.descUI.Size = new System.Drawing.Size(376, 157);
-            this.descUI.TabIndex = 0;
-            // 
-            // splitter3
-            // 
-            this.splitter3.Cursor = System.Windows.Forms.Cursors.SizeWE;
-            this.splitter3.Dock = System.Windows.Forms.DockStyle.Right;
-            this.splitter3.Location = new System.Drawing.Point(1225, 152);
-            this.splitter3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.splitter3.Name = "splitter3";
-            this.splitter3.Size = new System.Drawing.Size(10, 663);
-            this.splitter3.TabIndex = 10;
-            this.splitter3.TabStop = false;
-            // 
-            // splitter4
-            // 
-            this.splitter4.Cursor = System.Windows.Forms.Cursors.SizeNS;
-            this.splitter4.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.splitter4.Location = new System.Drawing.Point(387, 648);
-            this.splitter4.Margin = new System.Windows.Forms.Padding(2);
-            this.splitter4.Name = "splitter4";
-            this.splitter4.Size = new System.Drawing.Size(838, 10);
-            this.splitter4.TabIndex = 11;
-            this.splitter4.TabStop = false;
-            // 
-            // linkUI
-            // 
-            this.linkUI.AutoScroll = true;
-            this.linkUI.BackColor = System.Drawing.SystemColors.Window;
-            this.linkUI.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.linkUI.Graph = null;
-            this.linkUI.Location = new System.Drawing.Point(387, 152);
-            this.linkUI.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.linkUI.Name = "linkUI";
-            this.linkUI.Size = new System.Drawing.Size(838, 496);
-            this.linkUI.TabIndex = 3;
             // 
             // languageBtn
             // 
@@ -448,6 +339,115 @@ namespace sync.ui
             this.batchRunBtn.Text = "BatchRun";
             this.batchRunBtn.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.batchRunBtn.Click += new System.EventHandler(this.batchRunBtn_Click);
+            // 
+            // treeUI
+            // 
+            this.treeUI.Dock = System.Windows.Forms.DockStyle.Left;
+            this.treeUI.Location = new System.Drawing.Point(0, 152);
+            this.treeUI.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.treeUI.Name = "treeUI";
+            this.treeUI.Size = new System.Drawing.Size(377, 663);
+            this.treeUI.TabIndex = 2;
+            // 
+            // propUI
+            // 
+            this.propUI.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.propUI.HelpVisible = false;
+            this.propUI.Location = new System.Drawing.Point(0, 0);
+            this.propUI.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.propUI.Name = "propUI";
+            this.propUI.PropertySort = System.Windows.Forms.PropertySort.NoSort;
+            this.propUI.Size = new System.Drawing.Size(376, 496);
+            this.propUI.TabIndex = 4;
+            this.propUI.ToolbarVisible = false;
+            // 
+            // msgUI
+            // 
+            this.msgUI.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.msgUI.Location = new System.Drawing.Point(387, 658);
+            this.msgUI.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.msgUI.Multiline = true;
+            this.msgUI.Name = "msgUI";
+            this.msgUI.Size = new System.Drawing.Size(838, 157);
+            this.msgUI.TabIndex = 5;
+            // 
+            // splitter1
+            // 
+            this.splitter1.Cursor = System.Windows.Forms.Cursors.SizeWE;
+            this.splitter1.Location = new System.Drawing.Point(377, 152);
+            this.splitter1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.splitter1.Name = "splitter1";
+            this.splitter1.Size = new System.Drawing.Size(10, 663);
+            this.splitter1.TabIndex = 5;
+            this.splitter1.TabStop = false;
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.propUI);
+            this.panel1.Controls.Add(this.descSplit);
+            this.panel1.Controls.Add(this.descUI);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Right;
+            this.panel1.Location = new System.Drawing.Point(1235, 152);
+            this.panel1.Margin = new System.Windows.Forms.Padding(2);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(376, 663);
+            this.panel1.TabIndex = 9;
+            // 
+            // descSplit
+            // 
+            this.descSplit.Cursor = System.Windows.Forms.Cursors.SizeNS;
+            this.descSplit.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.descSplit.Location = new System.Drawing.Point(0, 496);
+            this.descSplit.Margin = new System.Windows.Forms.Padding(2);
+            this.descSplit.Name = "descSplit";
+            this.descSplit.Size = new System.Drawing.Size(376, 10);
+            this.descSplit.TabIndex = 1;
+            this.descSplit.TabStop = false;
+            // 
+            // descUI
+            // 
+            this.descUI.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.descUI.Location = new System.Drawing.Point(0, 506);
+            this.descUI.Margin = new System.Windows.Forms.Padding(2);
+            this.descUI.Multiline = true;
+            this.descUI.Name = "descUI";
+            this.descUI.ReadOnly = true;
+            this.descUI.Size = new System.Drawing.Size(376, 157);
+            this.descUI.TabIndex = 0;
+            // 
+            // splitter3
+            // 
+            this.splitter3.Cursor = System.Windows.Forms.Cursors.SizeWE;
+            this.splitter3.Dock = System.Windows.Forms.DockStyle.Right;
+            this.splitter3.Location = new System.Drawing.Point(1225, 152);
+            this.splitter3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.splitter3.Name = "splitter3";
+            this.splitter3.Size = new System.Drawing.Size(10, 663);
+            this.splitter3.TabIndex = 10;
+            this.splitter3.TabStop = false;
+            // 
+            // splitter4
+            // 
+            this.splitter4.Cursor = System.Windows.Forms.Cursors.SizeNS;
+            this.splitter4.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.splitter4.Location = new System.Drawing.Point(387, 648);
+            this.splitter4.Margin = new System.Windows.Forms.Padding(2);
+            this.splitter4.Name = "splitter4";
+            this.splitter4.Size = new System.Drawing.Size(838, 10);
+            this.splitter4.TabIndex = 11;
+            this.splitter4.TabStop = false;
+            // 
+            // linkUI
+            // 
+            this.linkUI.AutoScroll = true;
+            this.linkUI.BackColor = System.Drawing.SystemColors.Window;
+            this.linkUI.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.linkUI.Graph = null;
+            this.linkUI.Location = new System.Drawing.Point(387, 152);
+            this.linkUI.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.linkUI.Name = "linkUI";
+            this.linkUI.Size = new System.Drawing.Size(838, 496);
+            this.linkUI.TabIndex = 3;
             // 
             // SyncManager
             // 
