@@ -5,7 +5,7 @@ using util;
 using util.ext;
 using util.prop;
 
-namespace xtext
+namespace util
 {
     public partial class OptionDialog : Form
     {

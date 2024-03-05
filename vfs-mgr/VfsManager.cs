@@ -17,6 +17,7 @@ using util.prop;
 using util.rep;
 using util.rep.aead;
 using vfs.mgr.conf;
+using vfs.mgr.Properties;
 
 namespace vfs.mgr
 {
@@ -210,13 +211,33 @@ namespace vfs.mgr
 
         private void optionBtn_Click(object sender, EventArgs e)
         {
-            var dlg = new OptionDialog
+            var dlg = new util.OptionDialog
             {
                 Path = App.ConfPath,
                 Args = App.Option,
             };
+            dlg.addBtn("evalPBKDF2Btn", Resources.EvalTime, () =>
+            {
+                "".dlgEvalTime(dlg.getArgs<AppOption>()
+                .PBKDF2.evalTime);
+            });
+            dlg.addBtn("evalArgon2idBtn", Resources.EvalTime, () =>
+            {
+                "".dlgEvalTime(dlg.getArgs<AppOption>()
+                .Argon2id.evalTime);
+            });
+            dlg.addBtn("evalPwdHashBtn", Resources.EvalTime, () =>
+            {
+                "".dlgEvalTime(() =>
+                {
+                    var key = "123abc".utf8();
+                    var args = dlg.getArgs<AppOption>();
+                    args.newPwdDerives(args.AeadFS.PwdDerives)
+                    .each(kg => key = kg.deriveKey(key, 32));
+                });
+            });
             dlg.dialog();
-            App.Option = dlg.Args;
+            App.Option = dlg.Args as AppOption;
         }
 
         private void refreshBtn_Click(object sender, EventArgs e)

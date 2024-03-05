@@ -70,6 +70,12 @@
     <Compile Include="ext\ExceptionEx.cs" />
     <Compile Include="Bool.cs" />
     <Compile Include="ext\ImageListEx.cs" />
+    <Compile Include="OptionDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OptionDialog.designer.cs">
+      <DependentUpon>OptionDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="option\AeadFsOption.cs" />
     <Compile Include="option\Argon2idOption.cs" />
     <Compile Include="option\PBKDF2Option.cs" />
@@ -173,6 +179,9 @@
     <Compile Include="TestEx.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="OptionDialog.resx">
+      <DependentUpon>OptionDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="prop\PropDialog.resx">
       <DependentUpon>PropDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -189,6 +198,12 @@
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.3</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Reset.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\OpenDir.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

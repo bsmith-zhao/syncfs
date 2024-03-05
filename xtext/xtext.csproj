@@ -56,12 +56,6 @@
     <Compile Include="App.cs" />
     <Compile Include="ExtendText.cs" />
     <Compile Include="ExtendTextOption.cs" />
-    <Compile Include="OptionDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="OptionDialog.designer.cs">
-      <DependentUpon>OptionDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="TextForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -70,9 +64,6 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="OptionDialog.resx">
-      <DependentUpon>OptionDialog.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="TextForm.resx">
       <DependentUpon>TextForm.cs</DependentUpon>
     </EmbeddedResource>

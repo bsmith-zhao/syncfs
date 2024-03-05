@@ -1,5 +1,4 @@
 ﻿using link;
-using xtext;
 using sync.app;
 using sync.app.conf;
 using System;
@@ -1043,13 +1042,33 @@ namespace sync.ui
 
         private void optionBtn_Click(object sender, EventArgs e)
         {
-            var dlg = new OptionDialog
+            var dlg = new util.OptionDialog
             {
                 Path = App.ConfPath,
                 Args = App.Option,
             };
+            dlg.addBtn("evalPBKDF2Btn", Resources.EvalTime, () =>
+            {
+                "".dlgEvalTime(dlg.getArgs<AppOption>()
+                .PBKDF2.evalTime);
+            });
+            dlg.addBtn("evalArgon2idBtn", Resources.EvalTime, () =>
+            {
+                "".dlgEvalTime(dlg.getArgs<AppOption>()
+                .Argon2id.evalTime);
+            });
+            dlg.addBtn("evalPwdHashBtn", Resources.EvalTime, () =>
+            {
+                "".dlgEvalTime(() =>
+                {
+                    var key = "123abc".utf8();
+                    var args = dlg.getArgs<AppOption>();
+                    args.newPwdDerives(args.AeadFS.PwdDerives)
+                    .each(kg => key = kg.deriveKey(key, 32));
+                });
+            });
             dlg.dialog();
-            App.Option = dlg.Args;
+            App.Option = dlg.Args as AppOption;
         }
 
         Item pick0 => pickItems[0];

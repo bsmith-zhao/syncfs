@@ -154,12 +154,6 @@
     <Compile Include="ui\TransferDialog.Designer.cs">
       <DependentUpon>TransferDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="ui\OptionDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ui\OptionDialog.designer.cs">
-      <DependentUpon>OptionDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="ui\SyncManager.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -226,9 +220,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ui\TransferDialog.resx">
       <DependentUpon>TransferDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ui\OptionDialog.resx">
-      <DependentUpon>OptionDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ui\SyncManager.resx">
       <DependentUpon>SyncManager.cs</DependentUpon>

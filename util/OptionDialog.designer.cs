@@ -1,4 +1,4 @@
-﻿namespace xtext
+﻿namespace util
 {
     partial class OptionDialog
     {
@@ -64,7 +64,7 @@
             // 
             // openDirBtn
             // 
-            this.openDirBtn.Image = global::xtext.Properties.Resources.OpenDir;
+            this.openDirBtn.Image = global::util.Properties.Resources.OpenDir;
             this.openDirBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.openDirBtn.Name = "openDirBtn";
             this.openDirBtn.Size = new System.Drawing.Size(115, 67);
@@ -74,7 +74,7 @@
             // 
             // resetBtn
             // 
-            this.resetBtn.Image = global::xtext.Properties.Resources.Reset;
+            this.resetBtn.Image = global::util.Properties.Resources.Reset;
             this.resetBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.resetBtn.Name = "resetBtn";
             this.resetBtn.Size = new System.Drawing.Size(82, 67);
