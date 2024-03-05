@@ -1,41 +1,48 @@
-OkBtn = 
-CancelBtn = 
+AeadFsOption.Encode = Text encoding
+AeadFsOption.MasterKeySize = Master key size
+AeadFsOption.FileIdSize = File ID size
+AeadFsOption.BlockSize = File data block division size
+AeadFsOption.PwdDerives = Password hash algorithm
+AeadFsOption.KeyDerive = Encrypt key derive algorithm
+AeadFsOption.DataCrypt = File data encryption\nAesGcm12 is faster but need CPU chip support GCM
+AeadFsOption.DirCrypt = Directory encryption
 
-AppConf.LoadFail = Load [{0}] fail: {1}
+PBKDF2Option.Turns = PBKDF2 hash turns
 
-RepConf.Directory = 
-RepConf.Type = 
-RepConf.Match = 
-RepConf.Mount = 
-RepConf.Backup = 
+Argon2idOption.CPU = CPU factor
+Argon2idOption.Memory = Memory factor
 
-AeadRepConf.Password = 
-AeadRepConf.KeyGens = Password Key Generate algorithms
-AeadRepConf.MasterKeySize = Master Key Size
-AeadRepConf.FileIdSize = File Id Size
-AeadRepConf.BlockSize = Block Size
-AeadRepConf.KeyDerive = Key Derive algorithm
-AeadRepConf.DataCrypt = Data Encryption
-AeadRepConf.DirCrypt = Directory Encryption
+AppOption.Lock = Reposit lock directory path, if the path exist, reposit access is readonly
+AppOption.LogCount = Max sync log file count
 
-BackupConf.Enable = 
-BackupConf.Directory = 
-BackupConf.KeepAll = 
-BackupConf.Reversion = 
+RepConf.Match = Reposit access match path, if match is not empty and the path not exist, reposit access will be denied
+RepConf.Mount = Virtual file system mount setting
 
-ViewConf.Root = Base reposit/view's directory used as view's root directory
+DirRepConf.Path = Normal directory path
+AeadFsConf.Path = AeadFS directory path
 
-FilterConf.AllowPrefixs = Allow path node prefixs
-FilterConf.ExcludePrefixs = Exclude path node prefixs
-FilterConf.ExcludeNames = Exclude path node names
+MountConf.Path = Logic path to mount the file system
+MountConf.Name = Volume label if mount path is drive
 
-SyncConf.Type = 
-SyncConf.Compare = 
-SyncConf.Hash = 
+BackupConf.Directory = Directory path to store backup files
+BackupConf.KeepAll = If true all history deleted files will be saved
+BackupConf.Reversion = Max history deleted files version count to be saved
+
+ViewConf.RootDir = Root directory for logic view
+ViewConf.ForceUnlock = Force to access reposit in writable mode
+
+FilterConf.AllowPaths = If AllowPaths is set, only items belong to AllowPaths can be access
+FilterConf.ExcludePaths = Items belong to ExcludePaths can not be access
+FilterConf.ExcludeNames = Item name in the ExcludeNames list can not be access
+
+AeadRepConf.Password = Saved access password, it is encrypted and stored in the space reposit args folder
+
+SyncConf.Compare = File compare method when sync
+SyncConf.Hash = File data hash method
 
 CompareConf.Default = Default compare method\nHash: Compare by hash code\nData: Compare by file data
-CompareConf.ByHash = Specific path node prefixs compare by hash code
-CompareConf.ByData = Specific path node prefixs compare by file data
+CompareConf.ByHash = Items in this list will be compared by hash code
+CompareConf.ByData = Items in this list will be compared by file data
 CompareConf.Expire = Compare result cache expired time
 
 HashConf.Mode = Hash compute mode\nSample: Use file sample data\nFull: Use whole file data
@@ -43,201 +50,88 @@ HashConf.Block = Block size when sample
 HashConf.Count = Block count when sample
 HashConf.Expire = Hash result cache expired time
 
-AppConf.AeadFS = Aead File System
-AppConf.PBKDF2 = 
-AppConf.Argon2id = 
-AppConf.Lock = Reposit lock directory name, when lock exists, the reposit is readonly
-AppConf.Unlock = View unlock directory name, when unlock exists, the view can be write
-AppConf.LogCount = Sync log file count
-
-PBKDF2Conf.Turns = Hash iteration turns
-
-Argon2idConf.CPU = CPU factor
-Argon2idConf.Memory = Memory factor
-
-Dialog.Confirm = 
-Dialog.Info = 
-Dialog.Alert = 
-Dialog.Error = 
-
 SyncManager.Title = SyncManager
 SyncManager.AddViewBtnTip = Create sub view on source reposit/view
-SyncManager.LinkViewBtn = 
 SyncManager.LinkViewBtnTip = Link source reposit/view to sub view
-SyncManager.MasterSyncBtn = 
 SyncManager.MasterSyncBtnTip = Create master sync between 2 reposits/views
-SyncManager.RoundSyncBtn = 
 SyncManager.RoundSyncBtnTip = Create round sync between 2 reposits/views
-SyncManager.DeleteBtn = 
-SyncManager.OpenDirBtn = 
 SyncManager.OpenDirBtnTip = Open conf directory
-SyncManager.SetPwdBtn = 
-SyncManager.SetPwdBtnTip = Modify aead encryption password
-SyncManager.EditLabelBtn = 
-SyncManager.CopyArgsBtn = 
+SyncManager.ModifyPwdBtnTip = Modify reposit password
 SyncManager.CopyArgsBtnTip = Copy conf args
-SyncManager.PasteArgsBtn = 
 SyncManager.PasteArgsBtnTip = Paste copyed args to selected item
-SyncManager.BrowseFilesBtn = 
 SyncManager.BrowseFilesBtnTip = Browse logic view files in readonly mode
-SyncManager.ManageFilesBtn = 
 SyncManager.ManageFilesBtnTip = Manage reposit files
-SyncManager.MountBtn = 
 SyncManager.MountBtnTip = Mount reposit to virtual file system
-SyncManager.UnmountBtn = 
 SyncManager.UnmountBtnTip = Unmount virtual file system
-SyncManager.SpreadArgsBtn = 
 SyncManager.SpreadArgsBtnTip = Copy sync args to all linked other syncs
-SyncManager.RunBtn = 
 SyncManager.RunBtnTip = Open runner
-SyncManager.BatchRunBtn = 
 SyncManager.BatchRunBtnTip = Open batch runner
-SyncManager.LoadSpaceList = 
+
 SyncManager.SpaceExist = [{0}] already Exists!
-SyncManager.ConfirmRemoveSpace = Confirm Remove Space [{0}]?
-SyncManager.ConfrimDeleteSync = Confrim Delete Sync[{0}]?
-SyncManager.ConfirmDeletePicks = Confirm Delete Picks[{0}]?
+SyncManager.ConfirmRemoveSpace = Confirm remove space [{0}]?
+SyncManager.ConfrimDeleteSync = Confrim delete sync [{0}]?
+SyncManager.ConfirmDeletePicks = Confirm delete selected [{0}] items?
 SyncManager.ConfirmSpread = Confirm copy sync args to all other linked syncs?
-SyncManager.ConfirmUnmountClose = Confirm Unmount and Close?
+SyncManager.ConfirmUnmountClose = Confirm unmount all virtual file systems?
 
 OptionDialog.Title = Option
-OptionDialog.OpenDirBtn = 
 OptionDialog.OpenDirBtnTip = Open conf directory
-OptionDialog.ResetBtn = 
-OptionDialog.EvalPBKDF2Btn = 
-OptionDialog.EvalPBKDF2BtnTip = Evaluate PBKDF2 hash time cost
-OptionDialog.EvalArgon2idBtn = 
-OptionDialog.EvalArgon2idBtnTip = Evaluate Argon2id hash time cost
-OptionDialog.EvalAeadFSBtn = 
-OptionDialog.EvalAeadFSBtnTip = Evaluate AeadFS password hash time cost
-OptionDialog.PwdHashTime = Password hash time: {0}
-OptionDialog.ConfirmReset = Confirm Reset?
+OptionDialog.EvalPBKDF2BtnTip = Evaluate PBKDF2 hash time delay
+OptionDialog.EvalArgon2idBtnTip = Evaluate Argon2id hash time delay
+OptionDialog.EvalAeadFSBtnTip = Evaluate AeadFS password hash time delay
+OptionDialog.ConfirmReset = Confirm reset conf to default?
 
 WorkRunner.Title = WorkRunner
-WorkRunner.ParseBtn = 
-WorkRunner.RunBtn = 
-WorkRunner.StopBtn = 
-WorkRunner.Begin = 
-WorkRunner.Finish = 
-WorkRunner.Error = 
-WorkRunner.Cancel = 
-WorkRunner.ConfirmRun = Confirm Run?
-WorkRunner.ConfirmStop = Confirm Stop?
-WorkRunner.StopBeforeClose = Stop Before Close!
+WorkRunner.ConfirmRun = Confirm to start?
+WorkRunner.ConfirmStop = Confirm to stop?
+WorkRunner.StopBeforeClose = Can not close in running status!
 
 BatchRunner.Title = BatchRunner
-BatchRunner.NameHeader = 
-BatchRunner.StatusHeader = 
-BatchRunner.RunBtn = 
-BatchRunner.RunBtnTip = Run checked items
-BatchRunner.StopBtn = 
-BatchRunner.OpenDirBtn = 
-BatchRunner.OpenDirBtnTip = Open select conf directory
-BatchRunner.Begin = 
-BatchRunner.Error = 
-BatchRunner.Cancel = 
-BatchRunner.Finish = 
-BatchRunner.ConfirmStart = Confirm Start?
-BatchRunner.ConfirmStop = Confirm Stop?
-BatchRunner.LoadSpace = Load Space: {0}<{1}>
+BatchRunner.RunBtnTip = Run all checked items
+BatchRunner.OpenDirBtnTip = Open select item conf directory
+BatchRunner.Begin = Begin
+BatchRunner.Error = Error
+BatchRunner.Cancel = Canceled
+BatchRunner.Finish = Finish
+BatchRunner.ConfirmStart = Confirm to start?
+BatchRunner.ConfirmStop = Confirm to stop?
+BatchRunner.LoadSpace = Load space: {0}<{1}>
 
 ViewBrowser.Title = ViewBrowser
 
 RepManager.Title = RepManager
 
-ViewPanel.RefreshBtn = 
-ViewPanel.UpLevelBtn = 
-ViewPanel.EditLabelBtn = 
-ViewPanel.CreateDirBtn = 
-ViewPanel.DeleteBtn = 
-ViewPanel.ExportBtn = 
-ViewPanel.ImportBtn = 
-ViewPanel.ManageBtn = 
 ViewPanel.ManageBtnTip = Open reposit manager
-ViewPanel.NameHeader = 
-ViewPanel.SizeHeader = 
-ViewPanel.BytesHeader = 
-ViewPanel.TimeHeader = 
-ViewPanel.ConfrimDeleteDir = Confrim Delete Folder[{0}]?
-ViewPanel.RepeatConfrimDeleteDir = Repeat Confrim Delete Folder [{0}]?
-ViewPanel.ConfrimDeleteItems = Confrim Delete Items [{0}]?
-ViewPanel.RepeatConfrimDeleteItems = Repeat Confrim Delete Items[{0}]?
+ViewPanel.ConfrimDeleteDir = Confrim delete folder [{0}]?
+ViewPanel.RepeatConfrimDeleteDir = Repeat confrim delete folder [{0}]?
+ViewPanel.ConfrimDeleteItems = Confrim delete selected [{0}] items?
+ViewPanel.RepeatConfrimDeleteItems = Repeat confrim delete selected [{0}] items?
 
 TransferDialog.Title = TransferDialog
-TransferDialog.CloseBtn = 
-TransferDialog.Finish = 
-TransferDialog.ConfirmStop = Confirm Stop?
+TransferDialog.ConfirmStop = Confirm stop transfer?
 
 ComputeHash.Name = ComputeHash
-ComputeHash.Source = 
-ComputeHash.Compute = 
-ComputeHash.Total = 
-ComputeHash.Update = 
-ComputeHash.Reduce = 
 
 FileDiff.Name = FileDiff
-FileDiff.Compare = 
-FileDiff.More = 
-FileDiff.Lack = 
-FileDiff.Move = 
 
 DirDiff.Name = DirDiff
-DirDiff.More = 
-DirDiff.Lack = 
-DirDiff.Move = 
 
 FileTransfer.Name = FileTransfer
-FileTransfer.Source = 
-FileTransfer.Target = 
-FileTransfer.Add = 
-FileTransfer.Delete = 
-FileTransfer.Move = 
 
 DirAdjust.Name = DirAdjust
-DirAdjust.Target = 
-DirAdjust.Add = 
-DirAdjust.Delete = 
-DirAdjust.Move = 
-
-ConsistCheck.Name = ConsistCheck
-ConsistCheck.Compare = 
-ConsistCheck.DiffName = 
-ConsistCheck.DiffData = 
-ConsistCheck.LackFile = 
-ConsistCheck.MoreFile = 
-ConsistCheck.LackDir = 
-ConsistCheck.MoreDir = 
-ConsistCheck.Fail = Unconsist Count [{0}]!
-
-PwdDialog.Title = Input Password
-PwdDialog.Mismatch = Verify Mismatch!
-PwdDialog.RepeatMismatch = Repeat Mismatch!
-PwdDialog.ConfirmEmpty = Confirm to Use Empty Password?
-PwdDialog.PwdLabel = 
-PwdDialog.NewPwdLabel = 
-PwdDialog.RepeatPwdLabel = 
-
-PropDialog.Title = PropDialog
-
-DirReposit.NotExist = [{0}] Not Exist!
-
-AeadReposit.NotExist = [{0}] Not Exist!
-
-AeadStream.InvalidType = Invalid Type!
-AeadStream.InvalidVersion = Invalid Version [{0}]!
-
-View.ReadOnly = View is ReadOnly!
-
-RepView.IsLocked = [{0}] is Locked and can only read!
-RepView.Mismatch = [{0}] not exist, match failed!
 
 RoundDiff.Name = RoundDiff
 
-RoundSync.Source = 
-RoundSync.Target = 
+ConsistCheck.Name = ConsistCheck
+ConsistCheck.Fail = Unconsist count [{0}]!
+
+PwdDialog.Title = Input Password
+PwdDialog.Mismatch = Verify mismatch!
+PwdDialog.RepeatMismatch = Repeat mismatch!
+PwdDialog.ConfirmEmpty = Confirm to use empty password?
+
+PropDialog.Title = PropDialog
+
 RoundSync.Unsolved = [{0}] Items Unsolved!
-RoundSync.FileMoveConfuses = 
-RoundSync.FileNameConflicts = 
-RoundSync.DirMoveConfuses = 
 
 VfsService.PathExist = Mount failed, path [{0}] alread exist!

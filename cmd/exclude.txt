@@ -1,5 +1,5 @@
 .pdb
 .bak
-.log
 .conf
 current
+log
