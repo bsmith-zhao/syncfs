@@ -126,6 +126,7 @@
             this.textUI.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.textUI.Size = new System.Drawing.Size(824, 551);
             this.textUI.TabIndex = 9;
+            this.textUI.WordWrap = false;
             // 
             // msgUI
             // 
@@ -136,6 +137,7 @@
             this.msgUI.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.msgUI.Size = new System.Drawing.Size(292, 551);
             this.msgUI.TabIndex = 10;
+            this.msgUI.WordWrap = false;
             // 
             // splitUI
             // 

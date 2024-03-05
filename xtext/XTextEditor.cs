@@ -56,6 +56,11 @@ namespace xtext
 
         private void NoteForm_Load(object sender, EventArgs e)
         {
+            this.trydo(() => 
+            {
+                if (App.ConfPath.fileExist())
+                    App.Option = App.ConfPath.readText().obj<AppOption>();
+            });
         }
 
         const string FileFilter = "Extend Text (*.xtext)|*.xtext|All Files (*.*)|*.*";
