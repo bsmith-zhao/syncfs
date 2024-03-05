@@ -111,18 +111,45 @@ TransferDialog.Title = TransferDialog
 TransferDialog.ConfirmStop = Confirm stop transfer?
 
 ComputeHash.Name = ComputeHash
+ComputeHash.Source = Source
+ComputeHash.Total = Total
+ComputeHash.Update = Update
+ComputeHash.Reduce = Reduce
 
 FileDiff.Name = FileDiff
+FileDiff.Compare = Compare
+FileDiff.More = More
+FileDiff.Lack = Lack
+FileDiff.Move = Move
 
 DirDiff.Name = DirDiff
+DirDiff.More = More
+DirDiff.Lack = Lack
+DirDiff.Move = Move
 
 FileTransfer.Name = FileTransfer
+FileTransfer.Source = Source
+FileTransfer.Target = Target
+FileTransfer.Add = Add
+FileTransfer.Delete = Delete
+FileTransfer.Move = Move
 
 DirAdjust.Name = DirAdjust
+DirAdjust.Target = Target
+DirAdjust.Add = Add
+DirAdjust.Delete = Delete
+DirAdjust.Move = Move
 
 RoundDiff.Name = RoundDiff
 
 ConsistCheck.Name = ConsistCheck
+ConsistCheck.Compare = Compare
+ConsistCheck.DiffName = DiffName
+ConsistCheck.DiffData = DiffData
+ConsistCheck.LackFile = LackFile
+ConsistCheck.MoreFile = MoreFile
+ConsistCheck.LackDir = LackDir
+ConsistCheck.MoreDir = MoreDir
 ConsistCheck.Fail = Unconsist count [{0}]!
 
 PwdDialog.Title = Input Password
