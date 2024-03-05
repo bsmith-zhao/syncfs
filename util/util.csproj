@@ -82,7 +82,6 @@
     <Compile Include="option\PBKDF2Option.cs" />
     <Compile Include="option\PwdDeriveOption.cs" />
     <Compile Include="prop\DescRefer.cs" />
-    <Compile Include="PwdDialogEx.cs" />
     <Compile Include="rep\aead\AeadFsConf.cs" />
     <Compile Include="rep\aead\AeadFsReposit.cs" />
     <Compile Include="rep\aead\AeadFsStream.cs" />
@@ -115,11 +114,11 @@
     <Compile Include="prop\ExpandProp.cs" />
     <Compile Include="prop\IDynamicConf.cs" />
     <Compile Include="prop\RangeLimit.cs" />
-    <Compile Include="prop\PropDialog.cs">
+    <Compile Include="SetupDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="prop\PropDialog.designer.cs">
-      <DependentUpon>PropDialog.cs</DependentUpon>
+    <Compile Include="SetupDialog.designer.cs">
+      <DependentUpon>SetupDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="prop\UnifyPath.cs" />
     <Compile Include="EventAgent.cs" />
@@ -183,8 +182,8 @@
     <EmbeddedResource Include="OptionDialog.resx">
       <DependentUpon>OptionDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="prop\PropDialog.resx">
-      <DependentUpon>PropDialog.cs</DependentUpon>
+    <EmbeddedResource Include="SetupDialog.resx">
+      <DependentUpon>SetupDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PwdDialog.resx">
       <DependentUpon>PwdDialog.cs</DependentUpon>

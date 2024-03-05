@@ -2,10 +2,11 @@
 using System.Drawing;
 using System.Windows.Forms;
 using util.ext;
+using util.prop;
 
-namespace util.prop
+namespace util
 {
-    public partial class PropDialog : Form
+    public partial class SetupDialog : Form
     {
         public object Args
         {
@@ -15,13 +16,14 @@ namespace util.prop
 
         private void SetupDialog_Load(object sender, EventArgs e)
         {
-            splitUI.BackColor = 
-            descUI.BackColor = 25.gray();
+            splitUI.BackColor 
+                = descUI.BackColor 
+                = Theme.ControlBack.zoom(1.1);
 
             propUI.enhanceDesc(descUI);
         }
 
-        public PropDialog()
+        public SetupDialog()
         {
             InitializeComponent();
 

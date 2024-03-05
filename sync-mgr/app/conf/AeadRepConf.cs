@@ -107,7 +107,7 @@ namespace sync.app.conf
             if (!confPath.fileExist())
             {
                 var opt = option.jclone();
-                if (!opt.dlgEdit() || !"".setPwd(out var pwd))
+                if (!opt.dlgSetup() || !"".setPwd(out var pwd))
                     return null;
 
                 saveConf(opt.createConf(), pwd, opt.PwdDerives);

@@ -65,7 +65,7 @@ namespace vfs.mgr.conf
                 return true;
 
             var opt = App.Option.AeadFS.jclone();
-            if (!opt.dlgEdit() || !repUid.setPwd(out var pwd))
+            if (!opt.dlgSetup() || !repUid.setPwd(out var pwd))
                 return false;
 
             opt.createConf().saveByDir(dir, pwd, newPwdDerives());

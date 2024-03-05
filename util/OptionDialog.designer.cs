@@ -88,6 +88,7 @@
             this.descUI.Location = new System.Drawing.Point(0, 557);
             this.descUI.Multiline = true;
             this.descUI.Name = "descUI";
+            this.descUI.ReadOnly = true;
             this.descUI.Size = new System.Drawing.Size(874, 145);
             this.descUI.TabIndex = 2;
             // 

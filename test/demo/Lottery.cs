@@ -9,22 +9,28 @@ using util.ext;
 
 namespace test.demo
 {
-    public class WelfareLottery : ITest
+    public class Lottery : ITest
     {
         public void test()
         {
-            25.count().each(i =>
+            50.count().each(i =>
             {
-                $"{i+1} {unionLotto().json()}".msg();
+                $"[{format(i + 1)}]  {format(union())}".msg();
             });
 
-            25.count().each(i =>
+            50.count().each(i =>
             {
-                $"{i + 1} {superLotto().json()}".msg();
+                $"[{format(i+1)}]  {format(super())}".msg();
             });
         }
 
-        int[] unionLotto()
+        string format(int b)
+            => b < 10 ? $" {b}" : $"{b}";
+
+        string format(int[] bet)
+            => bet.conv(format).join("  ");
+
+        int[] union()
         {
             var reds = 33.count().ToList();
             var blues = 16.count().ToList();
@@ -48,7 +54,7 @@ namespace test.demo
             return bet;
         }
 
-        int[] superLotto()
+        int[] super()
         {
             var reds = 35.count().ToList();
             var blues = 12.count().ToList();

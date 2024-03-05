@@ -29,8 +29,8 @@ namespace util
             }
         }
 
-        public static bool dlgEdit(this object args)
-            => new PropDialog{ Args = args}.dialog();
+        public static bool dlgSetup(this object args)
+            => new SetupDialog{ Args = args}.dialog();
 
         public static byte[] setPwd(this string msg)
         {

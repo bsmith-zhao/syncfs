@@ -1,6 +1,6 @@
-﻿namespace util.prop
+﻿namespace util
 {
-    partial class PropDialog
+    partial class SetupDialog
     {
         /// <summary>
         /// Required designer variable.
@@ -55,6 +55,7 @@
             this.descUI.Location = new System.Drawing.Point(0, 421);
             this.descUI.Multiline = true;
             this.descUI.Name = "descUI";
+            this.descUI.ReadOnly = true;
             this.descUI.Size = new System.Drawing.Size(732, 88);
             this.descUI.TabIndex = 2;
             // 
@@ -107,7 +108,7 @@
             this.cancelBtn.Text = "取消";
             this.cancelBtn.UseVisualStyleBackColor = true;
             // 
-            // PropDialog
+            // SetupDialog
             // 
             this.AcceptButton = this.okBtn;
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 24F);
@@ -118,7 +119,7 @@
             this.Controls.Add(this.splitUI);
             this.Controls.Add(this.descUI);
             this.Controls.Add(this.tableLayoutPanel1);
-            this.Name = "PropDialog";
+            this.Name = "SetupDialog";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Property";
