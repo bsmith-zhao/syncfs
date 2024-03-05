@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using util.crypt;
+using util.ext;
 using util.prop;
 
 namespace util.option
@@ -23,5 +24,10 @@ namespace util.option
                 salt = SaltSize.aesRnd(),
                 turns = new Random().Next((int)(Turns * 0.9), (int)(Turns * 1.1)),
             };
+
+        public void evalTime()
+        {
+            create().genKey("123abc".utf8(), 32);
+        }
     }
 }

@@ -4,38 +4,36 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7D45FE73-EA50-497C-B006-D7885301DADD}</ProjectGuid>
+    <ProjectGuid>{6F494984-EBEA-4BB0-A76A-0D6374F4C8D1}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>test</RootNamespace>
-    <AssemblyName>test</AssemblyName>
+    <RootNamespace>xtext</RootNamespace>
+    <AssemblyName>xtext</AssemblyName>
     <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
-    <TargetFrameworkProfile />
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Prefer32Bit>false</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
@@ -44,8 +42,6 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.Windows" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -57,32 +53,28 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="demo\crypt\ChaCha20Poly1305Speed.cs" />
-    <Compile Include="demo\crypt\CtrGcmSpeedDemo.cs" />
-    <Compile Include="demo\crypt\HashFileDemo.cs" />
-    <Compile Include="demo\crypt\HmacThreadsSpeed.cs" />
-    <Compile Include="ITest.cs" />
-    <Compile Include="util\crypt\AesEmeTest.cs" />
-    <Compile Include="demo\crypt\AesEME.cs" />
-    <Compile Include="demo\crypt\AesEMEDemo.cs" />
-    <Compile Include="demo\crypt\CppFsKeyGen.cs" />
-    <Compile Include="util\crypt\AesGcmNative.cs" />
-    <Compile Include="util\crypt\HKDFTest.cs" />
-    <Compile Include="util\crypt\HmacIvCbcTest.cs" />
-    <Compile Include="demo\crypt\SCryptDemo.cs" />
-    <Compile Include="util\rep\AeadFsSetLength.cs" />
-    <Compile Include="util\rep\DirRepositTest.cs" />
-    <Compile Include="util\rep\RepositTest.cs" />
-    <Compile Include="TestManager.cs">
+    <Compile Include="App.cs" />
+    <Compile Include="ExtendText.cs" />
+    <Compile Include="ExtendTextOption.cs" />
+    <Compile Include="OptionDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TestManager.Designer.cs">
-      <DependentUpon>TestManager.cs</DependentUpon>
+    <Compile Include="OptionDialog.designer.cs">
+      <DependentUpon>OptionDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TextForm.Designer.cs">
+      <DependentUpon>TextForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="TestManager.resx">
-      <DependentUpon>TestManager.cs</DependentUpon>
+    <EmbeddedResource Include="OptionDialog.resx">
+      <DependentUpon>OptionDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TextForm.resx">
+      <DependentUpon>TextForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -106,28 +98,37 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\sync-mgr\sync-mgr.csproj">
-      <Project>{a5bf82e2-4729-4632-9cb0-a76259479598}</Project>
-      <Name>sync-mgr</Name>
-    </ProjectReference>
     <ProjectReference Include="..\util\util.csproj">
       <Project>{6dee4979-4c60-459c-b8b7-163062381e13}</Project>
       <Name>util</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="HkdfDotNet">
-      <Version>1.0.1</Version>
-    </PackageReference>
-    <PackageReference Include="Mono.CSharp">
-      <Version>4.0.0.143</Version>
-    </PackageReference>
+    <None Include="Resources\OpenDir.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Resources\Option.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Reset.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SetPwd.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Save.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SaveAs.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\New.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\EvalTime.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

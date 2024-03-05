@@ -12,6 +12,23 @@ namespace util
 {
     public static class Dialog
     {
+        public static void dlgEvalTime(this string label, Action func)
+        {
+            try
+            {
+                var begin = DateTime.UtcNow;
+                func();
+                var span = $"{DateTime.UtcNow - begin}";
+                if (!label.empty())
+                    span = $"<{label}> {span}";
+                span.dlgInfo();
+            }
+            catch (Exception err)
+            {
+                err.Message.dlgAlert();
+            }
+        }
+
         public static bool dlgEdit(this object args)
             => new PropDialog{ Args = args}.dialog();
 
@@ -79,7 +96,7 @@ namespace util
             return null;
         }
 
-        public static bool pickFile(out string path, string flt = null)
+        public static bool pickFile(this object src, out string path, string flt = null)
         {
             path = null;
             OpenFileDialog dlg = new OpenFileDialog
@@ -117,17 +134,35 @@ namespace util
         static string unify(this string path)
             => path.Replace('\\', '/');
 
-        public static bool saveFile(string name, out string path)
+        //public static bool saveFile(this object src, string name, out string path)
+        //{
+        //    path = null;
+        //    SaveFileDialog dlg = new SaveFileDialog();
+        //    dlg.FileName = name;
+        //    if (dlg.ShowDialog() != DialogResult.OK)
+        //    {
+        //        return false;
+        //    }
+        //    path = dlg.FileName.unify();
+        //    return true;
+        //}
+
+        public static bool saveFile(this object src, out string path, string filter = null, string name = null)
         {
-            path = null;
-            SaveFileDialog dlg = new SaveFileDialog();
-            dlg.FileName = name;
-            if (dlg.ShowDialog() != DialogResult.OK)
+            return (path = saveFile(filter, name)) != null;
+        }
+
+        public static string saveFile(string filter = null, string name = null)
+        {
+            SaveFileDialog dlg = new SaveFileDialog
             {
-                return false;
-            }
-            path = dlg.FileName.unify();
-            return true;
+                Filter = filter,
+                FileName = name,
+            };
+            if (dlg.ShowDialog() != DialogResult.OK)
+                return null;
+
+            return dlg.FileName;
         }
 
         public static bool confirm(this string msg)

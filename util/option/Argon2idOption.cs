@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using util.crypt;
 using util.crypt.sodium;
+using util.ext;
 using util.prop;
 
 namespace util.option
@@ -26,5 +27,10 @@ namespace util.option
                 cpu = CPU,
                 memory = (int)Memory.byteSize(),
             };
+
+        public void evalTime()
+        {
+            create().genKey("123abc".utf8(), 32);
+        }
     }
 }

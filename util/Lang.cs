@@ -48,6 +48,9 @@ namespace util
             return trans(getKey(obj.GetType().Name, ref item), args);
         }
 
+        public static string trans<T>(this string item, params object[] args)
+            => typeof(T).trans(item, args);
+
         public static string trans(this Type type, string item, params object[] args)
         {
             return trans(getKey(type.Name, ref item), args);
@@ -105,10 +108,10 @@ namespace util
             });
         }
 
-        static string transUIFld(string cls, string name)
+        public static string transUIFld(this string cls, string name)
             => transUIFld(cls, name, out var key);
 
-        public static string transUIFld(string cls, 
+        public static string transUIFld(this string cls, 
             string name, out string key)
         {
             key = getKey(cls, ref name);

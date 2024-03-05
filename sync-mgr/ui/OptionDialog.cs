@@ -6,7 +6,7 @@ using util;
 using util.ext;
 using util.prop;
 
-namespace enote
+namespace xtext
 {
     public partial class OptionDialog : Form
     {

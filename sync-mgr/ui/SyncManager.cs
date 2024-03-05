@@ -1,5 +1,5 @@
 ﻿using link;
-using enote;
+using xtext;
 using sync.app;
 using sync.app.conf;
 using System;
