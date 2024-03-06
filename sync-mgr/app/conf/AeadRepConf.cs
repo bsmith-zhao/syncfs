@@ -101,7 +101,7 @@ namespace sync.app.conf
 
         public override string createRep()
         {
-            if ((dir = this.pickDir()) == null)
+            if ((dir = true.pickDir()) == null)
                 return null;
 
             if (!confPath.fileExist())

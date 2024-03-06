@@ -15,12 +15,12 @@ namespace test.demo
         {
             50.count().each(i =>
             {
-                $"[{format(i + 1)}]  {format(union())}".msg();
+                $"[{format(i + 1)}]  {format(unionLotto())}".msg();
             });
 
             50.count().each(i =>
             {
-                $"[{format(i+1)}]  {format(super())}".msg();
+                $"[{format(i+1)}]  {format(superLotto())}".msg();
             });
         }
 
@@ -30,15 +30,18 @@ namespace test.demo
         string format(int[] bet)
             => bet.conv(format).join("  ");
 
-        int[] union()
+        int[] unionLotto() => doubleColor(33, 16, 6);
+        int[] superLotto() => doubleColor(35, 12, 5);
+
+        int[] doubleColor(int redTotal, int blueTotal, int redCount, int betCount = 7)
         {
-            var reds = 33.count().ToList();
-            var blues = 16.count().ToList();
-            var rnd = new byte[7].aesRnd();
+            var reds = redTotal.count().ToList();
+            var blues = blueTotal.count().ToList();
+            var rnd = new byte[betCount].aesRnd();
             var bet = new int[rnd.Length];
             rnd.each((i, r) =>
             {
-                if (i < 6)
+                if (i < redCount)
                 {
                     var idx = r % reds.Count;
                     bet[i] = reds[idx] + 1;
@@ -49,30 +52,8 @@ namespace test.demo
                 {
                     var idx = r % blues.Count;
                     bet[i] = blues[idx] + 1;
-                }
-            });
-            return bet;
-        }
 
-        int[] super()
-        {
-            var reds = 35.count().ToList();
-            var blues = 12.count().ToList();
-            var rnd = new byte[7].aesRnd();
-            var bet = new int[rnd.Length];
-            rnd.each((i, r) =>
-            {
-                if (i < 5)
-                {
-                    var idx = r % reds.Count;
-                    bet[i] = reds[idx] + 1;
-
-                    reds.RemoveAt(idx);
-                }
-                else
-                {
-                    var idx = r % blues.Count;
-                    bet[i] = blues[idx] + 1;
+                    blues.RemoveAt(idx);
                 }
             });
             return bet;

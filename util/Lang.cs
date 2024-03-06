@@ -12,7 +12,7 @@ namespace util
 {
     public static class Lang
     {
-        public static string dir = $"{"".appDir()}/lang";
+        public static string dir = $"{true.appDir()}/lang";
         public static string current = null;
         public static Dictionary<string, string> values = new Dictionary<string, string>();
         public static bool trace = false;

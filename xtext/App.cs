@@ -10,7 +10,7 @@ namespace xtext
 {
     public class App
     {
-        public static string ConfPath => $"{"".appTrunk()}.conf";
+        public static string ConfPath => $"{true.appTrunk()}.conf";
 
         public static AppOption Option = new AppOption();
     }

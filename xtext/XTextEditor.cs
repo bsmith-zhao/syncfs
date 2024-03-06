@@ -85,7 +85,7 @@ namespace xtext
             if (modify && !"Open will discard changes, are you sure?".confirm())
                 return;
 
-            if (!this.pickFile(out var path, FileFilter))
+            if (!true.pickFile(out var path, FileFilter))
                 return;
 
             openText(path);

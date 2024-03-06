@@ -531,7 +531,7 @@ namespace sync.ui
 
         private void importBtn_Click(object sender, EventArgs e)
         {
-            if (!this.pickFiles(out var paths))
+            if (!true.pickFiles(out var paths))
                 return;
 
             new TransferDialog
@@ -550,7 +550,7 @@ namespace sync.ui
         {
             if (!canExport)
                 return;
-            if (!this.pickDir(out var dir))
+            if (!true.pickDir(out var dir))
                 return;
 
             var srcFiles = selItems.conv<ListViewItem, string>(it => 

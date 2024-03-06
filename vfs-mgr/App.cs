@@ -11,12 +11,12 @@ namespace vfs.mgr
 {
     public class App
     {
-        public static string ConfPath => $"{"".appTrunk()}.conf";
-        public static string VfsListPath => $"{"".appDir()}\\vfs-list.conf";
+        public static string ConfPath => $"{true.appTrunk()}.conf";
+        public static string VfsListPath => $"{true.appDir()}\\vfs-list.conf";
 
         public static AppOption Option = new AppOption();
 
-        public static string VfsCmd => $"{"".appDir()}/{Option.VfsExe}";
+        public static string VfsCmd => $"{true.appDir()}/{Option.VfsExe}";
 
         public static void loadConf()
         {

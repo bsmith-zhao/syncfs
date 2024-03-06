@@ -15,7 +15,7 @@ namespace util
         public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
         {
             var srv = provider.GetService(typeof(IWindowsFormsEditorService));
-            if (srv != null && this.pickDir(out var dir))
+            if (srv != null && true.pickDir(out var dir))
                 return dir;
             return value;
         }

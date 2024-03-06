@@ -25,7 +25,7 @@ namespace vfs
                 var logName = vfs.path.Replace(":", "#")
                                         .Replace("\\", "%")
                                         .Replace("/", "%");
-                var logPath = $"{"".appDir()}/log/vfs@{logName}.log";
+                var logPath = $"{true.appDir()}/log/vfs@{logName}.log";
                 logPath.pathDir().dirCreate();
                 new FileLogger(logPath, error: err => err.msg());
 

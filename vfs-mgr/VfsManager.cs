@@ -388,8 +388,8 @@ namespace vfs.mgr
 
         void unmount()
         {
-            canUnmount.and(this.trans("ConfirmUnmount", selMount.info).confirm())
-                .truedo(selMount.proc.Kill);
+            if (canUnmount && this.trans("ConfirmUnmount", selMount.info).confirm())
+                selMount.proc.Kill();
         }
 
         bool canDelete => selConf != null;
@@ -411,7 +411,8 @@ namespace vfs.mgr
 
         private void openDirBtn_Click(object sender, EventArgs e)
         {
-            canOpenDir.ifdo(selMount.path.dirOpen);
+            if (canOpenDir)
+                selMount.path.dirOpen();
         }
     }
 }

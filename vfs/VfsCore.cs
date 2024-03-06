@@ -206,7 +206,7 @@ namespace vfs
 
         void trace(Exception err, object args = null)
         {
-            err.log(this.lastFunc(), args);
+            err.log(true.lastFunc(), args);
         }
 
         public override void Cleanup(

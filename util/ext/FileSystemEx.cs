@@ -11,13 +11,13 @@ namespace util.ext
 {
     public static class FileSystemEx
     {
-        public static string appPath(this object src)
+        public static string appPath(this bool src)
             => Application.ExecutablePath.pathUnify();
 
-        public static string appTrunk(this object src)
+        public static string appTrunk(this bool src)
             => appPath(src).pathTrunk();
 
-        public static string appDir(this object src)
+        public static string appDir(this bool src)
             => Application.StartupPath.pathUnify();
 
         public static string fsBackup(this string path, 

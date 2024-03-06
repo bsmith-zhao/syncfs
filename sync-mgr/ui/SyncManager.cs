@@ -435,7 +435,7 @@ namespace sync.ui
 
         public void addSpace()
         {
-            if (!this.pickDir(out var dir))
+            if (!true.pickDir(out var dir))
                 return;
 
             if (treeUI.Nodes.exist<TreeNode>(tn
@@ -989,7 +989,7 @@ namespace sync.ui
 
                 var repArgs = conf.newRepArgs();
 
-                var cmd = $"{"".appDir()}/{App.Option.VfsExe}";
+                var cmd = $"{true.appDir()}/{App.Option.VfsExe}";
                 var args = new VfsArgs
                 {
                     path = conf.Mount.Path,
@@ -1023,7 +1023,8 @@ namespace sync.ui
 
         private void unmountBtn_Click(object sender, EventArgs e)
         {
-            canUnmount.truedo(repTag.vfs.Kill);
+            if (canUnmount)
+                repTag.vfs.Kill();
         }
 
         bool canModifyPwd => repTag?.canModifyPwd == true;

@@ -56,7 +56,7 @@ namespace vfs.mgr.conf
 
         public bool createRep(out string dir)
         {
-            if (!this.pickDir(out dir))
+            if (!true.pickDir(out dir))
                 return false;
 
             Path = dir;

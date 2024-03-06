@@ -18,7 +18,7 @@ namespace util
         {
             try
             {
-                path = path ?? $"{this.appTrunk()}.log";
+                path = path ?? $"{true.appTrunk()}.log";
 
                 var fi = new FileInfo(path);
                 if (fi.Exists && fi.Length >= maxSize)

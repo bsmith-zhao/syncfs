@@ -85,10 +85,10 @@ namespace util
             ui.safeRun(() => queryPwd<E>(msg, verify));
         }
 
-        public static bool pickDir(this object src, out string path)
+        public static bool pickDir(this bool src, out string path)
             => (path = src.pickDir()) != null;
 
-        public static string pickDir(this object src)
+        public static string pickDir(this bool src)
         {
             var dlg = new PickDirDialog();
             if (dlg.ShowDialog() == true)
@@ -96,7 +96,7 @@ namespace util
             return null;
         }
 
-        public static bool pickFile(this object src, out string path, string flt = null)
+        public static bool pickFile(this bool src, out string path, string flt = null)
         {
             path = null;
             OpenFileDialog dlg = new OpenFileDialog
@@ -110,10 +110,12 @@ namespace util
             return true;
         }
 
-        public static bool pickFiles(this Control ui, out string[] paths, string flt = null)
+        public static bool pickFiles(this bool src, 
+            out string[] paths, string flt = null)
             => pickFiles(out paths, flt);
 
-        public static bool pickFiles(out string[] paths, string flt = null)
+        public static bool pickFiles(out string[] paths, 
+            string flt = null)
         {
             paths = null;
             var dlg = new OpenFileDialog
@@ -147,12 +149,15 @@ namespace util
         //    return true;
         //}
 
-        public static bool saveFile(this object src, out string path, string filter = null, string name = null)
+        public static bool saveFile(this object src, 
+            out string path, string filter = null, 
+            string name = null)
         {
             return (path = saveFile(filter, name)) != null;
         }
 
-        public static string saveFile(string filter = null, string name = null)
+        public static string saveFile(string filter = null, 
+            string name = null)
         {
             SaveFileDialog dlg = new SaveFileDialog
             {

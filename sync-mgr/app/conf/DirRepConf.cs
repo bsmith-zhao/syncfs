@@ -37,6 +37,6 @@ namespace sync.app.conf
             => Path;
 
         public override string createRep()
-            => (Path = this.pickDir()).pathName();
+            => (Path = true.pickDir()).pathName();
     }
 }

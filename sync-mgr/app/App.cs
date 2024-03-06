@@ -8,18 +8,12 @@ namespace sync.app
     public class App
     {
         public static string ConfPath 
-            = $"{"".appTrunk()}.conf";
+            = $"{true.appTrunk()}.conf";
 
         public static string SpaceListPath 
-            = $"{"".appDir()}/space-list.conf";
+            = $"{true.appDir()}/space-list.conf";
 
         public static AppOption Option = new AppOption();
-
-        //public static void loadConf()
-        //{
-        //    if (ConfPath.fileExist())
-        //        Option = ConfPath.readText().obj<AppOption>();
-        //}
 
         public static void init()
         {

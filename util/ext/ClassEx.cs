@@ -21,13 +21,13 @@ namespace util.ext
         public static object @new(this Type type)
             => Activator.CreateInstance(type);
 
-        public static string thisFunc(this object src)
+        public static string thisFunc(this bool src)
             => src.callTrace(-2);
 
-        public static string lastFunc(this object src)
+        public static string lastFunc(this bool src)
             => src.callTrace(-3);
 
-        public static string callTrace(this object src, int level)
+        public static string callTrace(this bool src, int level)
         {
             try
             {
