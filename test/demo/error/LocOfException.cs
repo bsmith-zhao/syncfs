@@ -33,7 +33,14 @@ namespace test.demo.error
         {
             var st = new StackTrace(false);
             var caller = new StackFrame(1).GetMethod().Name;
-            new {err.Message, caller, err.Source, trigger = err.TargetSite.shortName() }.msgj();
+            new {err.Message, caller, err.Source, trigger = err.TargetSite.shortName() }.debugj();
+
+            new { f = this.callTrace(0), t = 0 }.debugj();
+            new { f = this.callTrace(-1), t = 1 }.debugj();
+            new { f = this.callTrace(-2), t = 2 }.debugj();
+
+            new { thisFunc = this.thisFunc()}.debugj();
+            new { lastFunc = this.lastFunc()}.debugj();
         }
 
         //string fullName(MemberInfo m)

@@ -206,12 +206,7 @@ namespace vfs
 
         void trace(Exception err, object args = null)
         {
-            string caller = null;
-            try
-            {
-                caller = new StackFrame(1, false).GetMethod().Name;
-            }catch { }
-            $"[{caller}]<{err.TargetSite.shortName()}>({args?.json()}){err.Message}".log();
+            err.log(this.lastFunc(), args);
         }
 
         public override void Cleanup(

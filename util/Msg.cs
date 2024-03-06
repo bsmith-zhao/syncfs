@@ -6,11 +6,8 @@ namespace util
     {
         public static Action<object> output = Console.WriteLine;
 
-        public static void msg(this object obj)
-            => output?.Invoke(obj);
-
-        public static void msgj(this object obj)
-            => output?.Invoke(obj?.json() ?? "<null>");
+        public static void msg(this object src)
+            => output?.Invoke($"{src}");
 
         public static void msgRecover(this object obj, Action func)
         {

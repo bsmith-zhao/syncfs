@@ -95,7 +95,7 @@ namespace test
                     if (!(tn.Tag is Type cls))
                         continue;
 
-                    new { cls.FullName }.msgj();
+                    new { cls.FullName }.debugj();
 
                     var obj = cls.@new() as ITest;
                     obj.test();

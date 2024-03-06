@@ -13,9 +13,10 @@ namespace util.ext
         static void showMessage(Exception err)
             => err.Message.msg();
 
-        public static void handle(this Exception err)
+        public static void handle(this Exception err, 
+            string func = null, object args = null)
         {
-            err.log();
+            err.log(func, args);
             notify?.Invoke(err);
         }
 
@@ -24,7 +25,7 @@ namespace util.ext
             try { func(); }
             catch (Exception err)
             {
-                err.handle();
+                err.handle("".lastFunc());
             }
         }
 
@@ -33,7 +34,7 @@ namespace util.ext
             try { return func(); }
             catch (Exception err)
             {
-                err.handle();
+                err.handle("".lastFunc());
             }
             return default(T);
         }

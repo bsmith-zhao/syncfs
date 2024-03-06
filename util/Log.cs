@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using util.ext;
 
 namespace util
 {
@@ -13,10 +14,25 @@ namespace util
         public static void log(this object src)
             => output?.Invoke($"[{logTime}]{src}");
 
-        public static void log(this Exception err)
-            => output?.Invoke($"[{logTime}]{err.Message}\r\n{err.StackTrace}");
+        public static void log(this Exception err, string func = null, object args = null)
+        {
+            if (output == null)
+                return;
+            string argsText = null;
+            try
+            {
+                argsText = args?.json();
+            }
+            catch (Exception e)
+            {
+                log(e.Message);
+            }
+            log($"[{func}]({argsText})<{err.TargetSite.shortName()}>{err.Message}");
+#if DEBUG
+            output?.Invoke(err.StackTrace);
+#endif
+        }
 
-        static object logTime
-            => DateTime.Now;
+        static object logTime => DateTime.Now;
     }
 }

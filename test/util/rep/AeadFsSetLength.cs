@@ -32,37 +32,37 @@ namespace test.util.rep
             {
                 this.fs = fs;
 
-                new { fs.Length, fs.Position }.msgj();
+                new { fs.Length, fs.Position }.debugj();
 
                 fs.SetLength(20);
-                new { fs.Length, fs.Position }.msgj();
+                new { fs.Length, fs.Position }.debugj();
 
                 fs.SetLength(128);
-                new { fs.Length, fs.Position }.msgj();
+                new { fs.Length, fs.Position }.debugj();
 
                 fs.SetLength(conf.BlockSize*5);
-                new { fs.Length, fs.Position }.msgj();
+                new { fs.Length, fs.Position }.debugj();
 
                 readAll();
 
-                new { fs.Length, fs.Position }.msgj();
+                new { fs.Length, fs.Position }.debugj();
 
                 fs.SetLength(123);
-                new { fs.Length, fs.Position }.msgj();
+                new { fs.Length, fs.Position }.debugj();
 
                 fs.SetLength(0);
-                new { fs.Length, fs.Position }.msgj();
+                new { fs.Length, fs.Position }.debugj();
 
                 //fs.SetLength(123);
 
                 fs.SetLength(conf.BlockSize * 5);
-                new { fs.Length, fs.Position }.msgj();
+                new { fs.Length, fs.Position }.debugj();
 
                 var begin = new DateTime();
-                new { begin }.msgj();
+                new { begin }.debugj();
                 fs.SetLength(1000L*1024*1024);
-                new { cost = (new DateTime() - begin) }.msgj();
-                new { fs.Length, fs.Position }.msgj();
+                new { cost = (new DateTime() - begin) }.debugj();
+                new { fs.Length, fs.Position }.debugj();
             }
         }
 
@@ -75,7 +75,7 @@ namespace test.util.rep
             while ((len = fs.readFull(buff)) > 0)
             {
                 total += len;
-                new { total, len, head=buff.head(16).hex() }.msgj();
+                new { total, len, head=buff.head(16).hex() }.debugj();
             }
         }
     }

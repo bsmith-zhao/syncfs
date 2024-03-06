@@ -24,18 +24,20 @@ namespace vfs.mgr
         public string info => $"{path} <{name}>";
 
         public static IEnumerable<MountInfo> enumMounts()
-            => Process.GetProcesses()
-                .conv(p => 
+        {
+            var vfsExe = App.Option.VfsExe.low();
+            var vfsName = vfsExe.pathName().pathTrunk();
+            return Process.GetProcesses()
+                .conv(p =>
                 {
                     try
                     {
-                        var vfs = App.Option.VfsExe.pathName().pathTrunk();
-                        if (!p.ProcessName.Contains(vfs))
+                        if (!p.ProcessName.low().Contains(vfsName))
                             return null;
                         var c = p.cmd();
                         var idx = c.IndexOf("\"", 1);
                         var exe = c.Substring(1, idx - 1);
-                        if (exe.pathName() != App.Option.VfsExe)
+                        if (exe.pathName().low() != vfsExe)
                             return null;
                         return new MountInfo
                         {
@@ -44,11 +46,12 @@ namespace vfs.mgr
                             proc = p,
                         };
                     }
-                    catch(Exception err)
+                    catch (Exception err)
                     {
-                        new { f="error", err.Message}.msgj();
+                        err.log(nameof(enumMounts));
                     }
                     return null;
-                }).exclude(e => e == null);
+                }).exclude(p => p == null);
+        }
     }
 }

@@ -69,7 +69,7 @@ namespace test.util.rep
             var name = "";
             times.count(n => name = $"{name}{ten}");
 
-            new { name, len = name.Length }.msgj();
+            new { name, len = name.Length }.debugj();
 
             return name;
         }
@@ -81,7 +81,7 @@ namespace test.util.rep
             var path = "1/";
             pathTimes.count(n => path = $"{path}/{name}");
 
-            new { path, pathLen = path.Length }.msgj();
+            new { path, pathLen = path.Length }.debugj();
 
             return path;
         }

@@ -16,14 +16,12 @@ namespace util
 #endif
         public static Action<object> output = Console.WriteLine;
 
-        public static void debug(this object msg)
+        public static void debug(this object src)
         {
-            output?.Invoke($"[debug]{msg?.ToString() ?? "<null>"}");
+            output?.Invoke($"[debug]{src}");
         }
 
-        public static void debugj(this object msg)
-        {
-            output?.Invoke($"[debug]{msg?.json() ?? "<null>"}");
-        }
+        public static void debugj(this object src)
+            => output?.Invoke($"[debug]{src?.json()}");
     }
 }
