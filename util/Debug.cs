@@ -22,6 +22,6 @@ namespace util
         }
 
         public static void debugj(this object src)
-            => output?.Invoke($"[debug]{src?.json()}");
+            => output?.Invoke($"[debug]{src.json()}");
     }
 }

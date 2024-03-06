@@ -10,11 +10,21 @@ using util.ext;
 
 namespace test.demo.error
 {
+    public class Abc
+    {
+        public int a { get; set; } = 1;
+    }
+
     public class LocOfException : ITest
     {
         public void test()
         {
-            testError();
+            new
+            { a = 1, b = 2, c = 3, d = new { a = 1, b = 2 }, e = new Abc(),
+                f = new int[] { 1, 2, 3 },
+                g = "  12  3  ",
+            }.msg();
+            //testError();
         }
 
         public void testError()

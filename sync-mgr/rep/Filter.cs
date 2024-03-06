@@ -35,7 +35,7 @@ namespace util.rep
             }));
 
             excs = excs.exclude(p => p.empty())
-                .ToArray().retain(a => a.Length > 0);
+                .ToArray().remain(a => a.Length > 0);
         }
 
         public bool allowDir(string path)

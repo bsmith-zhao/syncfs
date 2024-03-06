@@ -18,16 +18,7 @@ namespace util
         {
             if (output == null)
                 return;
-            string argsText = null;
-            try
-            {
-                argsText = args?.json();
-            }
-            catch (Exception e)
-            {
-                log(e.Message);
-            }
-            log($"[{func}]({argsText})<{err.TargetSite.shortName()}>{err.Message}");
+            log($"[{func}]({args})<{err.TargetSite.shortName()}>{err.Message}");
 #if DEBUG
             output?.Invoke(err.StackTrace);
 #endif

@@ -13,8 +13,8 @@ namespace util.ext
 
     public static class ObjectEx
     {
-        public static T retain<T>(this T arr, Func<T, bool> func)
-            => func(arr) ? arr : default(T);
+        public static T remain<T>(this T src, Func<T, bool> func)
+            => func(src) ? src : default(T);
 
         public static T use<T>(this T obj, Action<T> func)
         {

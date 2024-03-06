@@ -39,19 +39,18 @@ namespace vfs.mgr
                         var exe = c.Substring(1, idx - 1);
                         if (exe.pathName().low() != vfsExe)
                             return null;
+                        var arg = c.jump(idx + 1)?.Trim();
+                        if (arg == null || arg.Length < 10 || arg.Contains(" "))
+                            return null;
                         return new MountInfo
                         {
-                            args = c.jump(idx + 1).Trim().b64().utf8()
-                                .obj<VfsArgs>(),
+                            args = arg.b64().utf8().obj<VfsArgs>(),
                             proc = p,
                         };
                     }
-                    catch (Exception err)
-                    {
-                        err.log(nameof(enumMounts));
-                    }
+                    catch { }
                     return null;
-                }).exclude(p => p == null);
+                }).exclude(m => m == null);
         }
     }
 }
