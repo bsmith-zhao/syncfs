@@ -158,12 +158,6 @@ namespace link
                 }
                 else if (clicks == 2)
                     editTimer.Stop();
-                    //if (clicks == 1 && lastPick == pick
-                    //    && pick is IEditLabel lb)
-                    //{
-                    //    action = editAct.start(lb);
-                    //    return;
-                    //}
                     base.OnMouseUp(e);
             }
             lastPick = pick;
@@ -201,9 +195,6 @@ namespace link
         /// Graphic surface coordinates to graphic object coordinates.
         public Point toGramPos(Point p)
         {
-            //float zoom = GraphZoom;
-            //gsp.X = (int)((gsp.X - this.AutoScrollPosition.X) / zoom);
-            //gsp.Y = (int)((gsp.Y - this.AutoScrollPosition.Y) / zoom);
             p.X = p.X - this.AutoScrollPosition.X;
             p.Y = p.Y - this.AutoScrollPosition.Y;
             return p;
@@ -211,23 +202,10 @@ namespace link
 
         public Point toViewPos(Point p)
         {
-            //float zoom = GraphZoom;
-            //gsp.X = (int)((gsp.X - this.AutoScrollPosition.X) / zoom);
-            //gsp.Y = (int)((gsp.Y - this.AutoScrollPosition.Y) / zoom);
             p.X = p.X + this.AutoScrollPosition.X;
             p.Y = p.Y + this.AutoScrollPosition.Y;
             return p;
         }
-
-        //public Rectangle Gsc2Goc(Rectangle gsr)
-        //{
-        //    return gsr;
-        //}
-
-        //public Rectangle Goc2Gsc(Rectangle gsr)
-        //{
-        //    return gsr;
-        //}
 
         internal bool pickItem(Point pt, out Item item)
             => (item = Items.last(e => e is IPickable
