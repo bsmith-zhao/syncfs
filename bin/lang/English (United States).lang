@@ -162,3 +162,6 @@ PropDialog.Title = PropDialog
 RoundSync.Unsolved = [{0}] Items Unsolved!
 
 VfsService.PathExist = Mount failed, path [{0}] alread exist!
+
+VfsManager.Title = VfsManager
+VfsManager.ConfirmUnmount = Are you sure to unmount [{0}] ?

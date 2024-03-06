@@ -209,7 +209,7 @@ namespace vfs
             string caller = null;
             try
             {
-                caller = new StackTrace(false).GetFrame(1).GetMethod().Name;
+                caller = new StackFrame(1, false).GetMethod().Name;
             }catch { }
             $"[{caller}]<{err.TargetSite.shortName()}>({args?.json()}){err.Message}".log();
         }

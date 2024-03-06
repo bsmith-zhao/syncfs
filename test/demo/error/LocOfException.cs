@@ -32,7 +32,7 @@ namespace test.demo.error
         void traceError(Exception err)
         {
             var st = new StackTrace(false);
-            var caller = st.GetFrame(1).GetMethod().Name;
+            var caller = new StackFrame(1).GetMethod().Name;
             new {err.Message, caller, err.Source, trigger = err.TargetSite.shortName() }.msgj();
         }
 
