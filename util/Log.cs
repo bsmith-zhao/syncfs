@@ -6,17 +6,17 @@ using System.Threading.Tasks;
 
 namespace util
 {
-    public delegate void LogOutput(params string[] msgs);
-
     public static class Log
     {
-        public static LogOutput output;
+        public static Action<string> output;
 
         public static void log(this object src)
-            => output?.Invoke($"[{DateTime.Now}]{src}");
+            => output?.Invoke($"[{logTime}]{src}");
 
         public static void log(this Exception err)
-            => output?.Invoke($"[{DateTime.Now}]{err.Message}", 
-                err.StackTrace);
+            => output?.Invoke($"[{logTime}]{err.Message}\r\n{err.StackTrace}");
+
+        static object logTime
+            => DateTime.Now;
     }
 }

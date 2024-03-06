@@ -51,7 +51,7 @@ namespace util.rep.aead
             if (sub == null)
                 dir.CreateSubdirectory(settleName(dir, encryptName(name)));
             else if (!sub.isDir())
-                throw new Error(this, "DstIsFile", path);
+                throw new Error(this, "PathExist", path);
         }
 
         string settleName(DirectoryInfo dirInfo, string name)
@@ -91,15 +91,15 @@ namespace util.rep.aead
                 throw new Error(this, "EmptyDstName", dst);
             var dstItem = getSubItem(dstDir, dstName);
             if (dstItem != null && src.ToLower() != dst.ToLower())
-                throw new Error(this, "DstDirExist", dst);
+                throw new Error(this, "DstPathExist", dst);
 
             var encDstName = encryptName(dstName);
 
             if (srcItem.FullName == $"{dstDir.FullName}\\{encDstName}")
                 return;
 
-            var dstLoc = settlePath(dstDir, encDstName);
-            srcItem.MoveTo(dstLoc);
+            var dstPath = settlePath(dstDir, encDstName);
+            srcItem.MoveTo(dstPath);
         }
 
         public override void deleteDir(string path)
@@ -130,11 +130,11 @@ namespace util.rep.aead
             // not rename, then check exist item
             if (src.ToLower() != dst.ToLower()
                 && getSubItem(dir, dstName) != null)
-                throw new Error(this, "DstFileExist", dst);
+                throw new Error(this, "DstPathExist", dst);
 
-            var dstLoc = settlePath(dir, encryptName(dstName));
+            var dstPath = settlePath(dir, encryptName(dstName));
 
-            srcFile.MoveTo(dstLoc);
+            srcFile.MoveTo(dstPath);
         }
 
         public override void deleteFile(string path)
@@ -149,11 +149,11 @@ namespace util.rep.aead
         {
             var dir = locateToParent(path, out var name, true);
             if (null == name)
-                throw new Error(this, "EmptyFileName", path);
+                throw new Error(this, "EmptyName", path);
 
             var node = getSubItem(dir, name);
             if (null != node)
-                throw new Error(this, "FileExist", path);
+                throw new Error(this, "PathExist", path);
 
             var encPath = settlePath(dir, encryptName(name));
             return new AeadFsStream(new FileStream(encPath,

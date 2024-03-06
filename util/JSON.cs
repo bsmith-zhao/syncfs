@@ -52,26 +52,4 @@ namespace util
             return dst;
         }
     }
-
-    //public static class JObjectEx
-    //{
-    //    public static T get<T>(this JObject js, string name)
-    //    {
-    //        return $"{js[name]}".conv<T>();
-    //    }
-
-    //    //public static string jget(this object obj, string path)
-    //    //{
-    //    //    if (obj is JObject json)
-    //    //    {
-    //    //        JToken tk = json.SelectToken(path);
-    //    //        if (null != tk)
-    //    //        {
-    //    //            var value = tk.Value<object>();
-    //    //            return value?.ToString();
-    //    //        }
-    //    //    }
-    //    //    return null;
-    //    //}
-    //}
 }

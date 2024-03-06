@@ -8,6 +8,12 @@ namespace util.ext
 {
     public static class ExceptionEx
     {
+        //public static string debugInfo(this Exception err, object args = null)
+        //    => $"[{err.Source}]<{err.TargetSite.shortName()}>({args?.json()}){err.Message}";
+
+        public static string getTrigger(this Exception err)
+            => err.TargetSite.fullName();
+
         public static Error toError(this Exception err, 
             Type type, string item)
             => new Error(type, item, err.Message);

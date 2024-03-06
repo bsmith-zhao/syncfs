@@ -10,7 +10,7 @@ namespace util
 {
     public class FileLogger : IDisposable
     {
-        StreamWriter writer;
+        StreamWriter fout;
 
         public FileLogger(string path = null,
             Action<Exception> error = null,
@@ -28,7 +28,7 @@ namespace util
                         File.Delete(bakPath);
                     fi.MoveTo(bakPath);
                 }
-                writer = File.AppendText(path);
+                fout = File.AppendText(path);
                 Log.output = this.output;
             }
             catch (Exception err)
@@ -39,16 +39,15 @@ namespace util
 
         public void Dispose()
         {
-            this.free(ref writer);
+            this.free(ref fout);
         }
 
-        public void output(params string[] msgs)
+        void output(string msg)
         {
             try
             {
-                foreach (var msg in msgs)
-                    writer.WriteLine(msg);
-                writer.Flush();
+                fout.WriteLine(msg);
+                fout.Flush();
             }
             catch (Exception err)
             {

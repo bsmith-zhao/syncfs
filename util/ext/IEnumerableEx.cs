@@ -9,10 +9,19 @@ namespace util.ext
 {
     public static class IEnumerableEx
     {
+        public static void count(this int max,
+            Action<int> func)
+        {
+            int n = 0;
+            while (n < max)
+                func(n++);
+        }
+
         public static IEnumerable<int> count(this int max)
         {
-            for (int i = 0; i < max; i++)
-                yield return i;
+            int n = 0;
+            while (n < max)
+                yield return n++;
         }
 
         public static IEnumerable<T> usable<T>(this IEnumerable<T> iter)

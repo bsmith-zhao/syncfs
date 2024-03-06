@@ -1,20 +1,16 @@
-﻿using System;
+﻿using Fsp;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.AccessControl;
-
-using Fsp;
-using VolumeInfo = Fsp.Interop.VolumeInfo;
-using FileInfo = Fsp.Interop.FileInfo;
-using System.Collections;
-using util.rep;
-using util.ext;
 using util;
+using util.ext;
+using util.rep;
+using FileInfo = Fsp.Interop.FileInfo;
+using VolumeInfo = Fsp.Interop.VolumeInfo;
 
 namespace vfs
 {
@@ -69,7 +65,7 @@ namespace vfs
             }
             catch (Exception err)
             {
-                trace(err, "GetVolumeInfo");
+                trace(err);
                 throw;
             }
             /*
@@ -99,7 +95,7 @@ namespace vfs
             }
             catch (Exception err)
             {
-                trace(err, "GetSecurityByName");
+                trace(err, new { path });
                 throw;
             }
         }
@@ -108,7 +104,7 @@ namespace vfs
             String path,
             UInt32 option,
             UInt32 access,
-            UInt32 attrs,
+            UInt32 attr,
             Byte[] security,
             UInt64 allocSize,
             out Object node,
@@ -146,13 +142,13 @@ namespace vfs
             catch (Exception err)
             {
                 fd?.closeFile();
-                trace(err, "Create");
+                trace(err, new { path, option});
                 throw;
             }
         }
         public override Int32 Open(
             String path,
-            UInt32 options,
+            UInt32 option,
             UInt32 access,
             out Object node,
             out Object desc,
@@ -182,7 +178,7 @@ namespace vfs
             catch(Exception err)
             {
                 fd?.closeFile();
-                trace(err, "Open");
+                trace(err, new {path});
                 throw;
             }
         }
@@ -190,37 +186,44 @@ namespace vfs
         public override Int32 Overwrite(
             Object node,
             Object desc,
-            UInt32 attrs,
+            UInt32 attr,
             Boolean replace,
             UInt64 alloc,
             out FileInfo info)
         {
+            var fd = desc as FileDesc;
             try
             {
-                FileDesc fd = (FileDesc)desc;
                 fd.openWrite().SetLength(0);
                 return fd.getInfo(out info);
             }
             catch (Exception err)
             {
-                trace(err, "Overwrite");
+                trace(err, new { fd?.path});
                 throw;
             }
         }
 
-        void trace(Exception err, string func)
-            => $"<{func}>{err.Message}".log();
+        void trace(Exception err, object args = null)
+        {
+            string caller = null;
+            try
+            {
+                caller = new StackTrace(false).GetFrame(1).GetMethod().Name;
+            }catch { }
+            $"[{caller}]<{err.TargetSite.shortName()}>({args?.json()}){err.Message}".log();
+        }
 
         public override void Cleanup(
             Object node,
             Object desc,
             String path,
-            UInt32 flags)
+            UInt32 flag)
         {
+            var fd = desc as FileDesc;
             try
             {
-                FileDesc fd = (FileDesc)desc;
-                if (0 != (flags & CleanupDelete))
+                if (0 != (flag & CleanupDelete))
                 {
                     fd.closeFile();
                     if (fd.isDir)
@@ -231,7 +234,7 @@ namespace vfs
             }
             catch (Exception err)
             {
-                trace(err, "Cleanup");
+                trace(err, new { fd?.path });
                 throw;
             }
         }
@@ -240,14 +243,14 @@ namespace vfs
             Object node,
             Object desc)
         {
+            var fd = desc as FileDesc;
             try
             {
-                FileDesc fd = (FileDesc)desc;
                 fd.closeFile();
             }
             catch (Exception err)
             {
-                trace(err, "Close");
+                trace(err, new { fd?.path });
                 throw;
             }
         }
@@ -255,14 +258,14 @@ namespace vfs
         public override Int32 Read(
             Object node,
             Object desc,
-            IntPtr buffPtr,
+            IntPtr ptr,
             UInt64 offset,
-            UInt32 total,
+            UInt32 count,
             out UInt32 finish)
         {
+            var fd = desc as FileDesc;
             try
             {
-                FileDesc fd = (FileDesc)desc;
                 var fs = fd.openRead();
 
                 if (offset >= (UInt64)fs.Length)
@@ -273,16 +276,16 @@ namespace vfs
 
                 fs.Position = (long)offset;
 
-                int count = (int)total;
-                var buff = getBuff(count);
-                finish = (uint)fs.Read(buff, 0, count);
-                Marshal.Copy(buff, 0, buffPtr, (int)finish);
+                int size = (int)count;
+                var buff = getBuff(size);
+                finish = (uint)fs.Read(buff, 0, size);
+                Marshal.Copy(buff, 0, ptr, (int)finish);
 
                 return STATUS_SUCCESS;
             }
             catch (Exception err)
             {
-                trace(err, "Read");
+                trace(err, new { fd?.path, offset, count});
                 throw;
             }
         }
@@ -298,21 +301,20 @@ namespace vfs
         public override Int32 Write(
             Object node,
             Object desc,
-            IntPtr buffPtr,
+            IntPtr ptr,
             UInt64 offset,
             UInt32 count,
-            Boolean writeToEnd,
-            Boolean constrainedIo,
+            Boolean append,
+            Boolean cover,
             out UInt32 finish,
             out FileInfo info)
         {
+            var fd = desc as FileDesc;
             try
             {
-                FileDesc fd = (FileDesc)desc;
-
                 var fs = fd.openWrite();
 
-                if (constrainedIo)
+                if (cover)
                 {
                     if (offset >= (UInt64)fs.Length)
                     {
@@ -324,7 +326,7 @@ namespace vfs
                         count = (UInt32)((UInt64)fs.Length - offset);
                 }
 
-                if (writeToEnd)
+                if (append)
                     fs.Position = fs.Length;
                 else
                 {
@@ -340,7 +342,7 @@ namespace vfs
 
                 int size = (int)count;
                 byte[] buff = getBuff(size);
-                Marshal.Copy(buffPtr, buff, 0, size);
+                Marshal.Copy(ptr, buff, 0, size);
                 fs.Write(buff, 0, size);
 
                 finish = count;
@@ -348,7 +350,7 @@ namespace vfs
             }
             catch (Exception err)
             {
-                trace(err, "Write");
+                trace(err, new { fd?.path, offset, count, cover, append});
                 throw;
             }
         }
@@ -357,9 +359,9 @@ namespace vfs
             Object desc,
             out FileInfo info)
         {
+            var fd = desc as FileDesc;
             try
             {
-                FileDesc fd = (FileDesc)desc;
                 if (null == fd)
                 {
                     /* we do not flush the whole volume, so just return SUCCESS */
@@ -371,7 +373,7 @@ namespace vfs
             }
             catch (Exception err)
             {
-                trace(err, "Flush");
+                trace(err, new { fd?.path });
                 throw;
             }
         }
@@ -381,21 +383,21 @@ namespace vfs
             Object desc,
             out FileInfo info)
         {
+            var fd = desc as FileDesc;
             try
             {
-                FileDesc fd = (FileDesc)desc;
                 return fd.getInfo(out info);
             }
             catch (Exception err)
             {
-                trace(err, "GetFileInfo");
+                trace(err, new { fd?.path });
                 throw;
             }
         }
 
         public override Int32 SetBasicInfo(
             Object FileNode,
-            Object FileDesc0,
+            Object desc,
             UInt32 FileAttributes,
             UInt64 CreationTime,
             UInt64 LastAccessTime,
@@ -403,14 +405,14 @@ namespace vfs
             UInt64 ChangeTime,
             out FileInfo info)
         {
+            var fd = desc as FileDesc;
             try
             {
-                FileDesc fd = (FileDesc)FileDesc0;
                 return fd.getInfo(out info);
             }
             catch (Exception err)
             {
-                trace(err, "SetBasicInfo");
+                trace(err, new { fd?.path });
                 throw;
             }
         }
@@ -419,14 +421,13 @@ namespace vfs
             Object node,
             Object desc,
             UInt64 newSize,
-            Boolean setAllocSize,
+            Boolean setAlloc,
             out FileInfo info)
         {
+            var fd = desc as FileDesc;
             try
             {
-                FileDesc fd = (FileDesc)desc;
-                
-                if (!setAllocSize)
+                if (!setAlloc)
                 {
                     var fs = fd.openWrite();
                     if (fs.Length > (long)newSize)
@@ -437,7 +438,7 @@ namespace vfs
             }
             catch (Exception err)
             {
-                trace(err, "SetFileSize");
+                trace(err, new { fd?.path, newSize, setAlloc});
                 throw;
             }
         }
@@ -453,22 +454,21 @@ namespace vfs
         public override Int32 Rename(
             Object node,
             Object desc,
-            String path,
+            String oldPath,
             String newPath,
-            Boolean replaceIfExists)
+            Boolean replace)
         {
+            var fd = desc as FileDesc;
             try
             {
-                var fd = desc as FileDesc;
-
-                var item = rep.getItem(path);
+                var item = rep.getItem(oldPath);
                 if (item != null)
                 {
                     if (item.isDir)
-                        rep.moveDir(path, newPath);
+                        rep.moveDir(oldPath, newPath);
                     else
                     {
-                        rep.moveFile(path, newPath);
+                        rep.moveFile(oldPath, newPath);
                     }
                     fd.item = rep.getItem(newPath);
                 }
@@ -477,7 +477,7 @@ namespace vfs
             }
             catch (Exception err)
             {
-                trace(err, "Rename");
+                trace(err, new { fd?.path, oldPath, newPath, replace });
                 throw;
             }
         }
@@ -503,15 +503,15 @@ namespace vfs
         public override Boolean ReadDirectoryEntry(
             Object node,
             Object desc,
-            String pattern,
+            String match,
             String marker,
             ref Object context,
             out String path,
             out FileInfo info)
         {
+            var fd = desc as FileDesc;
             try
             {
-                FileDesc fd = (FileDesc)desc;
                 if (fd.items == null)
                 {
                     var items = new SortedList<string, RepItem>();
@@ -549,7 +549,7 @@ namespace vfs
             }
             catch (Exception err)
             {
-                trace(err, "ReadDirectory");
+                trace(err, new { fd?.path, match, marker, context });
                 throw;
             }
         }

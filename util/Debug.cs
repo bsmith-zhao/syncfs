@@ -9,6 +9,11 @@ namespace util
 {
     public static class Debug
     {
+#if DEBUG
+        // debug stuff goes here
+#else
+  // release stuff goes here
+#endif
         public static Action<object> output = Console.WriteLine;
 
         public static void debug(this object msg)

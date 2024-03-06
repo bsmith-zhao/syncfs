@@ -99,10 +99,5 @@ namespace util.ext
             fld = value;
             after?.Invoke(old);
         }
-
-        public static object @new(this Type type)
-        {
-            return Activator.CreateInstance(type);
-        }
     }
 }
