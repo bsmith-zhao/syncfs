@@ -16,6 +16,7 @@ namespace util.ext
         public static void handle(this Exception err, 
             string func = null, object args = null)
         {
+            func = func ?? func.lastFunc();
             err.log(func, args);
             notify?.Invoke(err);
         }
@@ -25,7 +26,7 @@ namespace util.ext
             try { func(); }
             catch (Exception err)
             {
-                err.handle("".lastFunc());
+                err.handle(src.lastFunc());
             }
         }
 
@@ -34,7 +35,7 @@ namespace util.ext
             try { return func(); }
             catch (Exception err)
             {
-                err.handle("".lastFunc());
+                err.handle(src.lastFunc());
             }
             return default(T);
         }

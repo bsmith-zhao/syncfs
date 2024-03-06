@@ -964,18 +964,7 @@ namespace sync.ui
 
         private void mountBtn_Click(object sender, EventArgs e)
         {
-            if (!canMount)
-                return;
-
-            try
-            {
-                mount();
-            }
-            catch (CancelPwd) { }
-            catch (Exception err)
-            {
-                err.handle();
-            }
+            mount();
         }
 
         void updateMountStatus(Process p, RectNode node, LinkViewGraph graph)
@@ -990,33 +979,44 @@ namespace sync.ui
 
         void mount()
         {
-            var tag = pickItem.repTag();
-            var conf = tag.conf.Args as RepConf;
+            if (!canMount)
+                return;
 
-            var repArgs = conf.newRepArgs();
-
-            var cmd = $"{"".appDir()}/{App.Option.VfsExe}";
-            var args = new VfsArgs
+            try
             {
-                path = conf.Mount.Path,
-                name = conf.Mount.Name,
-                type = tag.entry.type,
-                src = conf.getSource(),
-            };
+                var tag = pickItem.repTag();
+                var conf = tag.conf.Args as RepConf;
 
-            var node = pickItem as RectNode;
-            var graph = spaceTag.graph;
+                var repArgs = conf.newRepArgs();
 
-            args.mount(cmd, repArgs, before: p => 
+                var cmd = $"{"".appDir()}/{App.Option.VfsExe}";
+                var args = new VfsArgs
+                {
+                    path = conf.Mount.Path,
+                    name = conf.Mount.Name,
+                    type = tag.entry.type,
+                    src = conf.getSource(),
+                };
+
+                var node = pickItem as RectNode;
+                var graph = spaceTag.graph;
+
+                args.mount(cmd, repArgs, before: p => 
+                {
+                    updateMountStatus(tag.vfs = p, node, graph);
+                },
+                after: p => 
+                {
+                    updateMountStatus(tag.vfs = null, node, graph);
+                },
+                stderr: s => s.msg(),
+                stdout: s => s.msg());
+            }
+            catch (CancelPwd) { }
+            catch (Exception err)
             {
-                updateMountStatus(tag.vfs = p, node, graph);
-            },
-            after: p => 
-            {
-                updateMountStatus(tag.vfs = null, node, graph);
-            },
-            stderr: s => s.msg(),
-            stdout: s => s.msg());
+                err.handle();
+            }
         }
 
         bool canUnmount => repTag?.vfs != null;
