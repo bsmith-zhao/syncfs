@@ -24,7 +24,7 @@ Click [Mount] to mount the file system to the operating system. After the mounti
 [File Sync System]
 
 Run [sync-mgr.exe] to open the manager:
-![SyncManager screen shot](https://github.com/bsmith-zhao/syncfs/blob/main/doc/vfs-mgr.png?raw=true)
+![SyncManager screen shot](https://github.com/bsmith-zhao/syncfs/blob/main/doc/sync-mgr.png?raw=true)
 
 The first step is to create a workspace through [AddSpace]. The workspace is a collection of file repositories, views, and synchronizations.
 
@@ -39,3 +39,12 @@ Click [BatchRun] to start the batch runner to perform synchronization operations
 sync-run.exe "c:/myspace"
 
 
+Special thanks to:
+
+libsodium
+https://doc.libsodium.org/
+Very easy to use and powerful encryption library
+
+winfsp
+https://winfsp.dev/
+Simple and efficient virtual file drive
