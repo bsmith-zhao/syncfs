@@ -16,22 +16,23 @@ namespace util.rep
         }
 
         public override bool exist(string path)
-            => locateToItem(path) != null;
+            => locateToItem(path, out var realPath) != null;
 
         public override RepItem getItem(string path)
         {
-            if (!locateToItem(path, out var item))
+            if (!locateToItem(path, out var item, out var realPath))
                 return null;
             else if (item.isDir())
                 return new LocalDirItem
                 {
                     rep = this,
                     dirInfo = item as DirectoryInfo,
-                    path = parsePath(item),
+                    path = realPath,
                 };
             else
-                return newFileNode<FileItem>(new FileInfo(item.FullName), 
-                    parsePath(item));
+                return newFileNode<FileItem>(
+                    new FileInfo(item.FullName), 
+                    realPath);
         }
 
         public T newFileNode<T>(FileInfo file, string path)
@@ -44,54 +45,88 @@ namespace util.rep
                 modifyTime = file.writeTime(),
             };
 
-        public virtual string parseName(string name,
-            FileSystemInfo item = null, string dir = null)
-            => name;
-
-        public abstract string parsePath(FileSystemInfo fi);
+        public virtual string parseName(FileSystemInfo item)
+            => item.Name;
 
         protected T getSubItem<T>(IEnumerable<T> items,
-            string name) where T : FileSystemInfo
+            string name, out string realName)
+            where T : FileSystemInfo
         {
+            realName = null;
             name = name.low();
-            return items.first(f =>
-                parseName(f.Name, item: f).low() == name);
+            foreach (var f in items)
+                if ((realName = parseName(f)).low() == name)
+                    return f;
+            return null;
         }
 
-        protected DirectoryInfo getSubDir(DirectoryInfo dir, string name)
-            => getSubItem(dir.EnumerateDirectories(), name);
+        protected DirectoryInfo getSubDir(DirectoryInfo dir, 
+            string name, out string realName)
+            => getSubItem(dir.EnumerateDirectories(), name, out realName);
 
-        protected FileInfo getSubFile(DirectoryInfo dir, string name)
-            => getSubItem(dir.EnumerateFiles(), name);
+        protected FileInfo getSubFile(DirectoryInfo dir, 
+            string name)
+            => getSubItem(dir.EnumerateFiles(), name, out var realName);
 
-        protected FileSystemInfo getSubItem(DirectoryInfo dir, string name)
-            => getSubItem(dir.EnumerateFileSystemInfos(), name);
+        protected FileSystemInfo getSubItem(DirectoryInfo dir, 
+            string name, out string realName)
+            => getSubItem(dir.EnumerateFileSystemInfos(), name, out realName);
 
         protected bool getParent(string path,
-            out DirectoryInfo dir, out string name)
-            => (dir = locateToParent(path, out name)) != null
+            out DirectoryInfo dir, 
+            out string realDir,
+            out string name)
+            => (dir = locateToParent(path, out name, out realDir)) != null
             && name != null;
 
         protected bool locateToFile(string path, out FileInfo file)
             => (file = locateToFile(path)) != null;
 
         protected FileInfo locateToFile(string path)
-            => getParent(path, out var dir, out var name) 
-            ? getSubFile(dir, name) : null;
+        {
+            if (getParent(path, out var dir, out var realDir, out var name))
+            {
+                return getSubFile(dir, name);
+            }
+            return null;
+        }
 
         protected bool locateToDir(string path, out DirectoryInfo dir)
             => (dir = locateToDir(path)) != null;
 
         protected DirectoryInfo locateToDir(string path)
-            => getParent(path, out var dir, out var name)
-            ? getSubDir(dir, name) : dir;
+        {
+            if (getParent(path, out var dir, out var realDir, out var name))
+            {
+                return getSubDir(dir, name, out var realName);
+            }
+            return null;
+        }
 
-        protected bool locateToItem(string path, out FileSystemInfo item)
-            => (item = locateToItem(path)) != null;
+        protected bool locateToItem(string path, 
+            out FileSystemInfo item, out string realPath)
+            => (item = locateToItem(path, out realPath)) != null;
 
-        protected FileSystemInfo locateToItem(string path)
-            => getParent(path, out var dir, out var name)
-            ? getSubItem(dir, name) : dir;
+        protected FileSystemInfo locateToItem(string path, out string realPath)
+        {
+            if (getParent(path, out var dir, out var realDir, out var name))
+            {
+                var item = getSubItem(dir, name, out var realName);
+                realPath = mergePath(realDir, realName);
+                return item;
+            }
+            realPath = null;
+            return null;
+        }
+
+        string mergePath(string dir, string name)
+        {
+            if (dir == null)
+                return name;
+            if (name == null)
+                return dir;
+            return $"{dir}/{name}";
+        }
 
         protected abstract DirectoryInfo addSubDir(DirectoryInfo dir,
             string name);
@@ -106,21 +141,33 @@ namespace util.rep
 
         protected DirectoryInfo locateToParent(string path,
                                     out string name,
+                                    out string realDir,
                                     bool create = false)
         {
             var nodes = splitPath(path, out name);
             var dir = rootDir;
+            realDir = null;
             for (int i = 0; i < nodes?.Length - 1; i++)
             {
                 if (nodes[i].Length == 0)
                     continue;
-                var sub = getSubDir(dir, nodes[i]);
+                var sub = getSubDir(dir, nodes[i], out var realName);
                 if (null != sub)
+                {
                     dir = sub;
+                }
                 else if (create)
+                {
                     dir = addSubDir(dir, nodes[i]);
+                    realName = nodes[i];
+                }
                 else
                     return null;
+
+                if (realDir == null)
+                    realDir = realName;
+                else
+                    realDir = $"{realDir}/{realName}";
             }
             return dir;
         }

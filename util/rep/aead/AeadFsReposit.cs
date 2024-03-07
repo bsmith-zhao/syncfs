@@ -43,11 +43,12 @@ namespace util.rep.aead
 
         public override void createDir(string path)
         {
-            var dir = locateToParent(path, out var name, true);
+            var dir = locateToParent(path, out var name, 
+                out var realDir, create: true);
             if (null == name)
                 throw new Error(this, "EmptyName", path);
 
-            var sub = getSubItem(dir, name);
+            var sub = getSubItem(dir, name, out var realName);
             if (sub == null)
                 dir.CreateSubdirectory(settleName(dir, encryptName(name)));
             else if (!sub.isDir())
@@ -86,10 +87,11 @@ namespace util.rep.aead
             if (!locateToDir(src, out var srcItem))
                 throw new Error(this, "DirNotExist", src);
 
-            var dstDir = locateToParent(dst, out var dstName, true);
+            var dstDir = locateToParent(dst, out var dstName, 
+                out var realDir, create: true);
             if (null == dstName)
                 throw new Error(this, "EmptyDstName", dst);
-            var dstItem = getSubItem(dstDir, dstName);
+            var dstItem = getSubItem(dstDir, dstName, out var realName);
             if (dstItem != null && src.ToLower() != dst.ToLower())
                 throw new Error(this, "DstPathExist", dst);
 
@@ -123,13 +125,14 @@ namespace util.rep.aead
             if (locateToFile(src, out var srcFile) == false)
                 throw new Error(this, "FileNotExist", src);
 
-            var dir = locateToParent(dst, out var dstName, true);
+            var dir = locateToParent(dst, out var dstName, 
+                out var realDir, create: true);
             if (null == dstName)
                 throw new Error(this, "EmptyDstName", dst);
 
             // not rename, then check exist item
             if (src.ToLower() != dst.ToLower()
-                && getSubItem(dir, dstName) != null)
+                && getSubItem(dir, dstName, out var realName) != null)
                 throw new Error(this, "DstPathExist", dst);
 
             var dstPath = settlePath(dir, encryptName(dstName));
@@ -147,11 +150,12 @@ namespace util.rep.aead
 
         public override Stream createFile(string path)
         {
-            var dir = locateToParent(path, out var name, true);
+            var dir = locateToParent(path, out var name, 
+                out var realDir, create: true);
             if (null == name)
                 throw new Error(this, "EmptyName", path);
 
-            var node = getSubItem(dir, name);
+            var node = getSubItem(dir, name, out var realName);
             if (null != node)
                 throw new Error(this, "PathExist", path);
 
@@ -194,9 +198,9 @@ namespace util.rep.aead
             return code;
         }
 
-        public override string parseName(string name, 
-            FileSystemInfo item = null, string dir = null)
+        public override string parseName(FileSystemInfo item)
         {
+            var name = item.Name;
             // long name store file
             if (name.EndsWith("~"))
                 return null;
@@ -212,7 +216,7 @@ namespace util.rep.aead
             if (and)
             {
                 // read and decode long name
-                dir = dir ?? item.FullName.cut(name.Length + 1);
+                var dir = item.FullName.cut(name.Length + 1);
                 new { dir }.debug();
                 name = File.ReadAllText($"{dir}\\{name}~");
                 new { name }.debug();
@@ -289,16 +293,16 @@ namespace util.rep.aead
         protected override long getFileSize(FileInfo fi)
             => AeadFsStream.getDataSize(fi.Length, conf);
 
-        public override string parsePath(FileSystemInfo fi)
-        {
-            string dir = rootPath;
-            return fi?.FullName.TrimEnd('\\', '/').jump(pathSkip)
-            ?.Split('\\').conv(n => 
-            {
-                var decName = parseName(n, dir: dir);
-                dir = $"{dir}/decName";
-                return decName;
-            }).join("/");
-        }
+        //public override string parsePath(FileSystemInfo fi)
+        //{
+        //    string dir = rootPath;
+        //    return fi?.FullName.TrimEnd('\\', '/').jump(pathSkip)
+        //    ?.Split('\\').conv(n => 
+        //    {
+        //        var decName = parseName(n, dir: dir);
+        //        dir = $"{dir}/decName";
+        //        return decName;
+        //    }).join("/");
+        //}
     }
 }
