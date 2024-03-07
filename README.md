@@ -42,9 +42,9 @@ sync-run.exe "c:/myspace"
 Special thanks to:
 
 libsodium
-https://doc.libsodium.org/
+https://doc.libsodium.org
 Very easy to use and powerful encryption library
 
 winfsp
-https://winfsp.dev/
+https://winfsp.dev
 Simple and efficient virtual file drive
