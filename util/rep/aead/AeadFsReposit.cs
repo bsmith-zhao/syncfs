@@ -29,7 +29,7 @@ namespace util.rep.aead
             rootDir.Create();
             pathSkip = rootDir.FullName.Length + 1;
             dirEnc = conf.newDirCrypt(DirKeyContext.utf8());
-            nameEnc = Encoding.GetEncoding(conf.Encode);
+            textEnc = Encoding.GetEncoding(conf.Encode);
         }
 
         protected override string rootPath => $"{repPath}/0";
@@ -39,7 +39,7 @@ namespace util.rep.aead
         AeadFsConf conf;
         int pathSkip;
         DirCrypt dirEnc;
-        Encoding nameEnc;
+        Encoding textEnc;
 
         public override void createDir(string path)
         {
@@ -50,36 +50,9 @@ namespace util.rep.aead
 
             var sub = getSubItem(dir, name, out var realName);
             if (sub == null)
-                dir.CreateSubdirectory(settleName(dir, encryptName(name)));
+                dir.CreateSubdirectory(settleLongName(dir, encodeName(name)));
             else if (!sub.isDir())
                 throw new Error(this, "PathExist", path);
-        }
-
-        string settleName(DirectoryInfo dirInfo, string name)
-        {
-            var dir = dirInfo.FullName;
-            if (!pathExist($"{dir}\\{name}"))
-                return name;
-
-            int idx = 0;
-            while (idx++ < 1000)
-            {
-                var newName = $"{name}!{idx}";
-                if (!pathExist($"{dir}\\{newName}"))
-                    return newName;
-            }
-            throw new Error(this, "SettleOverflow", idx);
-        }
-
-        string settlePath(DirectoryInfo dirInfo, string name)
-        {
-            name = settleName(dirInfo, name);
-            return $"{dirInfo.FullName}\\{name}";
-        }
-
-        bool pathExist(string path)
-        {
-            return File.Exists(path) || Directory.Exists(path);
         }
 
         public override void moveDir(string src, string dst)
@@ -95,26 +68,21 @@ namespace util.rep.aead
             if (dstItem != null && src.ToLower() != dst.ToLower())
                 throw new Error(this, "DstPathExist", dst);
 
-            var encDstName = encryptName(dstName);
+            var encDstName = encodeName(dstName);
 
             if (srcItem.FullName == $"{dstDir.FullName}\\{encDstName}")
                 return;
 
             var dstPath = settlePath(dstDir, encDstName);
-            srcItem.MoveTo(dstPath);
+            deleteLongName(srcItem, () => srcItem.MoveTo(dstPath));
         }
 
         public override void deleteDir(string path)
         {
             if (!locateToDir(path, out var dir))
                 throw new Error(this, "DirNotExist", path);
-            dir.Delete(true);
-        }
 
-        protected bool equalPath(string src, string dst)
-        {
-            return src.ToLower() == dst.ToLower()
-                && src.pathName() == dst.pathName();
+            deleteLongName(dir, () => dir.Delete(true));
         }
 
         public override void moveFile(string src, string dst)
@@ -135,15 +103,15 @@ namespace util.rep.aead
                 && getSubItem(dir, dstName, out var realName) != null)
                 throw new Error(this, "DstPathExist", dst);
 
-            var dstPath = settlePath(dir, encryptName(dstName));
+            var dstPath = settlePath(dir, encodeName(dstName));
 
-            srcFile.MoveTo(dstPath);
+            deleteLongName(srcFile, () => srcFile.MoveTo(dstPath));
         }
 
         public override void deleteFile(string path)
         {
-            if (locateToFile(path, out var fi))
-                fi.Delete();
+            if (locateToFile(path, out var file))
+                deleteLongName(file, () => file.Delete());
             else
                 throw new Error(this, "FileNotExist", path);
         }
@@ -159,7 +127,7 @@ namespace util.rep.aead
             if (null != node)
                 throw new Error(this, "PathExist", path);
 
-            var encPath = settlePath(dir, encryptName(name));
+            var encPath = settlePath(dir, encodeName(name));
             return new AeadFsStream(new FileStream(encPath,
                                     FileMode.CreateNew,
                                     FileAccess.ReadWrite,
@@ -179,16 +147,91 @@ namespace util.rep.aead
                                     conf.packSize()), conf, create: false);
         }
 
-        string encryptName(string name)
+        protected override DirectoryInfo addSubDir(DirectoryInfo dir,
+                                                    string name)
+            => getSubFile(dir, name) == null
+            ? dir.CreateSubdirectory(settleLongName(dir, encodeName(name)))
+            : throw new Error(this, "SubIsFile", name);
+
+        protected override long getFileSize(FileInfo fi)
+            => AeadFsStream.getDataSize(fi.Length, conf);
+
+        bool equalPath(string src, string dst)
         {
-            byte[] data = nameEnc.GetBytes(name);
-            bool utf8 = nameEnc.GetString(data) != name;
+            return src.ToLower() == dst.ToLower()
+                && src.pathName() == dst.pathName();
+        }
+
+        void deleteLongName(FileSystemInfo item,
+            Action func)
+        {
+            var path = item.FullName;
+            func();
+
+            if (path.lastIdx('&', 10) > 0)
+                File.Delete($"{path}~");
+        }
+
+        const int MaxName = 250;
+
+        string settleLongName(DirectoryInfo dir, string name)
+        {
+            string longName = null;
+            if (name.Length > MaxName)
+            {
+                longName = name.Replace("%", "/");
+                if (longName.last() == '$')
+                    longName = longName.cut(1);
+
+                name = $"{name.tail(MaxName)}&";
+            }
+
+            name = settleName(dir, name);
+
+            if (longName != null)
+            {
+                File.WriteAllText($"{dir.FullName}\\{name}~", longName);
+            }
+
+            return name;
+        }
+
+        string settleName(DirectoryInfo dir, string name)
+        {
+            var dirPath = dir.FullName;
+            if (!pathExist($"{dirPath}\\{name}"))
+                return name;
+
+            int idx = 0;
+            while (idx++ < 1000)
+            {
+                var newName = $"{name}!{idx}";
+                if (!pathExist($"{dirPath}\\{newName}"))
+                    return newName;
+            }
+            throw new Error(this, "SettleOverflow", idx);
+        }
+
+        string settlePath(DirectoryInfo dir, string name)
+        {
+            name = settleLongName(dir, name);
+            return $"{dir.FullName}\\{name}";
+        }
+
+        bool pathExist(string path)
+        {
+            return File.Exists(path) || Directory.Exists(path);
+        }
+
+        string encodeName(string name)
+        {
+            byte[] data = textEnc.GetBytes(name);
+            bool utf8 = textEnc.GetString(data) != name;
             if (utf8)
                 data = name.utf8();
 
             var code = dirEnc.encrypt(data).b64()
                 .TrimEnd('=').Replace('/', '%');
-
             if (data.Length == 16)
                 code = $"{code}#";
 
@@ -210,31 +253,32 @@ namespace util.rep.aead
             // filter mark char and check invalid char
             if (!decodeName(name, out var cipher,
                                 out var utf8, out var b16,
-                                out var and))
+                                out var isLong))
                 return null;
 
-            if (and)
+            if (isLong)
             {
                 // read and decode long name
                 var dir = item.FullName.cut(name.Length + 1);
-                name = File.ReadAllText($"{dir}\\{name}~");
-                cipher = name.b64();
+                var longName = File.ReadAllText($"{dir}\\{name}~");
+                cipher = longName.b64();
             }
 
             var data = dirEnc.decrypt(cipher, b16);
 
-            return utf8 ? data.utf8() : nameEnc.GetString(data);
+            return utf8 ? data.utf8() : textEnc.GetString(data);
         }
 
-        public bool decodeName(string name, 
+        bool decodeName(string name, 
             out byte[] cipher, 
             out bool utf8, out bool b16,
-            out bool and)
+            out bool isLong)
         {
             cipher = null;
             utf8 = false;
             b16 = false;
-            and = false;
+            isLong = false;
+
             int i = name.Length, end = name.Length;
             char[] cs = null;
             char c;
@@ -243,8 +287,8 @@ namespace util.rep.aead
                 switch (c = name[i])
                 {
                     case '&':
-                        and = true;
                         end = i;
+                        isLong = true;
                         break;
                     case '!':   // for conflict name postfix
                         end = i;
@@ -273,6 +317,9 @@ namespace util.rep.aead
                 }
             }
 
+            if (isLong)
+                return true;
+
             if (null != cs)
                 name = new string(cs, 0, end);
             else if (end != name.Length)
@@ -281,26 +328,5 @@ namespace util.rep.aead
             cipher = name.b64();
             return true;
         }
-
-        protected override DirectoryInfo addSubDir(DirectoryInfo dir,
-                                                    string name)
-            => getSubFile(dir, name) == null
-            ? dir.CreateSubdirectory(settleName(dir, encryptName(name)))
-            : throw new Error(this, "SubIsFile", name);
-
-        protected override long getFileSize(FileInfo fi)
-            => AeadFsStream.getDataSize(fi.Length, conf);
-
-        //public override string parsePath(FileSystemInfo fi)
-        //{
-        //    string dir = rootPath;
-        //    return fi?.FullName.TrimEnd('\\', '/').jump(pathSkip)
-        //    ?.Split('\\').conv(n => 
-        //    {
-        //        var decName = parseName(n, dir: dir);
-        //        dir = $"{dir}/decName";
-        //        return decName;
-        //    }).join("/");
-        //}
     }
 }

@@ -72,7 +72,7 @@ namespace util.rep
             string name, out string realName)
             => getSubItem(dir.EnumerateFileSystemInfos(), name, out realName);
 
-        protected bool locateName(string path,
+        protected bool locateToName(string path,
             out DirectoryInfo dir,
             out string realDir,
             out string name)
@@ -84,7 +84,7 @@ namespace util.rep
 
         protected FileInfo locateToFile(string path)
         {
-            if (locateName(path, out var dir, out var realDir, out var name))
+            if (locateToName(path, out var dir, out var realDir, out var name))
             {
                 return getSubFile(dir, name);
             }
@@ -96,7 +96,7 @@ namespace util.rep
 
         protected DirectoryInfo locateToDir(string path)
         {
-            if (locateName(path, out var dir, out var realDir, out var name))
+            if (locateToName(path, out var dir, out var realDir, out var name))
             {
                 return getSubDir(dir, name, out var realName);
             }
@@ -109,7 +109,7 @@ namespace util.rep
 
         protected FileSystemInfo locateToItem(string path, out string realPath)
         {
-            if (locateName(path, out var dir, out var realDir, out var name))
+            if (locateToName(path, out var dir, out var realDir, out var name))
             {
                 var item = getSubItem(dir, name, out var realName);
                 realPath = mergePath(realDir, realName);

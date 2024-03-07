@@ -87,8 +87,19 @@ namespace util.ext
         //}
 
         public static char last(this string str)
+            => str?.Length > 0 ? str[str.Length - 1]
+            : default(char);
+
+        public static int lastIdx(this string str, char c, int count)
         {
-            return str[str.Length - 1];
+            int idx = str.Length;
+            while (count-- > 0 && idx-- > 0)
+                if (str[idx] == c)
+                    return idx;
+            return -1;
         }
+
+        public static string tail(this string str, int count)
+            => str.Substring(str.Length - count);
     }
 }
