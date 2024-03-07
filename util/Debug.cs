@@ -4,21 +4,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using util.ext;
 
 namespace util
 {
     public static class Debug
     {
 #if DEBUG
-        // debug stuff goes here
-#else
-  // release stuff goes here
-#endif
         public static Action<object> output = Console.WriteLine;
+#else
+        public static Action<object> output = null;
+#endif
 
         public static void debug(this object src)
         {
-            output?.Invoke($"[debug]{src}");
+            output?.Invoke($"[debug]<{true.lastFunc()}>{src}");
         }
 
         public static void debugj(this object src)

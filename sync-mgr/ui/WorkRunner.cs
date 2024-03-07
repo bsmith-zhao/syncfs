@@ -72,7 +72,7 @@ namespace sync
                     throw new ManualCancel();
             };
             item.UpdateStatus = (action, status)
-                => this.runAsync(() =>
+                => this.safeCallAsync(() =>
                 {
                     actionUI.Text = action;
                     statusUI.Text = status;

@@ -99,7 +99,7 @@ namespace sync.ui
         {
             InitializeComponent();
 
-            msgUI.msgToMeAsync();
+            Msg.output = msgUI.msgAsync;
 
             icons = this.newImages(32)
                 .add(DirIcon, Resources.Dir)

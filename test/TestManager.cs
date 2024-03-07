@@ -26,8 +26,8 @@ namespace test
         {
             InitializeComponent();
 
-            logUI.msgToMeAsync();
-            Status.output = statUI.setTextAsync;
+            Msg.output = msgUI.msgAsync;
+            Status.output = statUI.safeSetTextAsync;
 
             toolbar.fixBorderBug();
 

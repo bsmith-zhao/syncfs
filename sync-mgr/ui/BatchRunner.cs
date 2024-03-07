@@ -41,7 +41,7 @@ namespace sync.ui
         {
             InitializeComponent();
 
-            msgUI.msgToMeAsync();
+            Msg.output = msgUI.msgAsync;
 
             listIcons = this.newImages(32)
                 .add(nameof(Resources.MasterSync), Resources.MasterSync)
@@ -189,7 +189,7 @@ namespace sync.ui
                     throw new ManualCancel();
             };
             wk.UpdateStatus = (act, st) 
-                => this.runAsync(() =>
+                => this.safeCallAsync(() =>
                 {
                     actionUI.Text = act;
                     statusUI.Text = st;

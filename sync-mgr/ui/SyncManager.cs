@@ -106,7 +106,8 @@ namespace sync.ui
         {
             InitializeComponent();
 
-            msgUI.msgToMeAsync();
+            Msg.output = msgUI.msgAsync;
+            util.Debug.output = msgUI.msgAsync;
 
             icons96 = this.newImages(96)
                 .add(nameof(RepType.AeadFS), Resources.AeadFS96)

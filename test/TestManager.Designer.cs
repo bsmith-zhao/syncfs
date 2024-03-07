@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TestManager));
-            this.logUI = new System.Windows.Forms.TextBox();
+            this.msgUI = new System.Windows.Forms.TextBox();
             this.statUI = new System.Windows.Forms.TextBox();
             this.toolbar = new System.Windows.Forms.ToolStrip();
             this.runBtn = new System.Windows.Forms.ToolStripButton();
@@ -42,14 +42,14 @@
             // 
             // logUI
             // 
-            this.logUI.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.logUI.Location = new System.Drawing.Point(403, 38);
-            this.logUI.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.logUI.Multiline = true;
-            this.logUI.Name = "logUI";
-            this.logUI.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.logUI.Size = new System.Drawing.Size(898, 720);
-            this.logUI.TabIndex = 0;
+            this.msgUI.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.msgUI.Location = new System.Drawing.Point(403, 38);
+            this.msgUI.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.msgUI.Multiline = true;
+            this.msgUI.Name = "logUI";
+            this.msgUI.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.msgUI.Size = new System.Drawing.Size(898, 720);
+            this.msgUI.TabIndex = 0;
             // 
             // statUI
             // 
@@ -129,7 +129,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 32F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1305, 811);
-            this.Controls.Add(this.logUI);
+            this.Controls.Add(this.msgUI);
             this.Controls.Add(this.splitter2);
             this.Controls.Add(this.statUI);
             this.Controls.Add(this.splitter1);
@@ -151,7 +151,7 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox logUI;
+        private System.Windows.Forms.TextBox msgUI;
         private System.Windows.Forms.TextBox statUI;
         private System.Windows.Forms.ToolStrip toolbar;
         private System.Windows.Forms.ToolStripButton runBtn;

@@ -217,9 +217,7 @@ namespace util.rep.aead
             {
                 // read and decode long name
                 var dir = item.FullName.cut(name.Length + 1);
-                new { dir }.debug();
                 name = File.ReadAllText($"{dir}\\{name}~");
-                new { name }.debug();
                 cipher = name.b64();
             }
 

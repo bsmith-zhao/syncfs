@@ -4,16 +4,6 @@ namespace util.ext
 {
     public static class TextBoxEx
     {
-        public static void msgToMeAsync(this TextBox ui)
-        {
-            Msg.output = ui.msgAsync;
-        }
-
-        public static void msgToMe(this TextBox ui)
-        {
-            Msg.output = ui.msgSync;
-        }
-
         public static void scrollByWheel(this TextBox ui)
         {
             ui.MouseWheel += (s, e) => 
@@ -27,15 +17,15 @@ namespace util.ext
 
         public static void msgAsync(this TextBox ui, object msg)
         {
-            ui.runAsync(() => ui.addLine(msg));
+            ui.safeCallAsync(() => ui.appendLine(msg));
         }
 
         public static void msgSync(this TextBox ui, object msg)
         {
-            ui.safeRun(() => ui.addLine(msg));
+            ui.safeCallSync(() => ui.appendLine(msg));
         }
 
-        static void addLine(this TextBox ui, object msg)
+        static void appendLine(this TextBox ui, object msg)
         {
             if (ui.Lines.Length > 500)
             {
@@ -45,7 +35,7 @@ namespace util.ext
                 text = text.Substring(pos);
                 ui.Text = text;
             }
-            ui.AppendText((msg?.ToString() ?? "<null>") + "\r\n");
+            ui.AppendText($"{msg}\r\n");
         }
     }
 }
