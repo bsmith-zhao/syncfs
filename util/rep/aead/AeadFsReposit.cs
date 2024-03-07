@@ -232,6 +232,7 @@ namespace util.rep.aead
 
             var code = dirEnc.encrypt(data).b64()
                 .TrimEnd('=').Replace('/', '%');
+
             if (data.Length == 16)
                 code = $"{code}#";
 
@@ -245,7 +246,7 @@ namespace util.rep.aead
         {
             var name = item.Name;
             // long name store file
-            if (name.EndsWith("~"))
+            if (name.last() == '~')
                 return null;
             // 16-bytes base64 min size
             if (name.Length < 20)
@@ -259,9 +260,7 @@ namespace util.rep.aead
             if (isLong)
             {
                 // read and decode long name
-                var dir = item.FullName.cut(name.Length + 1);
-                var longName = File.ReadAllText($"{dir}\\{name}~");
-                cipher = longName.b64();
+                cipher = File.ReadAllText($"{item.FullName}~").b64();
             }
 
             var data = dirEnc.decrypt(cipher, b16);
