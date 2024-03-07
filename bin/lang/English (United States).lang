@@ -165,3 +165,6 @@ VfsService.PathExist = Mount failed, path [{0}] alread exist!
 
 VfsManager.Title = VfsManager
 VfsManager.ConfirmUnmount = Are you sure to unmount [{0}] ?
+
+VfsConf.Path = The path to mount virtual file system
+VfsConf.Name = The volume label if mount to drive
