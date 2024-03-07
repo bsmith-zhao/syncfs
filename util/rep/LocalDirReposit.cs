@@ -45,7 +45,7 @@ namespace util.rep
                 modifyTime = file.writeTime(),
             };
 
-        public virtual string parseName(FileSystemInfo item)
+        public virtual string decodeName(FileSystemInfo item)
             => item.Name;
 
         protected T getSubItem<T>(IEnumerable<T> items,
@@ -55,7 +55,7 @@ namespace util.rep
             realName = null;
             name = name.low();
             foreach (var f in items)
-                if ((realName = parseName(f)).low() == name)
+                if ((realName = decodeName(f)).low() == name)
                     return f;
             return null;
         }

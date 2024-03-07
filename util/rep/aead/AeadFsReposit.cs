@@ -168,7 +168,7 @@ namespace util.rep.aead
             var path = item.FullName;
             func();
 
-            if (path.lastIdx('&', 10) > 0)
+            if (path.last() == '&')
                 File.Delete($"{path}~");
         }
 
@@ -184,10 +184,10 @@ namespace util.rep.aead
                 if (longName.last() == '$')
                     longName = longName.cut(1);
 
-                name = $"{name.tail(NameTrim)}&";
+                name = name.tail(NameTrim);
             }
 
-            name = settleName(dir, name);
+            name = settleName(dir, name, longName != null ? "&" : null);
 
             if (longName != null)
             {
@@ -197,17 +197,17 @@ namespace util.rep.aead
             return name;
         }
 
-        string settleName(DirectoryInfo dir, string name)
+        string settleName(DirectoryInfo dir, string name, string mark)
         {
-            var dirPath = dir.FullName;
-            if (!pathExist($"{dirPath}\\{name}"))
-                return name;
+            var newName = $"{name}{mark}";
+            if (!pathExist($"{dir.FullName}\\{newName}"))
+                return newName;
 
             int idx = 0;
             while (idx++ < 1000)
             {
-                var newName = $"{name}!{idx}";
-                if (!pathExist($"{dirPath}\\{newName}"))
+                newName = $"{name}!{idx}{mark}";
+                if (!pathExist($"{dir.FullName}\\{newName}"))
                     return newName;
             }
             throw new Error(this, "SettleOverflow", idx);
@@ -243,7 +243,7 @@ namespace util.rep.aead
             return code;
         }
 
-        public override string parseName(FileSystemInfo item)
+        public override string decodeName(FileSystemInfo item)
         {
             var name = item.Name;
             // long name store file
@@ -253,7 +253,7 @@ namespace util.rep.aead
             if (name.Length < 20)
                 return null;
             // filter mark char and check invalid char
-            if (!decodeName(name, out var cipher,
+            if (!decodeCipher(name, out var cipher,
                                 out var utf8, out var b16,
                                 out var isLong))
                 return null;
@@ -269,7 +269,7 @@ namespace util.rep.aead
             return utf8 ? data.utf8() : textEnc.GetString(data);
         }
 
-        bool decodeName(string name, 
+        bool decodeCipher(string name, 
             out byte[] cipher, 
             out bool utf8, out bool b16,
             out bool isLong)

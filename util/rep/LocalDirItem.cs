@@ -32,7 +32,7 @@ namespace util.rep
 
         bool getSubPath(FileSystemInfo sub, out string subPath)
         {
-            subPath = rep.parseName(sub);
+            subPath = rep.decodeName(sub);
             if (subPath != null && path != null)
                 subPath = $"{path}/{subPath}";
             return subPath != null;
