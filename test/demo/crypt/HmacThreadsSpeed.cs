@@ -66,7 +66,7 @@ namespace demo.crypt
 
             $"\r\nhmac:{hmacName}".msg();
 
-            int threadCount = Environment.ProcessorCount.max(8);
+            int threadCount = Environment.ProcessorCount.atLeast(8);
             int blockPerThread = 50;
             int blockPerIo = threadCount * blockPerThread;
             long totalIoCount = total / (block.Length * blockPerIo);
@@ -119,7 +119,7 @@ namespace demo.crypt
 
             $"\r\nhmac:{hmacName}".msg();
 
-            int threadCount = Environment.ProcessorCount.max(8);
+            int threadCount = Environment.ProcessorCount.atLeast(8);
             int blockPerThread = 50;
             int blockPerIo = threadCount * blockPerThread;
             long totalIoCount = total / (block.Length * blockPerIo);

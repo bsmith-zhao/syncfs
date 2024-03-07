@@ -25,7 +25,7 @@ namespace util.ext
                 return;
             }
 
-            var thdCount = maxThds.min(total / minPerThd);
+            var thdCount = maxThds.atMost(total / minPerThd);
             var countPerThd = total / thdCount;
             if (total % thdCount != 0)
                 countPerThd++;
@@ -34,7 +34,7 @@ namespace util.ext
             int pos = 0;
             while (pos < total)
             {
-                var cnt = countPerThd.min(total - pos);
+                var cnt = countPerThd.atMost(total - pos);
                 var off = pos;
                 tasks.Add(Task.Run(() => func(off, cnt)));
                 pos += cnt;

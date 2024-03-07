@@ -456,6 +456,13 @@ namespace vfs
             var fd = desc as FileDesc;
             try
             {
+                if (oldPath.low() != newPath.low())
+                {
+                    var newItem = rep.getItem(newPath);
+                    if (newItem != null)
+                        return STATUS_OBJECT_NAME_COLLISION;
+                }
+
                 var item = rep.getItem(oldPath);
                 if (item != null)
                 {

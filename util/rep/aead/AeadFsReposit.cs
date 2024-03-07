@@ -101,7 +101,9 @@ namespace util.rep.aead
             // not rename, then check exist item
             if (src.ToLower() != dst.ToLower()
                 && getSubItem(dir, dstName, out var realName) != null)
+            {
                 throw new Error(this, "DstPathExist", dst);
+            }
 
             var dstPath = settlePath(dir, encodeName(dstName));
 

@@ -99,7 +99,7 @@ namespace sync.ui
         {
             InitializeComponent();
 
-            Msg.output = msgUI.msgAsync;
+            Msg.output = msgUI.asyncAppend;
 
             icons = this.newImages(32)
                 .add(DirIcon, Resources.Dir)
@@ -400,7 +400,7 @@ namespace sync.ui
         }
 
         public static string time(FileItem f)
-            => DateTime.FromFileTime(f.createTime.max(f.modifyTime)).text();
+            => DateTime.FromFileTime(f.createTime.atLeast(f.modifyTime)).text();
 
         void addFileItem(FileItem file)
         {

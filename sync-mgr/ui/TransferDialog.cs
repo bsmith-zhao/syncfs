@@ -51,13 +51,13 @@ namespace sync.ui
             {
                 tc.addCount();
                 var dstPath = dstDir.pathMerge(srcPath.pathName());
-                actionUI.safeSetTextAsync($"<copy>{dstPath}");
+                actionUI.asyncSetText($"<copy>{dstPath}");
                 using (var fin = src.readFile(srcPath))
                 using (var fout = dst.createFile(dstPath))
                 {
                     var fc = new Counter { TotalSize = fin.Length };
                     fc.TimeIsUp += (t) 
-                        => statusUI.safeSetTextAsync($"{fc.SpeedInfo} - {tc.FullInfo}");
+                        => statusUI.asyncSetText($"{fc.SpeedInfo} - {tc.FullInfo}");
                     fc.trigger();
                     fin.copyTo(fout, delta =>
                     {
@@ -69,7 +69,7 @@ namespace sync.ui
                     fc.trigger();
                 }
             }
-            statusUI.safeSetTextAsync(tc.FullInfo);
+            statusUI.asyncSetText(tc.FullInfo);
         }
 
         void end(Exception err)

@@ -46,38 +46,38 @@ namespace util
             return true;
         }
 
-        public unsafe static void xorByPtr(this byte[] data, int dataOff, byte[] mask, int maskOff, int count)
-        {
-            int div = count / 8;
-            fixed (byte* D0 = data, K0 = mask)
-            {
-                long* dptr = (long*)(D0 + dataOff);
-                long* kptr = (long*)(K0 + maskOff);
+        //public unsafe static void xorByPtr(this byte[] data, int dataOff, byte[] mask, int maskOff, int count)
+        //{
+        //    int div = count / 8;
+        //    fixed (byte* D0 = data, K0 = mask)
+        //    {
+        //        long* dptr = (long*)(D0 + dataOff);
+        //        long* kptr = (long*)(K0 + maskOff);
 
-                for (int i = 0; i < div; i++)
-                {
-                    *(dptr + i) ^= *(kptr + i);
-                }
-            }
+        //        for (int i = 0; i < div; i++)
+        //        {
+        //            *(dptr + i) ^= *(kptr + i);
+        //        }
+        //    }
 
-            dataOff += div * 8;
-            maskOff += div * 8;
-            count = count % 8;
-            while (count > 0)
-            {
-                data[dataOff++] ^= mask[maskOff++];
-                count--;
-            }
-        }
+        //    dataOff += div * 8;
+        //    maskOff += div * 8;
+        //    count = count % 8;
+        //    while (count > 0)
+        //    {
+        //        data[dataOff++] ^= mask[maskOff++];
+        //        count--;
+        //    }
+        //}
 
-        public static void xor(this byte[] data, int dataOffset, byte[] key, int keyOffset, int count)
-        {
-            while (count > 0)
-            {
-                data[dataOffset++] ^= key[keyOffset++];
-                count--;
-            }
-        }
+        //public static void xor(this byte[] data, int dataOffset, byte[] key, int keyOffset, int count)
+        //{
+        //    while (count > 0)
+        //    {
+        //        data[dataOffset++] ^= key[keyOffset++];
+        //        count--;
+        //    }
+        //}
 
         public static string hex(this byte[] data)
         {
@@ -98,15 +98,11 @@ namespace util
         {
             switch (text.Length % 4)
             {
-                case 1:
-                    return Convert.FromBase64String($"{text}===");
-                case 2:
-                    return Convert.FromBase64String($"{text}==");
-                case 3:
-                    return Convert.FromBase64String($"{text}=");
-                default:
-                    return Convert.FromBase64String(text);
+                case 1: text = $"{text}==="; break;
+                case 2: text = $"{text}=="; break;
+                case 3: text = $"{text}="; break;
             }
+            return Convert.FromBase64String(text);
         }
 
         public static string BytesToHexEnhance(byte[] data)
@@ -142,9 +138,6 @@ namespace util
 
             return bytes;
         }
-
-        public static byte[] makeBuff(this int size, ref byte[] buff)
-            => buff ?? (buff = new byte[size]);
 
         [DllImport("msvcrt.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern int memcmp(byte[] src, byte[] dst, int size);

@@ -24,7 +24,7 @@ namespace util.ext
             int total, Func<string, bool> exist, 
             Action<string> delete, string sep = null)
         {
-            total = total.minLimit(2);
+            total = total.atLeast(2);
             var trk = path.pathTrunk();
             var ext = path.pathExt();
             string newPath = null;

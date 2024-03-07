@@ -26,8 +26,8 @@ namespace test
         {
             InitializeComponent();
 
-            Msg.output = msgUI.msgAsync;
-            Status.output = statUI.safeSetTextAsync;
+            Msg.output = msgUI.asyncAppend;
+            Status.output = statUI.asyncSetText;
 
             toolbar.fixBorderBug();
 

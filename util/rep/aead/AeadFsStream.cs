@@ -46,7 +46,7 @@ namespace util.rep.aead
             var packTotal = fileSize - getHeadSize(conf);
             return (packTotal / conf.packSize()) * conf.BlockSize
                     + ((packTotal % conf.packSize()) - conf.tagSize())
-                    .max(0);
+                    .atLeast(0);
         }
 
         public static int getHeadSize(AeadFsConf conf)
@@ -139,7 +139,7 @@ namespace util.rep.aead
         int seekPack()
         {
             buffPos = (int)((blockIdx - buffIdx) * packSize);
-            return packSize.min(buffLen - buffPos);
+            return packSize.atMost(buffLen - buffPos);
         }
 
         void decryptBuffPack(int dataSize, byte[] dst, int dstOff = 0)
@@ -164,7 +164,7 @@ namespace util.rep.aead
                 if (actionPos >= streamLen)
                     break;
                 dataLen = seekPack() - tagSize;
-                readLen = remain.min(dataLen - blockOff);
+                readLen = remain.atMost(dataLen - blockOff);
                 if (readLen <= 0)
                     throwIOError("DataShort",
                                 remain,
@@ -198,7 +198,7 @@ namespace util.rep.aead
             int writeLen;
             while (count > 0)
             {
-                writeLen = count.min(blockSize - blockOff);
+                writeLen = count.atMost(blockSize - blockOff);
                 if (blockOff == 0
                     && (writeLen == blockSize // overwrite whole block
                         || writeLen >= actionLen - actionPos)) // overwrite exist block
@@ -208,7 +208,7 @@ namespace util.rep.aead
                 else
                 {
                     var dataLen = readFile(pack, pack.Length, blockIdx) - tagSize;
-                    if (dataLen != (actionLen - blockIdx * blockSize).min(blockSize))
+                    if (dataLen != (actionLen - blockIdx * blockSize).atMost(blockSize))
                         throwIOError("DataError",
                                     dataLen, 
                                     actionLen - blockIdx * blockSize);
@@ -216,14 +216,14 @@ namespace util.rep.aead
                     decryptPack(pack, 0, dataLen + tagSize, blockIdx, block);
                     Buffer.BlockCopy(src, offset, block, blockOff, writeLen);
 
-                    encryptPackToBuff(block, 0, dataLen.max(blockOff + writeLen));
+                    encryptPackToBuff(block, 0, dataLen.atLeast(blockOff + writeLen));
                 }
 
                 offset += writeLen;
                 count -= writeLen;
 
                 actionPos += writeLen;
-                actionLen = actionLen.max(actionPos);
+                actionLen = actionLen.atLeast(actionPos);
             }
             writeBuff();
 
@@ -259,7 +259,7 @@ namespace util.rep.aead
                     var frontPad = streamLen % blockSize;
                     if (frontPad > 0)
                     {
-                        frontPad = (blockSize - frontPad).min(len - streamLen);
+                        frontPad = (blockSize - frontPad).atMost(len - streamLen);
                         appendData(new byte[frontPad]);
                     }
                     // zero spare pack range
@@ -308,7 +308,7 @@ namespace util.rep.aead
             }
             finally
             {
-                streamPos = oldPos.min(streamLen);
+                streamPos = oldPos.atMost(streamLen);
             }
         }
 

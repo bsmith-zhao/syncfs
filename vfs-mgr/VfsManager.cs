@@ -27,7 +27,7 @@ namespace vfs.mgr
         {
             InitializeComponent();
 
-            Msg.output = msgUI.msgAsync;
+            Msg.output = msgUI.asyncAppend;
 
             toolbar.fixBorderBug();
 

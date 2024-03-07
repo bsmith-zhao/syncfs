@@ -82,7 +82,7 @@ namespace util
             string msg, Func<byte[], bool> verify)
             where E : Exception, new()
         {
-            ui.safeCallSync(() => queryPwd<E>(msg, verify));
+            ui.syncCall(() => queryPwd<E>(msg, verify));
         }
 
         public static bool pickDir(this bool src, out string path)

@@ -134,7 +134,7 @@ namespace sync.sync
             srcTree.name = $"{srcRep}";
             var dstTree = TransSummary.parse(interDiff.fileTrans.dst);
             dstTree.name = $"{dstRep}";
-            PanelOutput.safeCallAsync(() => 
+            PanelOutput.asyncCall(() => 
             {
                 var ui = new TransSumPanel(srcTree, dstTree);
                 ui.Dock = DockStyle.Fill;

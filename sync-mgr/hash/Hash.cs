@@ -106,7 +106,7 @@ namespace sync.hash
                 return;
             }
             int len = 0;
-            while (span > 0 && fin.read(buff, 0, (int)span.min(buff.Length), out len))
+            while (span > 0 && fin.read(buff, 0, (int)span.atMost(buff.Length), out len))
             {
                 span -= len;
                 update?.Invoke(len);

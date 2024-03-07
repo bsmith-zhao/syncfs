@@ -62,7 +62,7 @@ namespace link
             editor.Font = label.Font;
             editor.Width = label.Size.Width;
             editor.Height = label.measureHeight("1\r\n2")
-                                .max(label.Size.Height);
+                                .atLeast(label.Size.Height);
 
             editor.Show();
             editor.Focus();

@@ -22,12 +22,12 @@ namespace util.ext
             }
         }
 
-        public static void safeSetTextAsync(this Control ui, string text)
+        public static void asyncSetText(this Control ui, string text)
         {
-            ui.safeCallAsync(() => ui.Text = text);
+            ui.asyncCall(() => ui.Text = text);
         }
 
-        public static void safeCallAsync(this Control ui, Action func)
+        public static void asyncCall(this Control ui, Action func)
         {
             if (ui.InvokeRequired)
                 ui.BeginInvoke(func);
@@ -35,7 +35,7 @@ namespace util.ext
                 func();
         }
 
-        public static void safeCallSync(this Control ui, Action func)
+        public static void syncCall(this Control ui, Action func)
         {
             if (ui.InvokeRequired)
                 ui.Invoke(func);

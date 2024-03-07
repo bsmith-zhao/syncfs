@@ -14,7 +14,7 @@ namespace util.ext
             params ToolStripItem[] others)
         {
             int max = btn.Width;
-            others.each(b => b.Width.max(ref max));
+            others.each(b => b.Width.atLeast(ref max));
             btn.Width = max;
             others.each(b => b.Width = max);
         }

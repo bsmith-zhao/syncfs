@@ -41,7 +41,7 @@ namespace sync.ui
         {
             InitializeComponent();
 
-            Msg.output = msgUI.msgAsync;
+            Msg.output = msgUI.asyncAppend;
 
             listIcons = this.newImages(32)
                 .add(nameof(Resources.MasterSync), Resources.MasterSync)
@@ -182,14 +182,14 @@ namespace sync.ui
         void threadRun()
         {
             var wk = workItem;
-            wk.MsgOutput = msgUI.msgAsync;
+            wk.MsgOutput = msgUI.asyncAppend;
             wk.CheckCancel = () =>
             {
                 if (thd.CancellationPending)
                     throw new ManualCancel();
             };
             wk.UpdateStatus = (act, st) 
-                => this.safeCallAsync(() =>
+                => this.asyncCall(() =>
                 {
                     actionUI.Text = act;
                     statusUI.Text = st;

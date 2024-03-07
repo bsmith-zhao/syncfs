@@ -19,7 +19,7 @@ namespace sync
 
             msgUI.scrollByWheel();
 
-            Msg.output = msgUI.msgAsync;
+            Msg.output = msgUI.asyncAppend;
         }
 
         private void WorkRunner_Load(object sender, System.EventArgs e)
@@ -65,14 +65,14 @@ namespace sync
             stopBtn.Enabled = true;
 
             item.PanelOutput = transPanel;
-            item.MsgOutput = msgUI.msgAsync;
+            item.MsgOutput = msgUI.asyncAppend;
             item.CheckCancel = () =>
             {
                 if (thd.CancellationPending)
                     throw new ManualCancel();
             };
             item.UpdateStatus = (action, status)
-                => this.safeCallAsync(() =>
+                => this.asyncCall(() =>
                 {
                     actionUI.Text = action;
                     statusUI.Text = status;

@@ -13,7 +13,7 @@ namespace util
         public static string pathOwner(this string path, int maxLevel, out int level)
         {
             var ns = path.pathSplit();
-            ns = ns.head(maxLevel.min(ns.Length - 1));
+            ns = ns.head(maxLevel.atMost(ns.Length - 1));
             level = ns.Length;
             return ns.join("/");
         }

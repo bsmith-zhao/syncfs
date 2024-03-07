@@ -71,17 +71,14 @@ namespace util
             return total <= 0 ? 0 : (int)(value * 100 / total);
         }
 
-        public static T min<T>(this T a, T b) where T : IComparable
-            => a.CompareTo(b) <= 0 ? a : b;
+        public static T atMost<T>(this T value, T max) where T : IComparable
+            => value.CompareTo(max) <= 0 ? value : max;
 
-        public static T max<T>(this T a, T b) where T : IComparable
-            => a.CompareTo(b) >= 0 ? a : b;
+        public static T atLeast<T>(this T value, T min) where T : IComparable
+            => value.CompareTo(min) >= 0 ? value : min;
 
-        public static void max<T>(this T a, ref T b) where T : IComparable
-            => b = a.CompareTo(b) >= 0 ? a : b;
-
-        public static T minLimit<T>(this T a, T min) where T : IComparable
-            => a.CompareTo(min) >= 0 ? a : min;
+        public static void atLeast<T>(this T value, ref T min) where T : IComparable
+            => min = value.CompareTo(min) >= 0 ? value : min;
 
         public static T limit<T>(this T value, T min, T max) where T : IComparable
         {

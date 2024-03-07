@@ -89,7 +89,7 @@ namespace sync.sync
                 return;
             var dstTree = TransSummary.parse(fileDiff);
             dstTree.name = $"{dstRep}";
-            PanelOutput.safeCallAsync(() => 
+            PanelOutput.asyncCall(() => 
             {
                 var panel = new TransSumPanel(dstTree);
                 panel.Dock = DockStyle.Fill;

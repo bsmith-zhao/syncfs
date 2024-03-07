@@ -15,17 +15,17 @@ namespace util.ext
             };
         }
 
-        public static void msgAsync(this TextBox ui, object msg)
+        public static void asyncAppend(this TextBox ui, object msg)
         {
-            ui.safeCallAsync(() => ui.appendLine(msg));
+            ui.asyncCall(() => ui.addRow(msg));
         }
 
-        public static void msgSync(this TextBox ui, object msg)
+        public static void syncAppend(this TextBox ui, object msg)
         {
-            ui.safeCallSync(() => ui.appendLine(msg));
+            ui.syncCall(() => ui.addRow(msg));
         }
 
-        static void appendLine(this TextBox ui, object msg)
+        static void addRow(this TextBox ui, object msg)
         {
             if (ui.Lines.Length > 500)
             {
