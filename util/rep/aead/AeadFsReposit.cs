@@ -168,7 +168,7 @@ namespace util.rep.aead
             var path = item.FullName;
             func();
 
-            if (path.last() == '&')
+            if (path.lastIdx('&', 10) > 0)
                 File.Delete($"{path}~");
         }
 
@@ -184,10 +184,10 @@ namespace util.rep.aead
                 if (longName.last() == '$')
                     longName = longName.cut(1);
 
-                name = name.tail(NameTrim);
+                name = $"{name.tail(NameTrim)}&";
             }
 
-            name = settleName(dir, name, longName != null ? "&" : null);
+            name = settleName(dir, name);
 
             if (longName != null)
             {
@@ -197,16 +197,15 @@ namespace util.rep.aead
             return name;
         }
 
-        string settleName(DirectoryInfo dir, string name, string mark)
+        string settleName(DirectoryInfo dir, string name)
         {
-            var newName = $"{name}{mark}";
-            if (!pathExist($"{dir.FullName}\\{newName}"))
-                return newName;
+            if (!pathExist($"{dir.FullName}\\{name}"))
+                return name;
 
             int idx = 0;
             while (idx++ < 1000)
             {
-                newName = $"{name}!{idx}{mark}";
+                var newName = $"{name}!{idx}";
                 if (!pathExist($"{dir.FullName}\\{newName}"))
                     return newName;
             }
