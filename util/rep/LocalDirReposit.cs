@@ -30,7 +30,8 @@ namespace util.rep
                     path = parsePath(item),
                 };
             else
-                return newFileNode<FileItem>(new FileInfo(item.FullName), parsePath(item));
+                return newFileNode<FileItem>(new FileInfo(item.FullName), 
+                    parsePath(item));
         }
 
         public T newFileNode<T>(FileInfo file, string path)
@@ -43,7 +44,9 @@ namespace util.rep
                 modifyTime = file.writeTime(),
             };
 
-        public abstract string parseName(string name);
+        public virtual string parseName(string name,
+            FileSystemInfo item = null, string dir = null)
+            => name;
 
         public abstract string parsePath(FileSystemInfo fi);
 
@@ -52,7 +55,7 @@ namespace util.rep
         {
             name = name.low();
             return items.first(f =>
-                parseName(f.Name).low() == name);
+                parseName(f.Name, item: f).low() == name);
         }
 
         protected DirectoryInfo getSubDir(DirectoryInfo dir, string name)

@@ -37,7 +37,7 @@ namespace util.ext
         public static string cut(this string str, int count)
             => str?.Length >= count
             ? str.Substring(0, str.Length - count)
-            : "";
+            : null;
 
         public static string conv(this string str, Func<string, string> func)
             => str != null ? func(str) : null;

@@ -7,4 +7,6 @@ del /Q /S %dst%
 
 xcopy "C:\prj\syncfs\bin" %dst% /e /y /v /exclude:exclude.txt
 
+copy "C:\prj\lib\winfsp-2.0.23075.msi" %dst%
+
 pause

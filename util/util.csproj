@@ -71,7 +71,6 @@
     <Compile Include="ext\DescEx.cs" />
     <Compile Include="ext\DrawEx.cs" />
     <Compile Include="ext\ExceptionEx.cs" />
-    <Compile Include="Bool.cs" />
     <Compile Include="ext\ImageListEx.cs" />
     <Compile Include="ext\KeyEventEx.cs" />
     <Compile Include="OptionDialog.cs">

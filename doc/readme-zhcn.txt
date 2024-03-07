@@ -1,3 +1,6 @@
+
+当前支持Gcm(需要CPU芯片支持),ChaCha20Poly1305和XChaCha20Poly1305加密算法
+
 在选择的工作区上，可以通过AddNormalDir添加普通目录，通过AddAeadFS添加加密目录，选择添加的目录后，可以通过CreateView创建文件视图，在视图上可以设置逻辑根目录和文件筛选条件，实现文件的选择和过滤
 
 通过按住键盘Ctrl键或者使用鼠标右键，选择两个目录或视图，先选择的作为来源，后选择的作为目标，点击MasterSync创建主从同步，点击RoundSync创建双向同步

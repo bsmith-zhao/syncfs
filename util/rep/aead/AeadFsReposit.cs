@@ -194,22 +194,45 @@ namespace util.rep.aead
             return code;
         }
 
-        public override string parseName(string name)
+        public override string parseName(string name, 
+            FileSystemInfo item = null, string dir = null)
         {
-            if (name.Length < 20// encrypt base64 min size
-                || !decodeName(name, out var cipher, out var utf8, out var b16))
+            // long name store file
+            if (name.EndsWith("~"))
                 return null;
+            // 16-bytes base64 min size
+            if (name.Length < 20)
+                return null;
+            // filter mark char and check invalid char
+            if (!decodeName(name, out var cipher,
+                                out var utf8, out var b16,
+                                out var and))
+                return null;
+
+            if (and)
+            {
+                // read and decode long name
+                dir = dir ?? item.FullName.cut(name.Length + 1);
+                new { dir }.debug();
+                name = File.ReadAllText($"{dir}\\{name}~");
+                new { name }.debug();
+                cipher = name.b64();
+            }
 
             var data = dirEnc.decrypt(cipher, b16);
 
             return utf8 ? data.utf8() : nameEnc.GetString(data);
         }
 
-        public bool decodeName(string name, out byte[] cipher, out bool utf8, out bool b16)
+        public bool decodeName(string name, 
+            out byte[] cipher, 
+            out bool utf8, out bool b16,
+            out bool and)
         {
             cipher = null;
             utf8 = false;
             b16 = false;
+            and = false;
             int i = name.Length, end = name.Length;
             char[] cs = null;
             char c;
@@ -217,6 +240,10 @@ namespace util.rep.aead
             {
                 switch (c = name[i])
                 {
+                    case '&':
+                        and = true;
+                        end = i;
+                        break;
                     case '!':   // for conflict name postfix
                         end = i;
                         break;
@@ -233,7 +260,7 @@ namespace util.rep.aead
                         cs[i] = '/';
                         break;
                     case '+': break;
-                    default:    // invalid characters
+                    default:    // check invalid characters
                         if (!((c >= 'A' && c <= 'Z')
                             || (c >= 'a' && c <= 'z')
                             || (c >= '0' && c <= '9')))
@@ -263,7 +290,15 @@ namespace util.rep.aead
             => AeadFsStream.getDataSize(fi.Length, conf);
 
         public override string parsePath(FileSystemInfo fi)
-            => fi?.FullName.TrimEnd('\\', '/').jump(pathSkip)
-            ?.Split('\\').conv(n => parseName(n)).join("/");
+        {
+            string dir = rootPath;
+            return fi?.FullName.TrimEnd('\\', '/').jump(pathSkip)
+            ?.Split('\\').conv(n => 
+            {
+                var decName = parseName(n, dir: dir);
+                dir = $"{dir}/decName";
+                return decName;
+            }).join("/");
+        }
     }
 }

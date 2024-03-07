@@ -120,7 +120,8 @@ namespace util.rep
         string toFullPath(string path) 
             => $"{repPath}/{path}";
 
-        public override string parseName(string name) 
-            => name;
+        //public override string parseName(string name, 
+        //    FileSystemInfo item, string dir) 
+        //    => name;
     }
 }

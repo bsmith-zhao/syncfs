@@ -1,11 +1,11 @@
-The project consists of two parts: Virtual Encrypted file system and File synchronization system
+The project consists of two parts: Encrypted file system and File synchronization system
 
-The virtual encrypted file system uses the AEAD(Authenticated encryption with associated data) algorithm to encrypt file data, and mounts the file system to the operating system through Winfsp, allowing users to access the encrypted file system like a normal directory.
+The encrypted file system uses the AEAD(Authenticated encryption with associated data) algorithm to encrypt file data, currently supports GCM (requires CPU chip support), ChaCha20Poly1305 and XChaCha20Poly1305 encryption algorithms, and mounts the file system to the operating system through Winfsp, allowing users to access the encrypted file system like a normal directory.
 
 The file synchronization system uses a visual process to manage synchronization logic, realizes file selection and filtering through file views, and achieves rapid file synchronization through an optimized file hash comparison algorithm.
 
 
-[Virtual File System]
+[Encrypted File System]
 
 Run [vfs-mgr.exe] to open the manager:
 ![VfsManager screen shot](https://github.com/bsmith-zhao/syncfs/blob/main/doc/vfs-mgr.png?raw=true)
