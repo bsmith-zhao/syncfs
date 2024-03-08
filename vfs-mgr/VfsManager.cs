@@ -340,6 +340,7 @@ namespace vfs.mgr
                     name = conf.Name,
                     type = conf.Type,
                     src = conf.sourcPath(),
+                    bak = conf.Backup.getFolder(),
                 };
                 args.mount(App.VfsCmd, repArgs, before: p =>
                 {

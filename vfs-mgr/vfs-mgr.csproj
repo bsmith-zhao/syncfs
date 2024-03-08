@@ -56,6 +56,7 @@
     <Compile Include="App.cs" />
     <Compile Include="conf\AeadRepConf.cs" />
     <Compile Include="conf\AppOption.cs" />
+    <Compile Include="conf\BackupConf.cs" />
     <Compile Include="conf\RepConf.cs" />
     <Compile Include="conf\VfsConf.cs" />
     <Compile Include="MountInfo.cs" />

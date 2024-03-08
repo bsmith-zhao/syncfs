@@ -21,6 +21,16 @@ namespace util.ext
             notify?.Invoke(err);
         }
 
+        public static void trylog(this object src,
+            Action func)
+        {
+            try { func(); }
+            catch (Exception err)
+            {
+                err.log(true.lastFunc());
+            }
+        }
+
         public static void trydo(this object src, Action func)
         {
             try { func(); }

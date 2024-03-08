@@ -21,7 +21,9 @@ namespace vfs.mgr
         public RepType type => args.type;
         public string src => args.src;
 
-        public string info => $"{path} <{name}>";
+        string bakMark => args.bak != null ? "*" : null;
+
+        public string info => $"{bakMark}{path} <{name}>";
 
         public static IEnumerable<MountInfo> enumMounts()
         {

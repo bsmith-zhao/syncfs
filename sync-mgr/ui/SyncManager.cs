@@ -997,6 +997,7 @@ namespace sync.ui
                     name = conf.Mount.Name,
                     type = tag.entry.type,
                     src = conf.getSource(),
+                    bak = conf.Backup.getFolder(),
                 };
 
                 var node = pickItem as RectNode;

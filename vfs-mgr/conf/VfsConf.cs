@@ -21,6 +21,8 @@ namespace vfs.mgr.conf
         [ReadOnly(true)]
         public RepType Type { get; set; } = RepType.AeadFS;
 
+        public BackupConf Backup { get; set; } = new BackupConf();
+
         object _src;
         [TypeConverter(typeof(ExpandProp))]
         public object Source

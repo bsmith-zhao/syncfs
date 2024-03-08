@@ -45,6 +45,10 @@ namespace vfs
             Host.FlushAndPurgeOnCleanup = true;
             Host.VolumeCreationTime = 0;
             Host.VolumeSerialNumber = 0;
+
+            if (needBak)
+                this.trylog(() => rep.createDir(vfs.bak));
+
             return STATUS_SUCCESS;
         }
 
@@ -130,7 +134,10 @@ namespace vfs
                     rep.createDir(path);
 
                 var item = rep.getItem(path);
-                fd = new FileDesc(rep, item, fs);
+                fd = new FileDesc(rep, item, fs)
+                {
+                    core = this,
+                };
 
                 node = default(Object);
                 desc = fd;
@@ -167,7 +174,10 @@ namespace vfs
                     return STATUS_OBJECT_NAME_NOT_FOUND;
                 }
 
-                fd = new FileDesc(rep, item);
+                fd = new FileDesc(rep, item)
+                {
+                    core = this,
+                };
 
                 desc = fd;
                 node = default(Object);
@@ -208,7 +218,7 @@ namespace vfs
             err.log(true.lastFunc(), args);
         }
 
-        bool needBak => vfs.bak != null;
+        public bool needBak => vfs.bak != null;
 
         public override void Cleanup(
             Object node,
@@ -579,7 +589,7 @@ namespace vfs
                 {
                     context = idx + 1;
                     path = fd.items[idx].name;
-                    FileDesc.getItemInfo(fd.items[idx], out info);
+                    FileDesc.getItemInfo(fd.items[idx], this, out info);
                     return true;
                 }
                 else

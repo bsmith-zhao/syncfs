@@ -10,6 +10,7 @@ using Fsp;
 using FileInfo = Fsp.Interop.FileInfo;
 using util.rep;
 using util.ext;
+using util;
 
 namespace vfs
 {
@@ -17,6 +18,7 @@ namespace vfs
     {
         public Reposit rep;
         public RepItem item;
+        public VfsCore core;
         
         public RepItem[] items;
         string[] _names;
@@ -66,11 +68,12 @@ namespace vfs
 
         public static void getItemInfo(
             RepItem item,
+            VfsCore core,
             out FileInfo info)
         {
             info = new FileInfo();
             info.FileAttributes = (uint)(item.isDir() ? 
-                FileAttributes.Directory 
+                FileAttributes.Directory
                 : FileAttributes.Normal);
             info.ReparseTag = 0;
             info.FileSize = (ulong)item.size;
@@ -81,11 +84,15 @@ namespace vfs
             info.ChangeTime = info.LastWriteTime;
             info.IndexNumber = 0;
             info.HardLinks = 0;
+
+            if (core.needBak
+                && core.vfs.bak.lowEqual(item.path))
+                info.FileAttributes |= (uint)FileAttributes.Encrypted;
         }
 
         public Int32 getInfo(out FileInfo info)
         {
-            getItemInfo(item, out info);
+            getItemInfo(item, core, out info);
             if (data != null)
             {
                 info.FileSize = (ulong)data.Length;
@@ -94,23 +101,10 @@ namespace vfs
             return FileSystemBase.STATUS_SUCCESS;
         }
 
-        static void updateAllocSize(ref FileInfo info)
-            => info.AllocationSize = (info.FileSize+AllocUnit-1)/AllocUnit * AllocUnit;
-
         public const int AllocUnit = 4096;
 
-        //public static void ThrowIoExceptionWithHResult(Int32 HResult)
-        //{
-        //    throw new IOException(null, HResult);
-        //}
-        //public static void ThrowIoExceptionWithWin32(Int32 Error)
-        //{
-        //    ThrowIoExceptionWithHResult(unchecked((Int32)(0x80070000 | Error)));
-        //}
-        //public static void ThrowIoExceptionWithNtStatus(Int32 Status)
-        //{
-        //    ThrowIoExceptionWithWin32((Int32)FileSystemBase.Win32FromNtStatus(Status));
-        //}
+        static void updateAllocSize(ref FileInfo info)
+            => info.AllocationSize = (info.FileSize+AllocUnit-1)/AllocUnit * AllocUnit;
     }
 
 }

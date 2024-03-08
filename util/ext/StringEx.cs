@@ -10,6 +10,10 @@ namespace util.ext
 {
     public static class StringEx
     {
+        public static bool lowEqual(this string src, string dst)
+            => src?.Length == dst?.Length
+                && src.low() == dst.low();
+
         public static char charAt(this string str, int idx)
             => idx >= 0 && idx < str?.Length 
             ? str[idx] : default(char);
