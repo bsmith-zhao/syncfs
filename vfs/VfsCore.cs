@@ -463,7 +463,7 @@ namespace vfs
                         return STATUS_OBJECT_NAME_COLLISION;
                 }
 
-                var item = rep.getItem(oldPath);
+                var item = fd.item;
                 if (item != null)
                 {
                     if (item.isDir)
@@ -516,9 +516,7 @@ namespace vfs
             {
                 if (fd.items == null)
                 {
-                    var items = new SortedList<string, RepItem>();
-                    fd.dir?.enumItems().each(d => items.Add(d.name, d));
-                    fd.items = items.Values.ToArray();
+                    fd.items = fd.dir?.enumItems().ToArray();
                 }
                 int idx;
                 if (null == context)
@@ -526,7 +524,7 @@ namespace vfs
                     idx = 0;
                     if (null != marker)
                     {
-                        idx = Array.BinarySearch(fd.names, marker);
+                        idx = fd.items.index(n => n.name == marker);
                         if (idx >= 0)
                             idx++;
                         else
@@ -554,6 +552,50 @@ namespace vfs
                 trace(err, new { fd?.path, match, marker, context });
                 throw;
             }
+
+            //var fd = desc as FileDesc;
+            //try
+            //{
+            //    if (fd.items == null)
+            //    {
+            //        var items = new SortedList<string, RepItem>();
+            //        fd.dir?.enumItems().each(d => items.Add(d.name, d));
+            //        fd.items = items.Values.ToArray();
+            //    }
+            //    int idx;
+            //    if (null == context)
+            //    {
+            //        idx = 0;
+            //        if (null != marker)
+            //        {
+            //            idx = Array.BinarySearch(fd.names, marker);
+            //            if (idx >= 0)
+            //                idx++;
+            //            else
+            //                idx = ~idx;
+            //        }
+            //    }
+            //    else
+            //        idx = (int)context;
+            //    if (fd.items.Length > idx)
+            //    {
+            //        context = idx + 1;
+            //        path = fd.items[idx].name;
+            //        FileDesc.getItemInfo(fd.items[idx], out info);
+            //        return true;
+            //    }
+            //    else
+            //    {
+            //        path = default(String);
+            //        info = default(FileInfo);
+            //        return false;
+            //    }
+            //}
+            //catch (Exception err)
+            //{
+            //    trace(err, new { fd?.path, match, marker, context });
+            //    throw;
+            //}
         }
     }
 }

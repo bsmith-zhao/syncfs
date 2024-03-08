@@ -20,7 +20,8 @@ namespace vfs
         
         public RepItem[] items;
         string[] _names;
-        public string[] names => _names ?? (_names = items.conv(n => n.name));
+        public string[] names => _names 
+            ?? (_names = items.conv(n => n.name));
 
         Stream data;
         public string path => item.path;
