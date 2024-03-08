@@ -188,17 +188,6 @@ namespace util.ext
             return tn.Index == pns.Count - 1;
         }
 
-        public static bool exist(this TreeNode pn, TreeNode tn)
-        {
-            while (tn.Parent != null)
-            {
-                if (tn.Parent == pn)
-                    return true;
-                tn = tn.Parent;
-            }
-            return false;
-        }
-
         public static bool getDragNode(this DragEventArgs e, out TreeNode tn)
         {
             tn = e.Data.GetData(typeof(TreeNode)) as TreeNode;

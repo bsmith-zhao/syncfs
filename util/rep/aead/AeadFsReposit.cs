@@ -174,19 +174,19 @@ namespace util.rep.aead
                 File.Delete($"{path}~");
         }
 
-        const int NameLimit = 240;
-        const int NameTrim = 64;
+        const int MaxNameLength = 240;
+        const int RemainNameLength = 64;
 
         string settleLongName(DirectoryInfo dir, string name)
         {
             string longName = null;
-            if (name.Length > NameLimit)
+            if (name.Length > MaxNameLength)
             {
-                longName = name.Replace("%", "/");
                 if (longName.last() == '$')
                     longName = longName.cut(1);
+                longName = name.Replace("%", "/").b64Pad();
 
-                name = $"{name.tail(NameTrim)}&";
+                name = $"{name.tail(RemainNameLength)}&";
             }
 
             name = settleName(dir, name);

@@ -443,7 +443,21 @@ namespace vfs
             Object desc,
             String path)
         {
-            return STATUS_SUCCESS;
+            var fd = desc as FileDesc;
+            try
+            {
+                if (fd.item is DirItem dir
+                    && dir.enumItems().exist(it => true))
+                {
+                    return STATUS_DIRECTORY_NOT_EMPTY;
+                }
+                return STATUS_SUCCESS;
+            }
+            catch (Exception err)
+            {
+                trace(err, new { path });
+                throw;
+            }
         }
 
         public override Int32 Rename(

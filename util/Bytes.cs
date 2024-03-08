@@ -94,15 +94,18 @@ namespace util
             return Convert.ToBase64String(data);
         }
 
-        public static byte[] b64(this string text)
+        public static byte[] b64(this string code)
+            => Convert.FromBase64String(b64Pad(code));
+
+        public static string b64Pad(this string code)
         {
-            switch (text.Length % 4)
+            switch (code.Length % 4)
             {
-                case 1: text = $"{text}==="; break;
-                case 2: text = $"{text}=="; break;
-                case 3: text = $"{text}="; break;
+                case 1: code = $"{code}==="; break;
+                case 2: code = $"{code}=="; break;
+                case 3: code = $"{code}="; break;
             }
-            return Convert.FromBase64String(text);
+            return code;
         }
 
         public static string BytesToHexEnhance(byte[] data)
