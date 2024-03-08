@@ -71,29 +71,26 @@ namespace sync.ui
 
         void loadWorks()
         {
-            foreach (var sp in spaces ?? getSpaces())
+            (spaces ?? enumAppSpaces()).each(sp =>
             {
                 this.trans("LoadSpace", sp.name, sp.dir).msg();
                 this.trydo(() =>
                 {
-                    var spc = sp.loadConf();
                     var ctx = new SpaceContext(sp);
-                    foreach (var sync in spc.syncs)
+                    sp.loadConf().syncs
+                    .each(sync => addWorkItem(new SyncItem
                     {
-                        addWorkItem(new SyncItem
-                        {
-                            space = sp,
-                            sync = sync,
-                            context = ctx,
-                        });
-                    }
+                        space = sp,
+                        sync = sync,
+                        context = ctx,
+                    }));
                 });
-            }
+            });
         }
 
-        IEnumerable<SpaceEntry> getSpaces()
+        IEnumerable<SpaceEntry> enumAppSpaces()
         {
-            var wsl = App.loadSpaceList();
+            var wsl = App.enumSpaces();
             if (dir != null)
             {
                 dir = dir.pathUnify();

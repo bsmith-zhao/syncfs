@@ -62,19 +62,17 @@ namespace util.ext
             }
         }
 
-        public static List<string> readList(this string path)
+        public static IEnumerable<string> enumRows(this string path)
         {
-            var list = new List<string>();
             if (path.fileExist())
             {
                 using (var fin = File.OpenText(path))
                 {
                     string row;
                     while (fin.readRow(out row))
-                        list.Add(row);
+                        yield return row;
                 }
             }
-            return list;
         }
 
         public static bool isDir(this FileSystemInfo fi)

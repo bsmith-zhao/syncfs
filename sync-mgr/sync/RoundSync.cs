@@ -38,7 +38,7 @@ namespace sync.sync
                 dirMoves = dirDiff.moves,
 
                 lastFiles = hash.loadUnits(lastFilesPath),
-                lastDirs = lastDirsPath.readList(),
+                lastDirs = lastDirsPath.enumRows().toList(),
             })).lgc;
         }
 

@@ -374,7 +374,7 @@ namespace sync.ui
         void loadSpaceList()
         {
             treeCheckEvent.suspend(()
-                => App.loadSpaceList()
+                => App.enumSpaces()
                 .each(ws => addSpaceNode(ws)));
         }
 
@@ -458,7 +458,7 @@ namespace sync.ui
             saveSpaceList();
         }
 
-        IEnumerable<SpaceEntry> getSpaceList()
+        IEnumerable<SpaceEntry> enumSpaces()
             => treeUI.Nodes.conv<TreeNode, SpaceEntry>(tn =>
             {
                 var sp = tn.spaceTag().space;
@@ -467,7 +467,7 @@ namespace sync.ui
             });
 
         void saveSpaceList()
-            => App.saveSpaceList(getSpaceList());
+            => App.saveSpaces(enumSpaces());
 
         bool canDelete => (treeActive && null != selNode)
                         || (graphActive && null != pickItem);
