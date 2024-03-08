@@ -1,6 +1,6 @@
 The project consists of two parts: Encrypted file system and File synchronization system
 
-The encrypted file system uses the AEAD(Authenticated encryption with associated data) algorithm to encrypt file data, currently supports GCM (requires CPU chip support), ChaCha20Poly1305 and XChaCha20Poly1305 encryption algorithms, and mounts the file system to the operating system through Winfsp, allowing users to access the encrypted file system like a normal directory.
+The encrypted file system uses the AEAD(Authenticated encryption with associated data) algorithm to encrypt file data, and mounts the file system to the operating system through Winfsp, allowing users to access the encrypted file system like a normal directory. Currently supports GCM (requires CPU chip support), ChaCha20Poly1305 and XChaCha20Poly1305 encryption algorithms.
 
 The file synchronization system uses a visual process to manage synchronization logic, realizes file selection and filtering through file views, and achieves rapid file synchronization through an optimized file hash comparison algorithm.
 
@@ -10,7 +10,7 @@ The file synchronization system uses a visual process to manage synchronization 
 Run [vfs-mgr.exe] to open the manager:
 ![VfsManager screen shot](https://github.com/bsmith-zhao/syncfs/blob/main/doc/vfs-mgr.png?raw=true)
 
-Click [AddAeadFS] to create or add an existing file system. If a file system already exists in the selected directory, add it, otherwise create a new file system to the directory. During the creation process, you can choose to modify the file system parameters and choose different encryption algorithms.
+Click [AddAeadFS] to create or add an existing encrypted directory. If an encrypted file system already exists in the selected directory, add it, otherwise create a new file system to the directory. During the creation process, you can choose to modify the file system parameters and choose different encryption algorithms.
 
 After the addition is completed, you can use [Path] to set the virtual directory path mounted to the operating system, which can be a drive path or an available subdirectory path. If Path is set to a drive path, you can use [Name] to set the drive volume label.
 
@@ -18,7 +18,7 @@ This system uses Winfsp to mount the file system. You need to install the latest
 
 https://winfsp.dev/rel/
 
-Click [Mount] to mount the file system to the operating system. After the mounting is successful, click [OpenDir] to open the mounted virtual directory in the browser, and you can operate the files in it just like accessing a normal directory.
+Click [Mount] to mount the file system to the operating system. After the mounting is successful, click [OpenDir] to open the mounted virtual directory in the explorer, and you can operate the files in it just like accessing a normal directory.
 
 
 [File Sync System]
