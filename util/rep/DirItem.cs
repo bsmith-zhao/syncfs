@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using util.ext;
 
 namespace util.rep
 {
@@ -11,6 +12,10 @@ namespace util.rep
         public abstract IEnumerable<DirItem> enumDirs();
         public abstract IEnumerable<T> enumFiles<T>()
             where T : FileItem, new();
+
+        public virtual IEnumerable<RepItem> enumItems()
+            => (enumDirs() as IEnumerable<RepItem>)
+            .combine(enumFiles());
 
         public virtual IEnumerable<DirItem> enumAllDirs()
         {

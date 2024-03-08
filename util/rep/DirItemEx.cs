@@ -9,8 +9,8 @@ namespace util.rep
 {
     public static class DirItemEx
     {
-        public static IEnumerable<RepItem> enumItems(this DirItem dir)
-            => (dir?.enumDirs() as IEnumerable<RepItem>)
-            .combine(dir?.enumFiles());
+        //public static IEnumerable<RepItem> enumItems(this DirItem dir)
+        //    => (dir?.enumDirs() as IEnumerable<RepItem>)
+        //    .combine(dir?.enumFiles());
     }
 }

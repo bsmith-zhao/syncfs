@@ -10,45 +10,67 @@ namespace util.rep
 {
     public class LocalDirItem : DirItem
     {
-        public LocalDirReposit rep;
-        public DirectoryInfo dirInfo;
+        public LocalDirItem(LocalDirReposit rep,
+            DirectoryInfo dir,
+            string path)
+        {
+            this.rep = rep;
+            this.dirInfo = dir;
+            this.path = path;
+        }
+
+        LocalDirReposit rep;
+        DirectoryInfo dirInfo;
 
         public override IEnumerable<DirItem> enumDirs()
         {
             foreach (var sub in dirInfo.EnumerateDirectories())
-            {
-                if (sub.isSystem() && sub.isHidden())
-                    continue;
-                if (!getSubPath(sub, out var subPath))
-                    continue;
-                yield return new LocalDirItem
-                {
-                    rep = rep,
-                    dirInfo = sub,
-                    path = subPath,
-                };
-            }
-        }
-
-        bool getSubPath(FileSystemInfo sub, out string subPath)
-        {
-            subPath = rep.decodeName(sub);
-            if (subPath != null && path != null)
-                subPath = $"{path}/{subPath}";
-            return subPath != null;
+                if (parseItem(sub, out var path))
+                    yield return new LocalDirItem(rep, sub, path);
         }
 
         public override IEnumerable<T> enumFiles<T>()
         {
             foreach (var fi in dirInfo.EnumerateFiles())
+                if (parseItem(fi, out var path))
+                    yield return newFileItem<T>(fi, path);
+        }
+
+        public override IEnumerable<RepItem> enumItems()
+        {
+            foreach (var item in dirInfo.EnumerateFileSystemInfos())
             {
-                if (fi.isHidden() && fi.isSystem())
-                    continue;
-                if (!getSubPath(fi, out var subPath))
-                    continue;
-                fi.Refresh();
-                yield return rep.newFileNode<T>(fi, subPath);
+                if (parseItem(item, out var path))
+                {
+                    if (item is DirectoryInfo dir)
+                        yield return new LocalDirItem(rep, dir, path);
+                    else if (item is FileInfo file)
+                        yield return newFileItem<FileItem>(file, path);
+                }
             }
+        }
+
+        T newFileItem<T>(FileInfo file, string path)
+            where T : FileItem, new()
+        {
+            file.Refresh();
+            return rep.newFileItem<T>(file, path);
+        }
+
+        bool decodePath(FileSystemInfo item, out string itemPath)
+        {
+            itemPath = rep.decodeName(item);
+            if (itemPath != null && path != null)
+                itemPath = $"{path}/{itemPath}";
+            return itemPath != null;
+        }
+
+        bool parseItem(FileSystemInfo item, out string path)
+        {
+            path = null;
+            if (item.isHidden() && item.isSystem())
+                return false;
+            return decodePath(item, out path);
         }
     }
 }

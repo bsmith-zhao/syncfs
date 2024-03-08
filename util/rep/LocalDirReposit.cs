@@ -22,20 +22,15 @@ namespace util.rep
         {
             if (!locateToItem(path, out var item, out var realPath))
                 return null;
-            else if (item.isDir())
-                return new LocalDirItem
-                {
-                    rep = this,
-                    dirInfo = item as DirectoryInfo,
-                    path = realPath,
-                };
+            else if (item is DirectoryInfo dir)
+                return new LocalDirItem(this, dir, realPath);
             else
-                return newFileNode<FileItem>(
-                    new FileInfo(item.FullName), 
+                return newFileItem<FileItem>(
+                    new FileInfo(item.FullName),
                     realPath);
         }
 
-        public T newFileNode<T>(FileInfo file, string path)
+        public T newFileItem<T>(FileInfo file, string path)
             where T : FileItem, new()
             => new T
             {
