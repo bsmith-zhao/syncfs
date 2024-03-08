@@ -134,10 +134,7 @@ namespace vfs
                     rep.createDir(path);
 
                 var item = rep.getItem(path);
-                fd = new FileDesc(rep, item, fs)
-                {
-                    core = this,
-                };
+                fd = new FileDesc(this, rep, item, fs);
 
                 node = default(Object);
                 desc = fd;
@@ -174,10 +171,7 @@ namespace vfs
                     return STATUS_OBJECT_NAME_NOT_FOUND;
                 }
 
-                fd = new FileDesc(rep, item)
-                {
-                    core = this,
-                };
+                fd = new FileDesc(this, rep, item);
 
                 desc = fd;
                 node = default(Object);
@@ -589,7 +583,7 @@ namespace vfs
                 {
                     context = idx + 1;
                     path = fd.items[idx].name;
-                    FileDesc.getItemInfo(fd.items[idx], this, out info);
+                    getItemInfo(fd.items[idx], out info);
                     return true;
                 }
                 else
@@ -649,5 +643,33 @@ namespace vfs
             //    throw;
             //}
         }
+
+        public void getItemInfo(
+            RepItem item,
+            out FileInfo info)
+        {
+            info = new FileInfo();
+            info.FileAttributes = (uint)(item.isDir() ?
+                FileAttributes.Directory
+                : FileAttributes.Normal);
+            info.ReparseTag = 0;
+            info.FileSize = (ulong)item.size;
+            updateAllocSize(ref info);
+            info.CreationTime = (ulong)item.createTime;
+            info.LastAccessTime = (ulong)item.modifyTime;
+            info.LastWriteTime = (ulong)item.modifyTime;
+            info.ChangeTime = info.LastWriteTime;
+            info.IndexNumber = 0;
+            info.HardLinks = 0;
+
+            if (needBak
+                && vfs.bak.lowEqual(item.path))
+                info.FileAttributes |= (uint)FileAttributes.Encrypted;
+        }
+
+        const int AllocUnit = 4096;
+
+        public void updateAllocSize(ref FileInfo info)
+                => info.AllocationSize = (info.FileSize + AllocUnit - 1) / AllocUnit * AllocUnit;
     }
 }

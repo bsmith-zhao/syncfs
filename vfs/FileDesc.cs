@@ -16,9 +16,10 @@ namespace vfs
 {
     public class FileDesc
     {
+        public VfsCore core;
+
         public Reposit rep;
         public RepItem item;
-        public VfsCore core;
         
         public RepItem[] items;
         string[] _names;
@@ -30,8 +31,11 @@ namespace vfs
         public bool isDir => dir != null;
         public DirItem dir => item as DirItem;
 
-        public FileDesc(Reposit rep, RepItem item, Stream fs = null)
+        public FileDesc(VfsCore core, 
+            Reposit rep, RepItem item, 
+            Stream fs = null)
         {
+            this.core = core;
             this.rep = rep;
             this.item = item;
             this.data = fs;
@@ -66,45 +70,16 @@ namespace vfs
         public void closeFile()
             => this.free(ref data);
 
-        public static void getItemInfo(
-            RepItem item,
-            VfsCore core,
-            out FileInfo info)
-        {
-            info = new FileInfo();
-            info.FileAttributes = (uint)(item.isDir() ? 
-                FileAttributes.Directory
-                : FileAttributes.Normal);
-            info.ReparseTag = 0;
-            info.FileSize = (ulong)item.size;
-            updateAllocSize(ref info);
-            info.CreationTime = (ulong)item.createTime;
-            info.LastAccessTime = (ulong)item.modifyTime;
-            info.LastWriteTime = (ulong)item.modifyTime;
-            info.ChangeTime = info.LastWriteTime;
-            info.IndexNumber = 0;
-            info.HardLinks = 0;
-
-            if (core.needBak
-                && core.vfs.bak.lowEqual(item.path))
-                info.FileAttributes |= (uint)FileAttributes.Encrypted;
-        }
-
         public Int32 getInfo(out FileInfo info)
         {
-            getItemInfo(item, core, out info);
+            core.getItemInfo(item, out info);
             if (data != null)
             {
                 info.FileSize = (ulong)data.Length;
-                updateAllocSize(ref info);
+                core.updateAllocSize(ref info);
             }
             return FileSystemBase.STATUS_SUCCESS;
         }
-
-        public const int AllocUnit = 4096;
-
-        static void updateAllocSize(ref FileInfo info)
-            => info.AllocationSize = (info.FileSize+AllocUnit-1)/AllocUnit * AllocUnit;
     }
 
 }
