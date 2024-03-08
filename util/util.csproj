@@ -84,6 +84,8 @@
     <Compile Include="option\PBKDF2Option.cs" />
     <Compile Include="option\PwdDeriveOption.cs" />
     <Compile Include="prop\DescRefer.cs" />
+    <Compile Include="prop\adjust\AdjustValue.cs" />
+    <Compile Include="prop\adjust\UnifyPathName.cs" />
     <Compile Include="rep\aead\AeadFsConf.cs" />
     <Compile Include="rep\aead\AeadFsReposit.cs" />
     <Compile Include="rep\aead\AeadFsStream.cs" />
@@ -122,7 +124,7 @@
     <Compile Include="SetupDialog.designer.cs">
       <DependentUpon>SetupDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="prop\UnifyPath.cs" />
+    <Compile Include="prop\adjust\UnifyPath.cs" />
     <Compile Include="EventAgent.cs" />
     <Compile Include="Test.cs" />
     <Compile Include="crypt\AesCtr.cs" />

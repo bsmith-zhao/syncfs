@@ -14,17 +14,11 @@ namespace sync.app
     [TypeConverter(typeof(ExpandProp))]
     public class BackupConf
     {
-        const string DefaultFolder = "(bak)";
-
         public bool Enable { get; set; } = false;
 
-        string _folder = DefaultFolder;
-        public string Folder
-        {
-            get => _folder;
-            set => _folder = value.pathUnifyName()
-                ?? DefaultFolder;
-        }
+        const string DefaultFolder = "(bak)";
+        [UnifyPathName(DefaultFolder)]
+        public string Folder { get; set; } = DefaultFolder;
 
         public bool KeepAll { get; set; } = false;
         [RangeLimit(1, 10), EditByWheel(1)]

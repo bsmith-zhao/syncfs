@@ -60,7 +60,9 @@ namespace util.prop
                 {
                     var item = e.ChangedItem;
 
-                    if (anyTrue(limitValue(item), unifyPath(item)))
+                    if (adjustValue(item)
+                        || limitValue(item)
+                        )
                         ui.Refresh();
 
                     notify?.Invoke(s, e);
@@ -69,7 +71,7 @@ namespace util.prop
 
             ui.MouseWheel += (s, e) =>
             {
-                e.trydo((Action)(() => 
+                e.trydo(() => 
                 {
                     var item = ui.SelectedGridItem;
                     if (item == null || item.field() == null
@@ -90,8 +92,21 @@ namespace util.prop
                     ui.Refresh();
 
                     notify?.Invoke(ui, new PropertyValueChangedEventArgs(item, old));
-                }));
+                });
             };
+        }
+
+        static bool adjustValue(GridItem item)
+        {
+            if (!item.attr<AdjustValue>(out var attr, 
+                out var prop, out var owner))
+                return false;
+            var src = prop.GetValue(owner);
+            var dst = attr.adjust(src);
+            if (src == dst)
+                return false;
+            prop.SetValue(owner, dst);
+            return true;
         }
 
         static bool limitValue(GridItem item)
@@ -99,34 +114,20 @@ namespace util.prop
                 && rng.limit(item.Value, 
                     dst => prop.SetValue(owner, dst));
 
-        static bool unifyPath(GridItem item)
-        {
-            if (!item.attr<UnifyPath>(out var rng, out var prop, out var owner))
-                return false;
-            var path = prop.GetValue(owner) as string;
-            var newPath = path.pathUnify();
-            if (path == newPath)
-                return false;
-            prop.SetValue(owner, newPath);
-            return true;
-        }
-
-        static bool anyTrue(params bool[] vs)
-            => vs.exist(v => v);
-
         public static bool hasAttr<T>(this GridItem item)
             where T : Attribute
             => item.attr<T>(out object owner, out var prop) != null;
 
-        public static bool attr<T>(this GridItem item, out T meta, 
+        public static bool attr<T>(this GridItem item, out T attr, 
             out PropertyInfo prop, out object owner)
             where T : Attribute
-            => (meta = attr<T>(item, out owner, out prop)) != null;
+            => (attr = attr<T>(item, out owner, out prop)) != null;
 
         public static T attr<T>(this GridItem item, out object owner, 
             out PropertyInfo prop)
             where T : Attribute
-            => (prop = (owner = item.owner()).GetType().GetProperty(item.field()))
+            => (prop = (owner = item.owner())
+            .GetType().GetProperty(item.field()))
             ?.GetCustomAttribute<T>();
 
         public static T attr<T>(this GridItem item)
