@@ -1,0 +1,24 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using util.ext;
+
+namespace util.prop.adjust
+{
+    public class UnifyEncode : AdjustValue
+    {
+        string def;
+
+        public UnifyEncode(string @default = null)
+            => this.def = @default;
+
+        public override object adjust(object value)
+        {
+            var enc = $"{value}".Trim();
+            return this.tryget(() => Encoding.GetEncoding(enc)) 
+                != null ? enc : def;
+        }
+    }
+}

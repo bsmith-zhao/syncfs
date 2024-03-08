@@ -24,7 +24,7 @@ namespace vfs.mgr.conf
         public BackupConf Backup { get; set; } = new BackupConf();
 
         object _src;
-        [TypeConverter(typeof(ExpandProp))]
+        [TypeConverter(typeof(ExpandClass))]
         public object Source
         {
             get => _src is RepConf ra ? ra

@@ -11,12 +11,12 @@ using util.rep;
 
 namespace sync.app
 {
-    [TypeConverter(typeof(ExpandProp))]
+    [TypeConverter(typeof(ExpandClass))]
     public class FilterConf
     {
         string[] incPaths;
         [Category("2.View")]
-        [TypeConverter(typeof(ArrayProp))]
+        [TypeConverter(typeof(ArrayField))]
         public string[] AllowPaths
         {
             get => incPaths;
@@ -25,7 +25,7 @@ namespace sync.app
 
         string[] excsPaths;
         [Category("2.View")]
-        [TypeConverter(typeof(ArrayProp))]
+        [TypeConverter(typeof(ArrayField))]
         public string[] ExcludePaths
         {
             get => excsPaths;
@@ -34,7 +34,7 @@ namespace sync.app
 
         string[] excNames;
         [Category("2.View")]
-        [TypeConverter(typeof(ArrayProp))]
+        [TypeConverter(typeof(ArrayField))]
         public string[] ExcludeNames
         {
             get => excNames;

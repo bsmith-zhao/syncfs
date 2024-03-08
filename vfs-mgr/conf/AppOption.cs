@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing.Design;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,21 +12,19 @@ using util.crypt.sodium;
 using util.ext;
 using util.option;
 using util.prop;
+using util.prop.adjust;
 using util.rep.aead;
 
 namespace vfs.mgr.conf
 {
     public class AppOption
     {
-        [TypeConverter(typeof(ExpandProp))]
         public AeadFsOption AeadFS { get; set; }
             = new AeadFsOption();
 
-        [TypeConverter(typeof(ExpandProp))]
         public PBKDF2Option PBKDF2 { get; set; }
             = new PBKDF2Option();
 
-        [TypeConverter(typeof(ExpandProp))]
         public Argon2idOption Argon2id { get; set; }
             = new Argon2idOption();
 

@@ -16,7 +16,7 @@ using vfs.rep;
 
 namespace vfs.mgr.conf
 {
-    [TypeConverter(typeof(ExpandProp))]
+    [TypeConverter(typeof(ExpandClass))]
     public class AeadRepConf : RepConf, IDynamicConf
     {
         string dir;

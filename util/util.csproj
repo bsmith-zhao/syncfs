@@ -83,9 +83,12 @@
     <Compile Include="option\Argon2idOption.cs" />
     <Compile Include="option\PBKDF2Option.cs" />
     <Compile Include="option\PwdDeriveOption.cs" />
+    <Compile Include="prop\adjust\UnifyEncode.cs" />
+    <Compile Include="prop\conv\DropList.cs" />
     <Compile Include="prop\DescRefer.cs" />
     <Compile Include="prop\adjust\AdjustValue.cs" />
     <Compile Include="prop\adjust\UnifyPathName.cs" />
+    <Compile Include="prop\edit\EncodeDropList.cs" />
     <Compile Include="rep\aead\AeadFsConf.cs" />
     <Compile Include="rep\aead\AeadFsReposit.cs" />
     <Compile Include="rep\aead\AeadFsStream.cs" />
@@ -112,12 +115,12 @@
     <Compile Include="Map.cs" />
     <Compile Include="Member.cs" />
     <Compile Include="PickDirDialog.cs" />
-    <Compile Include="prop\ArrayProp.cs" />
+    <Compile Include="prop\conv\ArrayField.cs" />
     <Compile Include="prop\ByteSize.cs" />
-    <Compile Include="prop\EditByWheel.cs" />
-    <Compile Include="prop\ExpandProp.cs" />
+    <Compile Include="prop\edit\EditByWheel.cs" />
+    <Compile Include="prop\conv\ExpandClass.cs" />
     <Compile Include="prop\IDynamicConf.cs" />
-    <Compile Include="prop\RangeLimit.cs" />
+    <Compile Include="prop\adjust\RangeLimit.cs" />
     <Compile Include="SetupDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -165,7 +168,7 @@
     <Compile Include="ext\PathEx.cs" />
     <Compile Include="Counter.cs" />
     <Compile Include="Debug.cs" />
-    <Compile Include="prop\DirPicker.cs" />
+    <Compile Include="prop\edit\DirPicker.cs" />
     <Compile Include="ext\ArrayEx.cs" />
     <Compile Include="ext\MapEx.cs" />
     <Compile Include="ext\StringEx.cs" />
@@ -177,7 +180,7 @@
     <Compile Include="ext\ObjectEx.cs" />
     <Compile Include="Permutate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="prop\PwdView.cs" />
+    <Compile Include="prop\edit\PwdView.cs" />
     <Compile Include="ext\TimeEx.cs" />
     <Compile Include="Status.cs" />
     <Compile Include="TestEx.cs" />

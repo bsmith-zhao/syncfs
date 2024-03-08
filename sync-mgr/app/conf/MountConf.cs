@@ -9,7 +9,7 @@ using util.prop;
 
 namespace sync.app.conf
 {
-    [TypeConverter(typeof(ExpandProp))]
+    [TypeConverter(typeof(ExpandClass))]
     public class MountConf
     {
         [UnifyPath]

@@ -15,15 +15,15 @@ namespace sync.app
 {
     public class AppOption
     {
-        [TypeConverter(typeof(ExpandProp))]
+        [TypeConverter(typeof(ExpandClass))]
         public AeadFsOption AeadFS { get; set; }
             = new AeadFsOption();
 
-        [TypeConverter(typeof(ExpandProp))]
+        [TypeConverter(typeof(ExpandClass))]
         public PBKDF2Option PBKDF2 { get; set; }
             = new PBKDF2Option();
 
-        [TypeConverter(typeof(ExpandProp))]
+        [TypeConverter(typeof(ExpandClass))]
         public Argon2idOption Argon2id { get; set; }
             = new Argon2idOption();
 

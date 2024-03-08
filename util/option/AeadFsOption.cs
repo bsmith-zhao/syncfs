@@ -2,28 +2,27 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing.Design;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using util.crypt;
 using util.ext;
 using util.prop;
+using util.prop.adjust;
+using util.prop.edit;
 using util.rep.aead;
 
 namespace util.option
 {
+    [TypeConverter(typeof(ExpandClass))]
     public class AeadFsOption
     {
-        string _encode = "utf-8";
-        public string Encode
-        {
-            get => _encode;
-            set
-            {
-                _encode = this.tryget(() => Encoding.GetEncoding(value)) != null
-                    ? value : "utf-8";
-            }
-        }
+        const string DefaultEncode = "utf-8";
+
+        [UnifyEncode(DefaultEncode)]
+        [Editor(typeof(EncodeDropList), typeof(UITypeEditor))]
+        public string Encode { get; set; } = DefaultEncode;
 
         [RangeLimit(32, 128), EditByWheel(8)]
         public int MasterKeySize { get; set; } = 48;
@@ -41,7 +40,7 @@ namespace util.option
         }
 
         PwdDeriveType[] kgs = { PwdDeriveType.PBKDF2, PwdDeriveType.Argon2id };
-        [TypeConverter(typeof(ArrayProp))]
+        [TypeConverter(typeof(ArrayField))]
         public PwdDeriveType[] PwdDerives
         {
             get => kgs;

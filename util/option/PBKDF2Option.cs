@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ using util.prop;
 
 namespace util.option
 {
+    [TypeConverter(typeof(ExpandClass))]
     public class PBKDF2Option
     {
         public int SaltSize = 32;

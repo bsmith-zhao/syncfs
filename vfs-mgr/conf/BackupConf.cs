@@ -9,7 +9,7 @@ using util.prop;
 
 namespace vfs.mgr.conf
 {
-    [TypeConverter(typeof(ExpandProp))]
+    [TypeConverter(typeof(ExpandClass))]
     public class BackupConf
     {
         public bool Enable { get; set; } = true;

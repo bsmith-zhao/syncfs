@@ -11,7 +11,7 @@ using util.rep;
 
 namespace sync.app
 {
-    [TypeConverter(typeof(ExpandProp))]
+    [TypeConverter(typeof(ExpandClass))]
     public class BackupConf
     {
         public bool Enable { get; set; } = false;

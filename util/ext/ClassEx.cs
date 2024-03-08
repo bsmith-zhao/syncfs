@@ -33,7 +33,8 @@ namespace util.ext
             {
                 if (level < 0)
                     level = -level;
-                return new StackFrame(level).GetMethod().Name;
+                var func = new StackFrame(level).GetMethod();
+                return $"{func.DeclaringType.Name}.{func.Name}";
             }
             catch { }
             return null;

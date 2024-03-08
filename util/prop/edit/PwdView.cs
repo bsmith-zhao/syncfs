@@ -10,6 +10,8 @@ using System.Windows.Forms.Design;
 
 namespace util.prop
 {
+    // usage:
+    // [Editor(typeof(PwdView), typeof(UITypeEditor))]
     public class PwdView : UITypeEditor
     {
         public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context)

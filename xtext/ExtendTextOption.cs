@@ -10,11 +10,11 @@ using util.ext;
 
 namespace xtext
 {
-    [TypeConverter(typeof(ExpandProp))]
+    [TypeConverter(typeof(ExpandClass))]
     public class TextFileOption
     {
         PwdDeriveType[] kgs = { PwdDeriveType.PBKDF2, PwdDeriveType.Argon2id };
-        [TypeConverter(typeof(ArrayProp))]
+        [TypeConverter(typeof(ArrayField))]
         public PwdDeriveType[] PwdDerives
         {
             get => kgs;

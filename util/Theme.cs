@@ -18,6 +18,12 @@ namespace util
         public static Color ButtonBorder = Color.FromArgb(80, 80, 80);
         public static BorderStyle PanelBorder = BorderStyle.None;
 
+        //public static ListBox theme(this ListBox lb)
+        //{
+        //    dark(lb);
+        //    return lb;
+        //}
+
         public static T theme<T>(this T form) where T : Form
         {
             setDarkTitle(form);
@@ -38,7 +44,7 @@ namespace util
                 else if (obj is TextBoxBase tx)
                     dark(tx);
                 else if (obj is ListBox lb)
-                    dark(lb);
+                    theme(lb);
                 else if (obj is TreeView tr)
                     dark(tr);
                 else if (obj is ListView lv)
@@ -180,11 +186,12 @@ namespace util
             ui.FlatAppearance.BorderColor = ButtonBorder;
         }
 
-        public static void dark(ListBox ui)
+        public static ListBox theme(this ListBox ui)
         {
             ui.BackColor = ControlBack;
             ui.ForeColor = TextFore;
             ui.BorderStyle = PanelBorder;
+            return ui;
         }
 
         public static void dark(TextBoxBase ui)

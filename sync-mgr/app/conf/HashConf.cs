@@ -10,7 +10,7 @@ using util.prop;
 
 namespace sync.app
 {
-    [TypeConverter(typeof(ExpandProp))]
+    [TypeConverter(typeof(ExpandClass))]
     public class HashConf
     {
         [Browsable(false)]

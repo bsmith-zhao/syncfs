@@ -10,14 +10,14 @@ using util.rep.aead;
 
 namespace util.option
 {
-    [TypeConverter(typeof(ExpandProp))]
+    [TypeConverter(typeof(ExpandClass))]
     public class PwdDeriveOption
     {
-        [TypeConverter(typeof(ExpandProp))]
+        [TypeConverter(typeof(ExpandClass))]
         public PBKDF2Option PBKDF2 { get; set; }
             = new PBKDF2Option();
 
-        [TypeConverter(typeof(ExpandProp))]
+        [TypeConverter(typeof(ExpandClass))]
         public Argon2idOption Argon2id { get; set; }
             = new Argon2idOption();
 

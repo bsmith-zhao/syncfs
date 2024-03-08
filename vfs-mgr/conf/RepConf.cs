@@ -9,7 +9,7 @@ using vfs.rep;
 
 namespace vfs.mgr.conf
 {
-    [TypeConverter(typeof(ExpandProp))]
+    [TypeConverter(typeof(ExpandClass))]
     public abstract class RepConf
     {
         public abstract string getSource();

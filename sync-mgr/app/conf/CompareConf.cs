@@ -10,14 +10,14 @@ using util.ext;
 
 namespace sync.app
 {
-    [TypeConverter(typeof(ExpandProp))]
+    [TypeConverter(typeof(ExpandClass))]
     public class CompareConf
     {
         public CompareType Default { get; set; } 
             = CompareType.Hash;
 
         string[] hashs;
-        [TypeConverter(typeof(ArrayProp))]
+        [TypeConverter(typeof(ArrayField))]
         public string[] ByHash
         {
             get => hashs;
@@ -25,7 +25,7 @@ namespace sync.app
         }
 
         string[] datas;
-        [TypeConverter(typeof(ArrayProp))]
+        [TypeConverter(typeof(ArrayField))]
         public string[] ByData
         {
             get => datas;

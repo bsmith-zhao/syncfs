@@ -12,7 +12,7 @@ using vfs.rep;
 
 namespace sync.app
 {
-    [TypeConverter(typeof(ExpandProp))]
+    [TypeConverter(typeof(ExpandClass))]
     public abstract class RepConf : ViewConf
     {
         public static RepConf create(RepType type)
