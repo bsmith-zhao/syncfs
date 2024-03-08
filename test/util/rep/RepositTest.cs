@@ -405,7 +405,7 @@ namespace test
             $"n{item.path} vs r{realPath}".msg();
             (null != item 
             && item.path == realPath 
-            && !item.isDir == type).assert();
+            && item.isFile() == type).assert();
         }
 
         public void getDirAssert(string path, string realPath)

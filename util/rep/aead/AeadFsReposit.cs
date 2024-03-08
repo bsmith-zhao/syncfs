@@ -170,8 +170,15 @@ namespace util.rep.aead
             var path = item.FullName;
             func();
 
-            if (path.lastIdx('&', 10) > 0)
-                File.Delete($"{path}~");
+            try
+            {
+                if (path.lastIdx('&', 10) > 0)
+                    File.Delete($"{path}~");
+            }
+            catch (Exception err)
+            {
+                err.log(args: new { path });
+            }
         }
 
         const int MaxNameLength = 240;

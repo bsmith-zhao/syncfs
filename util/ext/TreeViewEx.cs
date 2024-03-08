@@ -174,7 +174,7 @@ namespace util.ext
             return true;
         }
 
-        public static bool empty(this TreeNode tn)
+        public static bool treeEmpty(this TreeNode tn)
             => null == tn || tn.Nodes.Count == 0;
         public static bool isRoot(this TreeNode tn)
             => tn != null && tn.Parent == null;

@@ -55,9 +55,9 @@ namespace util.rep
             {
                 var bakPath = $"{backup.dir}/{path}";
                 if (backup.all)
-                    bakPath = bakPath.fsAppend(writer.exist, "-r");
+                    bakPath = bakPath.pathAppend(writer.exist, "-r");
                 else
-                    bakPath = bakPath.fsBackup(backup.rev,
+                    bakPath = bakPath.pathBackup(backup.rev,
                         writer.exist, writer.deleteFile, "-r");
 
                 writer.moveFile(path, bakPath);

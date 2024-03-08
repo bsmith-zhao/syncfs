@@ -87,7 +87,7 @@
     <Compile Include="rep\aead\AeadFsConf.cs" />
     <Compile Include="rep\aead\AeadFsReposit.cs" />
     <Compile Include="rep\aead\AeadFsStream.cs" />
-    <Compile Include="rep\DirItemEx.cs" />
+    <Compile Include="rep\RepItemEx.cs" />
     <Compile Include="rep\FileItem.cs" />
     <Compile Include="rep\IDirEx.cs" />
     <Compile Include="rep\ILocalDirReposit.cs" />

@@ -471,7 +471,7 @@ namespace sync.ui
                 return;
 
             var path = selDir.pathMerge("newDir");
-            path = path.fsSettle(view.exist);
+            path = path.pathSettle(view.exist);
             view.createDir(path);
 
             addDirNode(selNode, path);

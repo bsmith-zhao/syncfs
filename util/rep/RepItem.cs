@@ -26,10 +26,5 @@ namespace util.rep
             get => _dir ?? (_dir = path.pathDir());
             set => _dir = value;
         }
-
-        public virtual bool isDir => this is DirItem;
-        public virtual bool isFile => this is FileItem;
-        public DirItem asDir => this as DirItem;
-        public FileItem asFile => this as FileItem;
     }
 }

@@ -10,6 +10,10 @@ namespace util.ext
 {
     public static class StringEx
     {
+        public static char charAt(this string str, int idx)
+            => idx >= 0 && idx < str?.Length 
+            ? str[idx] : default(char);
+
         public static bool empty(this string str)
             => str == null || str.Length == 0;
 
@@ -42,8 +46,8 @@ namespace util.ext
         public static string conv(this string str, Func<string, string> func)
             => str != null ? func(str) : null;
 
-        public static string keep(this string str, Func<string, bool> func)
-            => func(str) ? str : null;
+        //public static string keep(this string str, Func<string, bool> func)
+        //    => func(str) ? str : null;
 
         public static string join<T>(this IEnumerable<T> iter,
             string sep)

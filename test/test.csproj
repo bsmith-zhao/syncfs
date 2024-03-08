@@ -42,6 +42,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
@@ -62,6 +63,7 @@
     <Compile Include="demo\crypt\HashFileDemo.cs" />
     <Compile Include="demo\crypt\HmacThreadsSpeed.cs" />
     <Compile Include="demo\error\LocOfException.cs" />
+    <Compile Include="demo\io\VBFileIO.cs" />
     <Compile Include="demo\Lottery.cs" />
     <Compile Include="ITest.cs" />
     <Compile Include="util\crypt\AesEmeTest.cs" />

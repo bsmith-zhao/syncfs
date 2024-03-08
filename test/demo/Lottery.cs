@@ -14,13 +14,13 @@ namespace test.demo
     {
         public void test()
         {
-            superCheck(check("e:/note/5+2.txt",
+            superCheck(check("d:/note/5+2.txt",
                 new int[] { 1, 2, 8, 18, 27 },
                 new int[] { 4, 8 }));
 
-            unionCheck(check("e:/note/6+1.txt",
-                new int[] { 8, 15, 21, 22, 25, 33 },
-                new int[] { 13 }));
+            //unionCheck(check("e:/note/6+1.txt",
+            //    new int[] { 8, 15, 21, 22, 25, 33 },
+            //    new int[] { 13 }));
 
             //50.count().each(i =>
             //{

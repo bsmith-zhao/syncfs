@@ -18,6 +18,7 @@ namespace util
         {
             if (output == null)
                 return;
+            func = func ?? true.lastFunc();
             log($"[{func}]({args})<{err.TargetSite.shortName()}>{err.Message}");
 #if DEBUG
             output?.Invoke(err.StackTrace);

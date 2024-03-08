@@ -32,7 +32,7 @@ namespace sync.work
             var logPath = workDir.pathMerge(logFile);
             if (logPath.fileExist())
             {
-                var bakPath = logPath.fsBackup(logCount - 1, File.Exists, File.Delete, "-");
+                var bakPath = logPath.pathBackup(logCount - 1, File.Exists, File.Delete, "-");
                 File.Move(logPath, bakPath);
             }
             using (fout = File.AppendText(logPath))

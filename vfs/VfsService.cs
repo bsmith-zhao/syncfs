@@ -12,8 +12,7 @@ namespace vfs
     public class VfsService : Service
     {
         public Reposit rep;
-        public string mount;
-        public string label;
+        public VfsArgs vfs;
 
         public VfsService() : base("VfsService")
         {
@@ -26,10 +25,9 @@ namespace vfs
             var host = new FileSystemHost(new VfsCore
             {
                 rep = rep,
-                mount = mount,
-                label = label
+                vfs = vfs,
             });
-            if (0 > host.Mount(mount, null, true, 0))
+            if (0 > host.Mount(vfs.path, null, true, 0))
                 throw new IOException("cannot mount file system");
             this.host = host;
         }

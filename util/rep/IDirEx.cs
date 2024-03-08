@@ -10,6 +10,39 @@ namespace util.rep
 {
     public static class IDirEx
     {
+        public static bool empty(this DirItem dir)
+            => !dir.enumItems().exist(n => true);
+
+        public static bool isDir(this RepItem item)
+            => item is DirItem;
+
+        public static bool isFile(this RepItem item)
+            => item is FileItem;
+
+        public static DirItem asDir(this RepItem item)
+            => item as DirItem;
+
+        public static FileItem asFile(this RepItem item)
+            => item as FileItem;
+
+        public static void moveItem(this IDir dir, 
+            RepItem item, string dst)
+        {
+            if (item is DirItem)
+                dir.moveDir(item.path, dst);
+            else
+                dir.moveFile(item.path, dst);
+        }
+
+        public static void deleteItem(this IDir dir,
+            RepItem item)
+        {
+            if (item is DirItem)
+                dir.deleteDir(item.path);
+            else
+                dir.deleteFile(item.path);
+        }
+
         public static bool getItem(this IDir src, string path, out RepItem item)
             => (item = src?.getItem(path)) != null;
 

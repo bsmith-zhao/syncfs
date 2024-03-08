@@ -17,8 +17,7 @@ namespace vfs
     public class VfsCore : FileSystemBase
     {
         public Reposit rep;
-        public string mount;
-        public string label;
+        public VfsArgs vfs;
 
         public VfsCore()
         {
@@ -59,7 +58,7 @@ namespace vfs
                 rep.getSpace(out var total, out var free);
                 volume.TotalSize = (UInt64)total;
                 volume.FreeSize = (UInt64)free;
-                volume.SetVolumeLabel(label);
+                volume.SetVolumeLabel(vfs.name);
 
                 return STATUS_SUCCESS;
             }
@@ -76,19 +75,19 @@ namespace vfs
 
         public override Int32 GetSecurityByName(
             String path,
-            out UInt32 attrs/* or ReparsePointIndex */,
+            out UInt32 attr/* or ReparsePointIndex */,
             ref Byte[] security)
         {
             try
             {
-                attrs = 0;
+                attr = 0;
                 var item = rep.getItem(path);
                 if (item != null)
                 {
-                    if (item.isDir)
-                        attrs = (uint)FileAttributes.Directory;
+                    if (item.isDir())
+                        attr = (uint)FileAttributes.Directory;
                     else
-                        attrs = (uint)FileAttributes.Normal;
+                        attr = (uint)FileAttributes.Normal;
                 }
                 security = DefaultSecurity;
                 return STATUS_SUCCESS;
@@ -209,6 +208,8 @@ namespace vfs
             err.log(true.lastFunc(), args);
         }
 
+        bool needBak => vfs.bak != null;
+
         public override void Cleanup(
             Object node,
             Object desc,
@@ -221,10 +222,26 @@ namespace vfs
                 if (0 != (flag & CleanupDelete))
                 {
                     fd.closeFile();
-                    if (fd.isDir)
-                        rep.deleteDir(fd.item.path);
+                    var srcPath = fd.path;
+                    if (needBak && vfs.bak.low() != srcPath.pathRoot().low())
+                    {
+                        var bakPath = $"{vfs.bak}/{srcPath}";
+                        if (fd.item is DirItem dir 
+                            && rep.getItem(bakPath).isDir())
+                        {
+                            // ignore exist empty dir
+                            rep.deleteDir(dir.path);
+                        }
+                        else
+                        {
+                            bakPath = bakPath.pathSettle(rep.exist, "-");
+                            rep.moveItem(fd.item, bakPath);
+                        }
+                    }
                     else
-                        rep.deleteFile(fd.item.path);
+                    {
+                        rep.deleteItem(fd.item);
+                    }
                 }
             }
             catch (Exception err)
@@ -391,13 +408,13 @@ namespace vfs
         }
 
         public override Int32 SetBasicInfo(
-            Object FileNode,
+            Object node,
             Object desc,
-            UInt32 FileAttributes,
-            UInt64 CreationTime,
-            UInt64 LastAccessTime,
-            UInt64 LastWriteTime,
-            UInt64 ChangeTime,
+            UInt32 attr,
+            UInt64 createTime,
+            UInt64 accessTime,
+            UInt64 writeTime,
+            UInt64 changeTime,
             out FileInfo info)
         {
             var fd = desc as FileDesc;
@@ -437,6 +454,16 @@ namespace vfs
                 throw;
             }
         }
+
+        //public override int SetDelete(
+        //    object node, 
+        //    object desc,
+        //    string path, 
+        //    bool isFile)
+        //{
+        //    new {path, isFile }.debug();
+        //    return base.SetDelete(node, desc, path, isFile);
+        //}
 
         public override Int32 CanDelete(
             Object node,
@@ -480,12 +507,13 @@ namespace vfs
                 var item = fd.item;
                 if (item != null)
                 {
-                    if (item.isDir)
-                        rep.moveDir(oldPath, newPath);
-                    else
-                    {
-                        rep.moveFile(oldPath, newPath);
-                    }
+                    rep.moveItem(item, newPath);
+                    //if (item.isDir)
+                    //    rep.moveDir(oldPath, newPath);
+                    //else
+                    //{
+                    //    rep.moveFile(oldPath, newPath);
+                    //}
                     fd.item = rep.getItem(newPath);
                 }
 

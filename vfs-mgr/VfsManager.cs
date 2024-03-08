@@ -176,9 +176,8 @@ namespace vfs.mgr
 
             var conf = new VfsConf
             {
-                //Key = newKey(),
                 Path = "V:",
-                Name = dir.pathName().keep(s => !s.empty()) ?? "VFS",
+                Name = dir.pathName().discard(s => s.empty()) ?? "VFS",
                 Type = RepType.AeadFS,
                 Source = repConf
             };

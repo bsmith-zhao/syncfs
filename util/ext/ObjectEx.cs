@@ -16,6 +16,9 @@ namespace util.ext
         public static T remain<T>(this T src, Func<T, bool> func)
             => func(src) ? src : default(T);
 
+        public static T discard<T>(this T src, Func<T, bool> func)
+            => !func(src) ? src : default(T);
+
         public static T use<T>(this T obj, Action<T> func)
         {
             func(obj);

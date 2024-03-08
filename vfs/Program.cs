@@ -21,6 +21,7 @@ namespace vfs
                 var vfs = args[0].b64().utf8().obj<VfsArgs>();
                 if (vfs.path.fsExist())
                     throw new Error<VfsService>("PathExist", vfs.path);
+                vfs.bak = vfs.bak.pathUnifyName();
 
                 var logName = vfs.path.Replace(":", "#")
                                         .Replace("\\", "%")
@@ -42,8 +43,7 @@ namespace vfs
                 new VfsService
                 {
                     rep = rep,
-                    mount = vfs.path,
-                    label = vfs.name,
+                    vfs = vfs,
                 }.Run();
             }
             catch (Error err)

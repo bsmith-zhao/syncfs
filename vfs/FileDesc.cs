@@ -69,7 +69,9 @@ namespace vfs
             out FileInfo info)
         {
             info = new FileInfo();
-            info.FileAttributes = (uint)(item.isDir ? FileAttributes.Directory : FileAttributes.Normal);
+            info.FileAttributes = (uint)(item.isDir() ? 
+                FileAttributes.Directory 
+                : FileAttributes.Normal);
             info.ReparseTag = 0;
             info.FileSize = (ulong)item.size;
             updateAllocSize(ref info);

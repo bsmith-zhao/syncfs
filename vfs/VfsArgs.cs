@@ -20,6 +20,7 @@ namespace vfs
         public string name = "VFS";
         public RepType type;
         public string src;
+        public string bak = "(bak)";
 
         public Reposit newRep(string args)
             => (args.obj(argsClass()) as RepArgs).newRep();
