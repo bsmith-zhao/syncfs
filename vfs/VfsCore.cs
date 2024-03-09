@@ -305,11 +305,8 @@ namespace vfs
 
         byte[] _buff;
         byte[] getBuff(int size)
-        {
-            if (_buff == null || _buff.Length < size)
-                _buff = new byte[size];
-            return _buff;
-        }
+            => _buff?.Length >= size ? _buff
+            : (_buff = new byte[size]);
 
         public override Int32 Write(
             Object node,
