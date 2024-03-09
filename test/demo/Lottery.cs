@@ -14,9 +14,15 @@ namespace test.demo
     {
         public void test()
         {
+            // 03-06
             superCheck(check("d:/note/5+2.txt",
                 new int[] { 1, 2, 8, 18, 27 },
                 new int[] { 4, 8 }));
+
+            // 03-09
+            //superCheck(check("d:/note/5+2.txt",
+            //    new int[] { 1, 18, 21, 26, 33 },
+            //    new int[] { 2, 12 }));
 
             //unionCheck(check("e:/note/6+1.txt",
             //    new int[] { 8, 15, 21, 22, 25, 33 },
@@ -122,6 +128,16 @@ namespace test.demo
                     new { c, s = 8, r }.json().msg();
                 else if (c[0] == 2 && c[1] == 2)
                     new { c, s = 8, r }.json().msg();
+                else if (c[0] == 3 && c[1] == 0)
+                    new { c, s = 9, r }.json().msg();
+                else if (c[0] == 1 && c[1] == 2)
+                    new { c, s = 9, r }.json().msg();
+                else if (c[0] == 2 && c[1] == 1)
+                    new { c, s = 9, r }.json().msg();
+                else if (c[0] == 0 && c[1] == 2)
+                    new { c, s = 9, r }.json().msg();
+                //else
+                //    new { c, s = 0, r }.json().msg();
             }
         }
 

@@ -165,7 +165,7 @@ namespace vfs.mgr
             };
             item.Tag = tag;
 
-            vfsGroup.add(item);
+            vfsGroup.addItem(item);
         }
 
         void addAeadFs()
@@ -302,7 +302,7 @@ namespace vfs.mgr
             };
             item.Tag = tag;
 
-            mountGroup.add(item);
+            mountGroup.addItem(item);
 
             awaitMountEnd(mount, item.Remove);
         }

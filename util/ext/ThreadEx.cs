@@ -10,10 +10,10 @@ namespace util.ext
 {
     public static class ThreadEx
     {
-        public static int thdId(this object obj)
+        public static int thdId(this bool src)
             => Thread.CurrentThread.ManagedThreadId;
 
-        public static void sleep(this object obj, int ms)
+        public static void sleep(this bool src, int ms)
             => Thread.Sleep(ms);
 
         // Environment.ProcessorCount - cpu logic cores

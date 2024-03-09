@@ -98,7 +98,7 @@ namespace util.ext
         public static bool subItem(this ListViewItem item, string key, out ListViewItem.ListViewSubItem sub)
             => (sub = item.SubItems[key]) != null;
 
-        public static void add(this ListViewGroup grp, ListViewItem item)
+        public static void addItem(this ListViewGroup grp, ListViewItem item)
         {
             item.Group = grp;
             grp.ListView.Items.Add(item);

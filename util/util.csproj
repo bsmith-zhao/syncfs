@@ -115,7 +115,6 @@
     <Compile Include="crypt\HKDF.cs" />
     <Compile Include="FileLogger.cs" />
     <Compile Include="Log.cs" />
-    <Compile Include="Map.cs" />
     <Compile Include="Member.cs" />
     <Compile Include="PickDirDialog.cs" />
     <Compile Include="prop\conv\ArrayField.cs" />

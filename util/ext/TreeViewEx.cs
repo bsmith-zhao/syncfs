@@ -219,7 +219,7 @@ namespace util.ext
         public static void clear(this TreeNode tn)
             => tn.Nodes.Clear();
 
-        public static void add(this TreeNode pn, TreeNode tn)
+        public static void addNode(this TreeNode pn, TreeNode tn)
             => pn.Nodes.Add(tn);
     }
 }

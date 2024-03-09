@@ -20,19 +20,16 @@ namespace vfs
 
         public Reposit rep;
         public RepItem item;
-        
+
         public RepItem[] items;
-        string[] _names;
-        public string[] names => _names 
-            ?? (_names = items.conv(n => n.name));
 
         Stream data;
         public string path => item.path;
-        public bool isDir => dir != null;
-        public DirItem dir => item as DirItem;
+        public bool isDir => item.isDir();
+        public DirItem dir => item.asDir();
 
-        public FileDesc(VfsCore core, 
-            Reposit rep, RepItem item, 
+        public FileDesc(VfsCore core,
+            Reposit rep, RepItem item,
             Stream fs = null)
         {
             this.core = core;
@@ -40,35 +37,71 @@ namespace vfs
             this.item = item;
             this.data = fs;
             write = this.data != null;
+
+            if (write)
+            {
+                markActive();
+                markOpen();
+            }
         }
+
+        public int activeTime;
+        void markActive()
+            => activeTime = true.ticks();
+        void markOpen()
+            => core.opens.Add(this);
+        void markClose()
+            => core.opens.Remove(this);
 
         bool write = false;
         public Stream openRead()
         {
+            markActive();
+
             if (data == null)
             {
                 data = rep.readFile(path);
                 write = false;
+
+                markOpen();
             }
             return data;
         }
 
         public Stream openWrite()
         {
-            if(data == null || !write)
+            markActive();
+
+            if (data == null || !write)
             {
                 closeFile();
                 data = rep.writeFile(path);
                 write = true;
+
+                markOpen();
             }
             return data;
+        }
+
+        public Stream detachFile()
+        {
+            markClose();
+
+            var fs = this.data;
+            this.data = null;
+            return fs;
         }
 
         public void flushFile()
             => data?.Flush();
 
         public void closeFile()
-            => this.free(ref data);
+        {
+            if (data != null)
+                markClose();
+
+            this.free(ref data);
+        }
 
         public Int32 getInfo(out FileInfo info)
         {

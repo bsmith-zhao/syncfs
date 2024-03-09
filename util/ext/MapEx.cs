@@ -6,6 +6,14 @@ using System.Threading.Tasks;
 
 namespace util.ext
 {
+    public class Map<K, V> : Dictionary<K, V>
+    {
+    }
+
+    public class Set<K> : HashSet<K>
+    {
+    }
+
     public static class MapEx
     {
         public static bool conv<K, V, R>(this Dictionary<K, V> map, K key, out R value, R def)

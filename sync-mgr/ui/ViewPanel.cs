@@ -373,7 +373,7 @@ namespace sync.ui
         {
             var tn = new TreeNode(dir.pathName())
                     .icon(DirIcon);
-            pn.add(tn);
+            pn.addNode(tn);
             return tn;
         }
 

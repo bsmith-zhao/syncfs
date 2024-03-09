@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.AccessControl;
+using System.Threading.Tasks;
 using util;
 using util.ext;
 using util.rep;
@@ -161,6 +162,8 @@ namespace vfs
             FileDesc fd = null;
             try
             {
+                checkActive();
+
                 var item = rep.getItem(path);
                 if (item == null)
                 {
@@ -180,7 +183,6 @@ namespace vfs
             }
             catch(Exception err)
             {
-                fd?.closeFile();
                 trace(err, new {path});
                 throw;
             }
@@ -268,7 +270,12 @@ namespace vfs
             }
         }
 
-        public override Int32 Read(
+        byte[] _buff;
+        byte[] getBuff(int size)
+            => _buff?.Length >= size ? _buff
+            : (_buff = new byte[size]);
+
+        public override unsafe Int32 Read(
             Object node,
             Object desc,
             IntPtr ptr,
@@ -276,94 +283,190 @@ namespace vfs
             UInt32 count,
             out UInt32 finish)
         {
-            var fd = desc as FileDesc;
+            return read(desc as FileDesc,
+                ptr, (long)offset, (int)count,
+                out finish);
+
+            //var fd = desc as FileDesc;
+            //try
+            //{
+            //    var fs = fd.openRead();
+
+            //    if (offset >= (UInt64)fs.Length)
+            //    {
+            //        finish = 0;
+            //        return STATUS_END_OF_FILE;
+            //    }
+
+            //    fs.Position = (long)offset;
+
+            //    int size = (int)count;
+            //    var buff = getBuff(size);
+            //    finish = (uint)fs.Read(buff, 0, size);
+            //    Marshal.Copy(buff, 0, ptr, (int)finish);
+
+            //    return STATUS_SUCCESS;
+            //}
+            //catch (Exception err)
+            //{
+            //    trace(err, new { fd?.path, offset, count});
+            //    throw;
+            //}
+        }
+
+        int maxRead;
+
+        unsafe int read(FileDesc fd,
+            IntPtr ptr,
+            long offset,
+            int count,
+            out uint finish)
+        {
             try
             {
                 var fs = fd.openRead();
 
-                if (offset >= (UInt64)fs.Length)
+                if (offset >= fs.Length)
                 {
                     finish = 0;
                     return STATUS_END_OF_FILE;
                 }
 
-                fs.Position = (long)offset;
+                maxRead = maxRead.atLeast(count);
 
-                int size = (int)count;
-                var buff = getBuff(size);
-                finish = (uint)fs.Read(buff, 0, size);
-                Marshal.Copy(buff, 0, ptr, (int)finish);
+                fs.Position = offset;
+                var buff = getBuff(count);
+                var actual = fs.Read(buff, 0, count);
+                if (actual > 0)
+                    Marshal.Copy(buff, 0, ptr, actual);
 
+                finish = (uint)actual;
                 return STATUS_SUCCESS;
             }
             catch (Exception err)
             {
-                trace(err, new { fd?.path, offset, count});
+                trace(err, new { fd?.path, offset, count });
                 throw;
             }
         }
 
-        byte[] _buff;
-        byte[] getBuff(int size)
-            => _buff?.Length >= size ? _buff
-            : (_buff = new byte[size]);
-
-        public override Int32 Write(
+        public override unsafe Int32 Write(
             Object node,
             Object desc,
             IntPtr ptr,
             UInt64 offset,
             UInt32 count,
             Boolean append,
-            Boolean cover,
+            Boolean coverOnly,
             out UInt32 finish,
             out FileInfo info)
         {
-            var fd = desc as FileDesc;
+            return write(desc as FileDesc,
+                ptr, (long)offset, (int)count,
+                append, coverOnly, out finish, out info);
+
+            //var fd = desc as FileDesc;
+            //try
+            //{
+            //    var fs = fd.openWrite();
+
+            //    if (cover)
+            //    {
+            //        if (offset >= (UInt64)fs.Length)
+            //        {
+            //            finish = default(UInt32);
+            //            info = default(FileInfo);
+            //            return STATUS_SUCCESS;
+            //        }
+            //        if (offset + count > (UInt64)fs.Length)
+            //            count = (UInt32)((UInt64)fs.Length - offset);
+            //    }
+
+            //    if (append)
+            //        fs.Position = fs.Length;
+            //    else
+            //    {
+            //        long off = (long)offset;
+            //        if (off > fs.Length)
+            //        {
+            //            fs.Position = fs.Length;
+            //            byte[] pad = new byte[off-fs.Length];
+            //            fs.write(pad);
+
+            //            padSize = padSize.atLeast(pad.Length);
+            //        }
+            //        fs.Position = off;
+            //    }
+
+            //    int size = (int)count;
+            //    byte[] buff = getBuff(size);
+            //    Marshal.Copy(ptr, buff, 0, size);
+            //    fs.Write(buff, 0, size);
+
+            //    finish = count;
+            //    return fd.getInfo(out info);
+            //}
+            //catch (Exception err)
+            //{
+            //    trace(err, new { fd?.path, offset, count, cover, append});
+            //    throw;
+            //}
+        }
+
+        int maxWrite;
+
+        unsafe int write(FileDesc fd, 
+            IntPtr ptr, long offset, int count,
+            bool append, bool coverOnly,
+            out uint finish,
+            out FileInfo info)
+        {
             try
             {
                 var fs = fd.openWrite();
 
-                if (cover)
+                if (coverOnly)
                 {
-                    if (offset >= (UInt64)fs.Length)
+                    if (offset >= fs.Length)
                     {
-                        finish = default(UInt32);
+                        finish = default(uint);
                         info = default(FileInfo);
                         return STATUS_SUCCESS;
                     }
-                    if (offset + count > (UInt64)fs.Length)
-                        count = (UInt32)((UInt64)fs.Length - offset);
+                    count = count.atMost((int)(fs.Length - offset));
                 }
 
                 if (append)
                     fs.Position = fs.Length;
                 else
                 {
-                    long off = (long)offset;
-                    if (off > fs.Length)
+                    if (offset > fs.Length)
                     {
                         fs.Position = fs.Length;
-                        byte[] pad = new byte[off-fs.Length];
+                        byte[] pad = new byte[offset - fs.Length];
                         fs.write(pad);
+
+                        maxPad = maxPad.atLeast(pad.Length);
                     }
-                    fs.Position = off;
+                    fs.Position = offset;
                 }
 
-                int size = (int)count;
-                byte[] buff = getBuff(size);
-                Marshal.Copy(ptr, buff, 0, size);
-                fs.Write(buff, 0, size);
+                maxWrite = maxWrite.atLeast(count);
 
-                finish = count;
+                byte[] buff = getBuff(count);
+                Marshal.Copy(ptr, buff, 0, count);
+                fs.Write(buff, 0, count);
+
+                finish = (uint)count;
                 return fd.getInfo(out info);
             }
             catch (Exception err)
             {
-                trace(err, new { fd?.path, offset, count, cover, append});
+                trace(err, new { fd?.path, offset, count, coverOnly, append });
                 throw;
             }
         }
+
         public override Int32 Flush(
             Object node,
             Object desc,
@@ -529,8 +632,8 @@ namespace vfs
         }
 
         public override Int32 GetSecurity(
-            Object FileNode,
-            Object FileDesc0,
+            Object node,
+            Object desc,
             ref Byte[] security)
         {
             security = DefaultSecurity;
@@ -538,10 +641,10 @@ namespace vfs
         }
 
         public override Int32 SetSecurity(
-            Object FileNode,
-            Object FileDesc0,
-            AccessControlSections Sections,
-            Byte[] SecurityDescriptor)
+            Object node,
+            Object desc,
+            AccessControlSections sections,
+            Byte[] security)
         {
             return STATUS_SUCCESS;
         }
@@ -558,6 +661,8 @@ namespace vfs
             var fd = desc as FileDesc;
             try
             {
+                checkActive();
+
                 if (fd.items == null)
                 {
                     fd.items = fd.dir?.enumItems().ToArray();
@@ -626,5 +731,50 @@ namespace vfs
         public void updateAllocSize(ref FileInfo info)
                 => info.AllocationSize 
             = (info.FileSize + AllocUnit - 1) / AllocUnit * AllocUnit;
+
+        int checkTime;
+        void markCheck()
+            => checkTime = true.ticks();
+
+        const int CheckInterval = 20 * 1000;
+        const int ActiveInterval = 1 * 60 * 1000;
+
+        public Set<FileDesc> opens = new Set<FileDesc>();
+
+        int buffSize => _buff?.Length ?? 0;
+        int maxPad;
+
+        void checkActive()
+        {
+            var now = true.ticks();
+            if (now < checkTime + CheckInterval)
+                return;
+            checkTime = now;
+
+            List<FileDesc> fsl = null;
+            opens.pick(f => now > f.activeTime + ActiveInterval)
+                .each(f => 
+                {
+                    fsl = fsl.add(f);
+                });
+
+            new
+            {
+                inactive = fsl?.Count ?? 0,
+                thdId = true.thdId(),
+                buffSize, maxPad,
+            }.debug();
+
+            if (fsl == null)
+                return;
+
+            var fs = fsl.conv(f => f.detachFile()).ToArray();
+
+            Task.Run(()=> 
+            {
+                fs.each(f => f.Close());
+                new { free = fs.Length, thdId = true.thdId() }.debug();
+            });
+        }
     }
 }
