@@ -11,21 +11,16 @@ namespace util.prop.edit
         double min;
         double max;
         double delta;
-        double def;
-
-        public NumberWheel(double min, double max)
-            : this(min, max, (max-min)/20, (max - min) / 2)
-        {
-        }
 
         public NumberWheel(double min, double max,
-            double delta, double @default)
+            double delta)
         {
             this.min = min;
             this.max = max;
             this.delta = delta;
-            this.def = @default;
         }
+
+        double def => (max - min) / 2;
 
         public override object adjust(object value)
             => convert(value, $"{value}".f64(def)

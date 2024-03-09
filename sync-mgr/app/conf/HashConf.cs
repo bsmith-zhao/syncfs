@@ -19,10 +19,10 @@ namespace sync.app
 
         public HashMode Mode { get; set; } = HashMode.Sample;
 
-        [NumberWheel(256, 64 * 1024, 256, 1024)]
+        [NumberWheel(256, 64 * 1024, 256)]
         public int Block { get; set; } = 1024;
 
-        [NumberWheel(5, 200, 5, 10)]
+        [NumberWheel(5, 200, 5)]
         public int Count { get; set; } = 10;
 
         public TimeSpan Expire { get; set; } = new TimeSpan(7, 0, 0, 0);

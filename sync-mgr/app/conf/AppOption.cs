@@ -34,7 +34,7 @@ namespace sync.app
         [Browsable(false)]
         public string VfsExe { get; set; } = "vfs.exe";
 
-        [NumberWheel(1, 20, 1, 10)]
+        [NumberWheel(1, 20, 1)]
         public int LogCount { get; set; } = 10;
 
         public PwdDeriveEntry newKgEntry(PwdDeriveType type)

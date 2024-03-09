@@ -14,14 +14,6 @@ namespace vfs.mgr.conf
     {
         public bool Enable { get; set; } = true;
 
-        //string _folder = DefaultFolder;
-        //public string Folder
-        //{
-        //    get => _folder;
-        //    set => _folder = value.pathUnifyName() 
-        //        ?? DefaultFolder;
-        //}
-
         const string DefaultFolder = "(bak)";
         [UnifyPathName(DefaultFolder)]
         public string Folder { get; set; } = DefaultFolder;

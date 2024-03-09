@@ -15,7 +15,7 @@ namespace util.option
     public class PBKDF2Option
     {
         public int SaltSize = 32;
-        [NumberWheel(20000, 100000, 5000, 30000)]
+        [NumberWheel(20000, 100000, 5000)]
         public int Turns { get; set; } = 30000;
 
         public override string ToString()

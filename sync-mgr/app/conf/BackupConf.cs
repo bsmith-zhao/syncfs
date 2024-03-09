@@ -23,7 +23,7 @@ namespace sync.app
 
         public bool KeepAll { get; set; } = false;
 
-        [NumberWheel(1, 10, 1, 3)]
+        [NumberWheel(1, 10, 1)]
         public int Reversion { get; set; } = 3;
 
         public override string ToString() 

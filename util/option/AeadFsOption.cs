@@ -18,16 +18,14 @@ namespace util.option
     [TypeConverter(typeof(ExpandClass))]
     public class AeadFsOption
     {
-        const string DefaultEncode = "UTF-8";
-
-        [UnifyEncode(DefaultEncode)]
+        [UnifyEncode]
         [Editor(typeof(EncodeDropList), typeof(UITypeEditor))]
-        public string Encode { get; set; } = DefaultEncode;
+        public string Encode { get; set; } = UnifyEncode.Default;
 
-        [NumberWheel(32, 128, 8, 48)]
+        [NumberWheel(32, 128, 8)]
         public int MasterKeySize { get; set; } = 48;
 
-        [NumberWheel(16, 64, 4, 16)]
+        [NumberWheel(16, 64, 4)]
         public int FileIdSize { get; set; } = 16;
 
         public int BlockSize = 16.kb();

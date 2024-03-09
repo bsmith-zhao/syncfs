@@ -9,10 +9,15 @@ namespace util.prop.adjust
 {
     public class UnifyEncode : AdjustValue
     {
+        public const string Default = UTF8;
+
+        public const string UTF8 = "UTF-8";
+        public const string GBK = "GBK";
+
         string def;
 
         public UnifyEncode(string @default = null)
-            => this.def = @default;
+            => this.def = @default ?? Default;
 
         public override object adjust(object value)
         {

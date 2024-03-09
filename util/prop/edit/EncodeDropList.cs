@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
+using static util.prop.adjust.UnifyEncode;
 
 namespace util.prop.edit
 {
@@ -14,8 +15,7 @@ namespace util.prop.edit
     {
         public static string[] Encodes = new string[] 
         {
-            "UTF-8",
-            "GBK"
+            UTF8, GBK
         };
 
         public override UITypeEditorEditStyle

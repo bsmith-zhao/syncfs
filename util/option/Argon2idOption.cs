@@ -15,7 +15,7 @@ namespace util.option
     [TypeConverter(typeof(ExpandClass))]
     public class Argon2idOption
     {
-        [NumberWheel(2, 1024, 1, 32)]
+        [NumberWheel(2, 1024, 1)]
         public int CPU { get; set; } = 32;
 
         [ByteSizeWheel("32M", "512M", "16M", "64M")]
