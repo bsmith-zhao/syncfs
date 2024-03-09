@@ -82,7 +82,7 @@ namespace util.rep.aead
         int tagSize;
         int blockSize;
         int packSize;
-        const int MaxBuff = (int)Number.MB;
+        const int MaxBuff = (int)(1 * Number.MB);
         int unitSize;
         void init()
         {

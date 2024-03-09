@@ -275,7 +275,7 @@ namespace vfs
             => _buff?.Length >= size ? _buff
             : (_buff = new byte[size]);
 
-        public override unsafe Int32 Read(
+        public override Int32 Read(
             Object node,
             Object desc,
             IntPtr ptr,
@@ -314,9 +314,7 @@ namespace vfs
             //}
         }
 
-        int maxRead;
-
-        unsafe int read(FileDesc fd,
+        int read(FileDesc fd,
             IntPtr ptr,
             long offset,
             int count,
@@ -326,19 +324,22 @@ namespace vfs
             {
                 var fs = fd.openRead();
 
+                markRead(fd, fs, offset, count);
+
                 if (offset >= fs.Length)
                 {
                     finish = 0;
                     return STATUS_END_OF_FILE;
                 }
 
-                maxRead = maxRead.atLeast(count);
-
                 fs.Position = offset;
-                var buff = getBuff(count);
-                var actual = fs.Read(buff, 0, count);
-                if (actual > 0)
-                    Marshal.Copy(buff, 0, ptr, actual);
+
+                var actual = read(fs, ptr, count);
+
+                //var buff = getBuff(count);
+                //var actual = fs.Read(buff, 0, count);
+                //if (actual > 0)
+                //    Marshal.Copy(buff, 0, ptr, actual);
 
                 finish = (uint)actual;
                 return STATUS_SUCCESS;
@@ -350,7 +351,22 @@ namespace vfs
             }
         }
 
-        public override unsafe Int32 Write(
+        int read(Stream fs, IntPtr ptr, int total)
+        {
+            var buff = getBuff(total.atMost(MaxBuff));
+            int remain = total;
+            int actual;
+            while (remain > 0
+                && (actual = fs.Read(buff, 0, remain.atMost(MaxBuff))) > 0)
+            {
+                Marshal.Copy(buff, 0, ptr, actual);
+                remain -= actual;
+                ptr += actual;
+            }
+            return total - remain;
+        }
+
+        public override Int32 Write(
             Object node,
             Object desc,
             IntPtr ptr,
@@ -413,9 +429,7 @@ namespace vfs
             //}
         }
 
-        int maxWrite;
-
-        unsafe int write(FileDesc fd, 
+        int write(FileDesc fd, 
             IntPtr ptr, long offset, int count,
             bool append, bool coverOnly,
             out uint finish,
@@ -424,6 +438,8 @@ namespace vfs
             try
             {
                 var fs = fd.openWrite();
+
+                markWrite(fd, fs, offset, count, append, coverOnly);
 
                 if (coverOnly)
                 {
@@ -442,20 +458,20 @@ namespace vfs
                 {
                     if (offset > fs.Length)
                     {
+                        markPad(fd, fs, offset);
+
                         fs.Position = fs.Length;
                         byte[] pad = new byte[offset - fs.Length];
                         fs.write(pad);
-
-                        maxPad = maxPad.atLeast(pad.Length);
                     }
                     fs.Position = offset;
                 }
 
-                maxWrite = maxWrite.atLeast(count);
+                write(fs, ptr, count);
 
-                byte[] buff = getBuff(count);
-                Marshal.Copy(ptr, buff, 0, count);
-                fs.Write(buff, 0, count);
+                //byte[] buff = getBuff(count);
+                //Marshal.Copy(ptr, buff, 0, count);
+                //fs.Write(buff, 0, count);
 
                 finish = (uint)count;
                 return fd.getInfo(out info);
@@ -464,6 +480,22 @@ namespace vfs
             {
                 trace(err, new { fd?.path, offset, count, coverOnly, append });
                 throw;
+            }
+        }
+
+        static int MaxBuff = (int)(1 * Number.MB);
+
+        void write(Stream fs, IntPtr ptr, int total)
+        {
+            var buff = getBuff(total.atMost(MaxBuff));
+            int actual;
+            while (total > 0)
+            {
+                actual = total.atMost(MaxBuff);
+                Marshal.Copy(ptr, buff, 0, actual);
+                fs.Write(buff, 0, actual);
+                total -= actual;
+                ptr += actual;
             }
         }
 
@@ -742,7 +774,6 @@ namespace vfs
         public Set<FileDesc> opens = new Set<FileDesc>();
 
         int buffSize => _buff?.Length ?? 0;
-        int maxPad;
 
         void checkActive()
         {
@@ -762,7 +793,8 @@ namespace vfs
             {
                 inactive = fsl?.Count ?? 0,
                 thdId = true.thdId(),
-                buffSize, maxPad,
+                buffSize,
+                maxPad, maxRead, maxWrite
             }.debug();
 
             if (fsl == null)
@@ -773,8 +805,71 @@ namespace vfs
             Task.Run(()=> 
             {
                 fs.each(f => f.Close());
-                new { free = fs.Length, thdId = true.thdId() }.debug();
+                new
+                {
+                    free = fs.Length,
+                    thdId = true.thdId()
+                }.debug();
             });
+        }
+
+        int maxRead;
+        void markRead(FileDesc fd, Stream fs,
+            long offset, int count)
+        {
+            maxRead = maxRead.atLeast(count);
+
+            if (count > 4 * Number.MB)
+                new
+                {
+                    f = "read",
+                    fd.path,
+                    offset,
+                    count,
+                    fs.Length,
+                    fs.Position
+                }.debug();
+        }
+
+        int maxWrite;
+        void markWrite(FileDesc fd, Stream fs,
+            long offset, int count,
+            bool append, bool coverOnly)
+        {
+            maxWrite = maxWrite.atLeast(count);
+
+            if (count > 4 * Number.MB)
+                new
+                {
+                    f = "write",
+                    fd.path,
+                    offset,
+                    count,
+                    append,
+                    coverOnly,
+                    fs.Length,
+                    fs.Position
+                }.debug();
+        }
+
+        int maxPad;
+        void markPad(FileDesc fd, Stream fs,
+            long offset)
+        {
+            var pad = (int)(offset - fs.Length);
+            maxPad = maxPad.atLeast(pad);
+
+            if (pad > 16 * Number.MB)
+            {
+                new
+                {
+                    f="pad",
+                    fd.path,
+                    offset,
+                    fs.Length,
+                    fs.Position
+                }.debug();
+            }
         }
     }
 }
