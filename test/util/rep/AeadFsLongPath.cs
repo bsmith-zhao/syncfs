@@ -9,81 +9,81 @@ using util.rep.aead;
 
 namespace test.util.rep
 {
-    public class AeadFsLongPath : ITest
-    {
-        public void test()
-        {
-            var dir = @"C:\test\t.xcha";
-            var conf = AeadFsConf.loadByDir(dir);
-            if (!conf.decrypt("".utf8()))
-                throw new Exception("decrypt fail!!");
+    //public class AeadFsLongPath : ITest
+    //{
+    //    public void test()
+    //    {
+    //        var dir = @"C:\test\t.xcha";
+    //        var conf = AeadFsConf.loadByDir(dir);
+    //        if (!conf.decrypt("".utf8()))
+    //            throw new Exception("decrypt fail!!");
 
-            conf.jsonIndent().msg();
+    //        conf.jsonIndent().msg();
 
-            var rep = new AeadFsReposit(dir, conf);
+    //        var rep = new AeadFsReposit(dir, conf);
 
-            this.trydo(()=>rep.deleteDir("1"));
+    //        this.trydo(()=>rep.deleteDir("1"));
 
-            this.trydo(() =>
-            {
-                var name = makeName(30);
+    //        this.trydo(() =>
+    //        {
+    //            var name = makeName(30);
 
-                rep.createDir($"1/{name}");
+    //            rep.createDir($"1/{name}");
 
-                $"<success>".msg();
-            });
+    //            $"<success>".msg();
+    //        });
 
-            this.trydo(() =>
-            {
-                rep.createFile(makePath(24));
+    //        this.trydo(() =>
+    //        {
+    //            rep.createFile(makePath(24));
 
-                $"<success>".msg();
-            });
+    //            $"<success>".msg();
+    //        });
 
-            this.trydo(() =>
-            {
-                rep.createFile(makePath(20));
+    //        this.trydo(() =>
+    //        {
+    //            rep.createFile(makePath(20));
 
-                $"<success>".msg();
-            });
+    //            $"<success>".msg();
+    //        });
 
-            this.trydo(() =>
-            {
-                rep.createFile(makePath(17));
+    //        this.trydo(() =>
+    //        {
+    //            rep.createFile(makePath(17));
 
-                $"<success>".msg();
-            });
+    //            $"<success>".msg();
+    //        });
 
-            this.trydo(() =>
-            {
-                rep.createFile(makePath(16, 10));
+    //        this.trydo(() =>
+    //        {
+    //            rep.createFile(makePath(16, 10));
 
-                $"<success>".msg();
-            });
-        }
+    //            $"<success>".msg();
+    //        });
+    //    }
 
-        string makeName(int times)
-        {
-            var ten = "0123456789";
+    //    string makeName(int times)
+    //    {
+    //        var ten = "0123456789";
 
-            var name = "";
-            times.count(n => name = $"{name}{ten}");
+    //        var name = "";
+    //        times.count(n => name = $"{name}{ten}");
 
-            new { name, len = name.Length }.debugj();
+    //        new { name, len = name.Length }.debugj();
 
-            return name;
-        }
+    //        return name;
+    //    }
 
-        string makePath(int nameTimes, int pathTimes = 3)
-        {
-            var name = makeName(nameTimes);
+    //    string makePath(int nameTimes, int pathTimes = 3)
+    //    {
+    //        var name = makeName(nameTimes);
 
-            var path = "1/";
-            pathTimes.count(n => path = $"{path}/{name}");
+    //        var path = "1/";
+    //        pathTimes.count(n => path = $"{path}/{name}");
 
-            new { path, pathLen = path.Length }.debugj();
+    //        new { path, pathLen = path.Length }.debugj();
 
-            return path;
-        }
-    }
+    //        return path;
+    //    }
+    //}
 }

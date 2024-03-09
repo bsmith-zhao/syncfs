@@ -48,7 +48,9 @@ namespace vfs.mgr.conf
         public string sourcPath()
             => getRepConf().getSource();
 
+        string bakMark => Backup.Enable ? "*" : null;
+
         public string mountInfo()
-            => $"{Path} <{Name}>";
+            => $"{Path} <{Name}>{bakMark}";
     }
 }

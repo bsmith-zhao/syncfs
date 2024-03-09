@@ -28,6 +28,7 @@ namespace test
 
             Msg.output = msgUI.asyncAppend;
             Status.output = statUI.asyncSetText;
+            Debug.output = msgUI.asyncAppend;
 
             toolbar.fixBorderBug();
 
@@ -95,7 +96,7 @@ namespace test
                     if (!(tn.Tag is Type cls))
                         continue;
 
-                    new { cls.FullName }.debugj();
+                    new { cls.FullName }.debug();
 
                     var obj = cls.@new() as ITest;
                     obj.test();

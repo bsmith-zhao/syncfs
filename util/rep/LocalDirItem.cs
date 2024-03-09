@@ -24,16 +24,16 @@ namespace util.rep
 
         public override IEnumerable<DirItem> enumDirs()
         {
-            foreach (var sub in dirInfo.EnumerateDirectories())
-                if (parseItem(sub, out var path))
-                    yield return new LocalDirItem(rep, sub, path);
+            foreach (var dir in dirInfo.EnumerateDirectories())
+                if (parseItem(dir, out var path))
+                    yield return new LocalDirItem(rep, dir, path);
         }
 
         public override IEnumerable<T> enumFiles<T>()
         {
-            foreach (var fi in dirInfo.EnumerateFiles())
-                if (parseItem(fi, out var path))
-                    yield return newFileItem<T>(fi, path);
+            foreach (var file in dirInfo.EnumerateFiles())
+                if (parseItem(file, out var path))
+                    yield return rep.newFileItem<T>(file, path);
         }
 
         public override IEnumerable<RepItem> enumItems()
@@ -45,17 +45,16 @@ namespace util.rep
                     if (item is DirectoryInfo dir)
                         yield return new LocalDirItem(rep, dir, path);
                     else if (item is FileInfo file)
-                        yield return newFileItem<FileItem>(file, path);
+                        yield return rep.newFileItem<FileItem>(file, path);
                 }
             }
         }
 
-        T newFileItem<T>(FileInfo file, string path)
-            where T : FileItem, new()
-        {
-            file.Refresh();
-            return rep.newFileItem<T>(file, path);
-        }
+        //T newFileItem<T>(FileInfo file, string path)
+        //    where T : FileItem, new()
+        //{
+        //    return rep.newFileItem<T>(file, path);
+        //}
 
         bool decodePath(FileSystemInfo item, out string itemPath)
         {

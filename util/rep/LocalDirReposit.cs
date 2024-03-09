@@ -22,7 +22,9 @@ namespace util.rep
         {
             if (!locateToItem(path, out var item, out var realPath))
                 return null;
-            else if (item is DirectoryInfo dir)
+
+            item.Refresh();
+            if (item is DirectoryInfo dir)
                 return new LocalDirItem(this, dir, realPath);
             else
                 return newFileItem<FileItem>(

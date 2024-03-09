@@ -29,24 +29,24 @@ namespace vfs
 
         byte[] DefaultSecurity;
 
-        public override Int32 Init(Object Host0)
+        public override Int32 Init(Object args)
         {
-            FileSystemHost Host = (FileSystemHost)Host0;
-            Host.SectorSize = 4096;
-            Host.SectorsPerAllocationUnit = 1;
-            Host.MaxComponentLength = 255;
-            Host.FileInfoTimeout = 1000;
-            Host.CaseSensitiveSearch = false;
-            Host.CasePreservedNames = true;
-            Host.UnicodeOnDisk = true;
-            Host.PersistentAcls = true;
-            Host.PostCleanupWhenModifiedOnly = true;
-            Host.PassQueryDirectoryPattern = true;
-            Host.FlushAndPurgeOnCleanup = true;
-            Host.VolumeCreationTime = 0;
-            Host.VolumeSerialNumber = 0;
+            var host = args as FileSystemHost;
+            host.SectorSize = 4096;
+            host.SectorsPerAllocationUnit = 1;
+            host.MaxComponentLength = 255;
+            host.FileInfoTimeout = 1000;
+            host.CaseSensitiveSearch = false;
+            host.CasePreservedNames = true;
+            host.UnicodeOnDisk = true;
+            host.PersistentAcls = false;
+            host.PostCleanupWhenModifiedOnly = true;
+            host.PassQueryDirectoryPattern = true;
+            host.FlushAndPurgeOnCleanup = true;
+            host.VolumeCreationTime = 0;
+            host.VolumeSerialNumber = 0;
 
-            if (needBak)
+            if (bakEnable)
                 this.trylog(() => rep.createDir(vfs.bak));
 
             return STATUS_SUCCESS;
@@ -212,7 +212,7 @@ namespace vfs
             err.log(true.lastFunc(), args);
         }
 
-        public bool needBak => vfs.bak != null;
+        public bool bakEnable => vfs.bak != null;
 
         public override void Cleanup(
             Object node,
@@ -227,7 +227,7 @@ namespace vfs
                 {
                     fd.closeFile();
                     var srcPath = fd.path;
-                    if (needBak && vfs.bak.low() != srcPath.pathRoot().low())
+                    if (bakEnable && vfs.bak.low() != srcPath.pathRoot().low())
                     {
                         var bakPath = $"{vfs.bak}/{srcPath}";
                         if (fd.item is DirItem dir 
@@ -598,50 +598,6 @@ namespace vfs
                 trace(err, new { fd?.path, match, marker, context });
                 throw;
             }
-
-            //var fd = desc as FileDesc;
-            //try
-            //{
-            //    if (fd.items == null)
-            //    {
-            //        var items = new SortedList<string, RepItem>();
-            //        fd.dir?.enumItems().each(d => items.Add(d.name, d));
-            //        fd.items = items.Values.ToArray();
-            //    }
-            //    int idx;
-            //    if (null == context)
-            //    {
-            //        idx = 0;
-            //        if (null != marker)
-            //        {
-            //            idx = Array.BinarySearch(fd.names, marker);
-            //            if (idx >= 0)
-            //                idx++;
-            //            else
-            //                idx = ~idx;
-            //        }
-            //    }
-            //    else
-            //        idx = (int)context;
-            //    if (fd.items.Length > idx)
-            //    {
-            //        context = idx + 1;
-            //        path = fd.items[idx].name;
-            //        FileDesc.getItemInfo(fd.items[idx], out info);
-            //        return true;
-            //    }
-            //    else
-            //    {
-            //        path = default(String);
-            //        info = default(FileInfo);
-            //        return false;
-            //    }
-            //}
-            //catch (Exception err)
-            //{
-            //    trace(err, new { fd?.path, match, marker, context });
-            //    throw;
-            //}
         }
 
         public void getItemInfo(
@@ -662,7 +618,7 @@ namespace vfs
             info.IndexNumber = 0;
             info.HardLinks = 0;
 
-            if (needBak
+            if (bakEnable
                 && vfs.bak.lowEqual(item.path))
                 info.FileAttributes |= (uint)FileAttributes.Encrypted;
         }
@@ -670,6 +626,7 @@ namespace vfs
         const int AllocUnit = 4096;
 
         public void updateAllocSize(ref FileInfo info)
-                => info.AllocationSize = (info.FileSize + AllocUnit - 1) / AllocUnit * AllocUnit;
+                => info.AllocationSize 
+            = (info.FileSize + AllocUnit - 1) / AllocUnit * AllocUnit;
     }
 }

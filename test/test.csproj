@@ -65,6 +65,7 @@
     <Compile Include="demo\error\LocOfException.cs" />
     <Compile Include="demo\io\VBFileIO.cs" />
     <Compile Include="demo\Lottery.cs" />
+    <Compile Include="demo\obj\StructParamPass.cs" />
     <Compile Include="ITest.cs" />
     <Compile Include="util\crypt\AesEmeTest.cs" />
     <Compile Include="demo\crypt\AesEME.cs" />

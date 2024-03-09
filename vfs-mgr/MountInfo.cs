@@ -23,7 +23,7 @@ namespace vfs.mgr
 
         string bakMark => args.bak != null ? "*" : null;
 
-        public string info => $"{bakMark}{path} <{name}>";
+        public string info => $"{path} <{name}>{bakMark}";
 
         public static IEnumerable<MountInfo> enumMounts()
         {
