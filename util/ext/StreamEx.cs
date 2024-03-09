@@ -28,8 +28,8 @@ namespace util.ext
             }
         }
 
-        public static bool isSame(this Stream srcIn, 
-                                Stream dstIn, 
+        public static bool isSame(this Stream src, 
+                                Stream dst, 
                                 Action<long> update, 
                                 ref byte[] srcBuff, 
                                 ref byte[] dstBuff, 
@@ -40,8 +40,8 @@ namespace util.ext
             int srcLen, dstLen;
             while (true)
             {
-                srcLen = srcIn.readFull(srcBuff);
-                dstLen = dstIn.readFull(dstBuff);
+                srcLen = src.readFull(srcBuff);
+                dstLen = dst.readFull(dstBuff);
                 if (srcLen != dstLen)
                     return false;
                 if (srcLen <= 0)
@@ -61,8 +61,9 @@ namespace util.ext
         public static int read(this Stream fin, byte[] data)
             => fin.Read(data, 0, data.Length);
 
-        public static bool read(this Stream fin, byte[] data, out int len)
-            => (len = fin.Read(data, 0, data.Length)) > 0;
+        public static bool read(this Stream fin, 
+            byte[] data, out int actual)
+            => (actual = fin.Read(data, 0, data.Length)) > 0;
 
         public static bool read(
             this Stream fin, 
@@ -75,30 +76,39 @@ namespace util.ext
             readExact(fin, data, 0, data.Length);
         }
 
-        public static void readExact(this Stream fin, byte[] data, int offset, int count)
+        public static void readExact(this Stream fin, 
+            byte[] data, int offset, int count)
         {
             int actual = readFull(fin, data, offset, count);
             if (actual != count)
-                throw new IOException(typeof(Stream).trans("ReadMismatch", count, actual));
+                throw new IOException(typeof(Stream)
+                    .trans("ReadMismatch", count, actual));
         }
 
         public static int readFull(this Stream fin, byte[] data)
             => readFull(fin, data, 0, data.Length);
 
-        public static bool readFull(this Stream fin, byte[] data, out int len)
-            => (len = fin.readFull(data, 0, data.Length)) > 0;
+        public static bool readFull(this Stream fin, 
+            byte[] data, out int actual)
+            => (actual = fin.readFull(data, 0, data.Length)) > 0;
 
-        public static int readFull(this Stream fin, 
-            byte[] data, int offset, int total)
+        public static int readFull(this Stream fin,
+            byte[] dst, int offset, int count)
+            => dst.readFull(offset, count, fin.Read);
+
+        public static int readFull(this byte[] dst,
+            int offset, int count,
+            Func<byte[], int, int, int> read)
         {
-            int remain = total, len;
-            while (remain > 0 
-                && fin.read(data, offset, remain, out len))
+            int remain = count;
+            int len;
+            while (remain > 0
+                && (len = read(dst, offset, remain)) > 0)
             {
                 remain -= len;
                 offset += len;
             }
-            return total - remain;
+            return count - remain;
         }
     }
 }

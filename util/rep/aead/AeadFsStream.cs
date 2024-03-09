@@ -32,7 +32,7 @@ namespace util.rep.aead
                 else
                     open();
 
-                counter = nonce.i64(nonce.Length - 8);
+                init();
             }
             catch
             {
@@ -54,7 +54,6 @@ namespace util.rep.aead
 
         byte[] fileId;
         byte[] nonce;
-        long counter;
         void create()
         {
             fileId = conf.FileIdSize.aesRnd();
@@ -63,7 +62,6 @@ namespace util.rep.aead
             var header = Type.utf8().merge(Version.bytes(), fileId, nonce);
             fs.write(header);
         }
-
         void open()
         {
             var header = new byte[headSize];
@@ -80,12 +78,24 @@ namespace util.rep.aead
             streamLen = getDataSize(fs.Length, conf);
         }
 
+        long counter;
+        int tagSize;
+        int blockSize;
+        int packSize;
+        const int MaxBuff = (int)Number.MB;
+        int unitSize;
+        void init()
+        {
+            counter = nonce.i64(nonce.Length - 8);
+            tagSize = conf.tagSize();
+            blockSize = conf.BlockSize;
+            packSize = blockSize + tagSize;
+            unitSize = ((MaxBuff / blockSize) * blockSize)
+                    .atLeast(blockSize);
+        }
+
         void throwIOError(string key, params object[] args)
             => throw new IOException(this.trans(key, args.append(fs.Name)));
-
-        int tagSize => conf.tagSize();
-        int blockSize => conf.BlockSize;
-        int packSize => blockSize + tagSize;
 
         AeadCrypt _aead;
         AeadCrypt aead => _aead ?? (_aead = conf.newDataCrypt(KeyContext.merge(fileId)));
@@ -154,11 +164,18 @@ namespace util.rep.aead
         }
 
         public override int Read(byte[] dst, int offset, int count)
+            => dst.readFull(offset, count, readUnit);
+
+        int readUnit(byte[] dst, int offset, int count)
         {
+            // limit to read at most 1 unit
+            count = count.atMost(unitSize);
+
             actionPos = streamPos;
 
             readBuff(count);
-            int remain = count, dataLen, readLen;
+            int remain = count;
+            int dataLen, readLen;
             while (remain > 0)
             {
                 if (actionPos >= streamLen)
@@ -191,6 +208,20 @@ namespace util.rep.aead
 
         public override void Write(byte[] src, int offset, int count)
         {
+            int unit;
+            while (count > 0)
+            {
+                unit = writeUnit(src, offset, count);
+                offset += unit;
+                count -= unit;
+            }
+        }
+
+        int writeUnit(byte[] src, int offset, int count)
+        {
+            // limit to write at most 1 unit
+            int unit = (count = count.atMost(unitSize));
+
             actionPos = streamPos;
             var actionLen = streamLen;
 
@@ -229,6 +260,8 @@ namespace util.rep.aead
 
             streamPos = actionPos;
             streamLen = actionLen;
+
+            return unit;
         }
 
         public override long Seek(long offset, SeekOrigin origin)
