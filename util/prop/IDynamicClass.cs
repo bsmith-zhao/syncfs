@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace util.prop
 {
-    public class ByteSize : Attribute
+    public interface IDynamicClass
     {
+        void OnCreate();
+        void OnActive();
+        bool OnChange(object owner, string fld, object old);
     }
 }

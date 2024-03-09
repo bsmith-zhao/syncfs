@@ -8,6 +8,7 @@ namespace util.prop.edit
 {
     public abstract class WheelEdit : AdjustValue
     {
-        public abstract bool next(object src, out object dst, bool up);
+        public abstract bool next(object src, 
+            out object dst, bool up);
     }
 }

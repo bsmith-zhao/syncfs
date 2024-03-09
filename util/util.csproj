@@ -88,8 +88,9 @@
     <Compile Include="prop\DescRefer.cs" />
     <Compile Include="prop\adjust\AdjustValue.cs" />
     <Compile Include="prop\adjust\UnifyPathName.cs" />
-    <Compile Include="prop\edit\ByteSizeByWheel.cs" />
+    <Compile Include="prop\edit\ByteSizeWheel.cs" />
     <Compile Include="prop\edit\EncodeDropList.cs" />
+    <Compile Include="prop\edit\NumberWheel.cs" />
     <Compile Include="prop\edit\WheelEdit.cs" />
     <Compile Include="rep\aead\AeadFsConf.cs" />
     <Compile Include="rep\aead\AeadFsReposit.cs" />
@@ -118,10 +119,8 @@
     <Compile Include="Member.cs" />
     <Compile Include="PickDirDialog.cs" />
     <Compile Include="prop\conv\ArrayField.cs" />
-    <Compile Include="prop\ByteSize.cs" />
-    <Compile Include="prop\edit\EditByWheel.cs" />
     <Compile Include="prop\conv\ExpandClass.cs" />
-    <Compile Include="prop\IDynamicConf.cs" />
+    <Compile Include="prop\IDynamicClass.cs" />
     <Compile Include="prop\adjust\RangeLimit.cs" />
     <Compile Include="SetupDialog.cs">
       <SubType>Form</SubType>

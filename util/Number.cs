@@ -112,6 +112,9 @@ namespace util
             return BitConverter.ToInt64(data, offset);
         }
 
+        public static double f64(this string str, double @default = 0)
+            => double.TryParse(str, out var v) ? v : @default;
+
         public static byte[] bytes(this int value)
         {
             return BitConverter.GetBytes(value);
@@ -127,10 +130,8 @@ namespace util
             return BitConverter.ToInt32(data, offset);
         }
 
-        public static int i32(this string text, int n = 10)
-        {
-            return Convert.ToInt32(text, n);
-        }
+        public static int i32(this string str, int @default = 0)
+            => int.TryParse(str, out var v) ? v : @default;
 
         public static int i16(this byte[] data, int offset = 0)
         {

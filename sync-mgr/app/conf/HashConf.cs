@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using util;
 using util.prop;
+using util.prop.edit;
 
 namespace sync.app
 {
@@ -15,11 +16,15 @@ namespace sync.app
     {
         [Browsable(false)]
         public HashType Type { get; set; } = HashType.SHA256;
+
         public HashMode Mode { get; set; } = HashMode.Sample;
-        [RangeLimit(256, 64 * 1024), EditByWheel(256)]
+
+        [NumberWheel(256, 64 * 1024, 256, 1024)]
         public int Block { get; set; } = 1024;
-        [RangeLimit(5, 200), EditByWheel(5)]
+
+        [NumberWheel(5, 200, 5, 10)]
         public int Count { get; set; } = 10;
+
         public TimeSpan Expire { get; set; } = new TimeSpan(7, 0, 0, 0);
 
         public Hash newHash() => new Hash

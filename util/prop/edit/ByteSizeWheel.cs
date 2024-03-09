@@ -7,22 +7,22 @@ using util.ext;
 
 namespace util.prop.edit
 {
-    public class ByteSizeByWheel : WheelEdit
+    public class ByteSizeWheel : WheelEdit
     {
         long min;
         long max;
         long delta;
         long def;
 
-        public ByteSizeByWheel(string min, string max, 
+        public ByteSizeWheel(string min, string max, 
             string delta = null, 
-            string def = null)
+            string @default = null)
         {
             this.min = min.byteSize();
             this.max = max.byteSize();
             this.delta = (delta != null) ? delta.byteSize()
                 : (this.max - this.min) / 20;
-            this.def = (def != null) ? def.byteSize()
+            this.def = (@default != null) ? @default.byteSize()
                 : (this.max - this.min) / 2;
         }
 

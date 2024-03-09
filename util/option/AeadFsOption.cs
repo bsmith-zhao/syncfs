@@ -24,16 +24,15 @@ namespace util.option
         [Editor(typeof(EncodeDropList), typeof(UITypeEditor))]
         public string Encode { get; set; } = DefaultEncode;
 
-        [RangeLimit(32, 128), EditByWheel(8)]
+        [NumberWheel(32, 128, 8, 48)]
         public int MasterKeySize { get; set; } = 48;
 
-        [RangeLimit(16, 64), EditByWheel(4)]
+        [NumberWheel(16, 64, 4, 16)]
         public int FileIdSize { get; set; } = 16;
 
         public int BlockSize = 16.kb();
         [DisplayName("BlockSize"), JsonIgnore]
-        //[RangeLimit("4K", "128K"), EditByWheel("4K"), ByteSize]
-        [ByteSizeByWheel("4K", "128K", "4K")]
+        [ByteSizeWheel("4K", "128K", "4K")]
         public string BlockBytes
         {
             get => ((long)BlockSize).byteSize();

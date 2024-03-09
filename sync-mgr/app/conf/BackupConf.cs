@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using util;
 using util.prop;
+using util.prop.edit;
 using util.rep;
 
 namespace sync.app
@@ -21,7 +22,8 @@ namespace sync.app
         public string Folder { get; set; } = DefaultFolder;
 
         public bool KeepAll { get; set; } = false;
-        [RangeLimit(1, 10), EditByWheel(1)]
+
+        [NumberWheel(1, 10, 1, 3)]
         public int Reversion { get; set; } = 3;
 
         public override string ToString() 

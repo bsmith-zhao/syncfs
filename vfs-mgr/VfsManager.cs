@@ -35,7 +35,7 @@ namespace vfs.mgr
             listUI.SelectedIndexChanged += (s, e) =>
             {
                 var conf = selConf;
-                if (conf?.getRepConf() is IDynamicConf dc)
+                if (conf?.getRepConf() is IDynamicClass dc)
                     dc.OnActive();
                 propUI.SelectedObject = conf;
                 propUI.ExpandAllGridItems();

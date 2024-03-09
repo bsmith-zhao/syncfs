@@ -15,11 +15,10 @@ namespace util.option
     [TypeConverter(typeof(ExpandClass))]
     public class Argon2idOption
     {
-        [RangeLimit(2, 1024), EditByWheel(1)]
+        [NumberWheel(2, 1024, 1, 32)]
         public int CPU { get; set; } = 32;
 
-        //[RangeLimit("32M", "512M"), EditByWheel("16M"), ByteSize]
-        [ByteSizeByWheel("32M", "512M", "16M", "64M")]
+        [ByteSizeWheel("32M", "512M", "16M", "64M")]
         public string Memory { get; set; } = "64M";
 
         public override string ToString()

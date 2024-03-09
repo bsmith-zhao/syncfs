@@ -17,7 +17,7 @@ using vfs.rep;
 namespace vfs.mgr.conf
 {
     [TypeConverter(typeof(ExpandClass))]
-    public class AeadRepConf : RepConf, IDynamicConf
+    public class AeadRepConf : RepConf, IDynamicClass
     {
         string dir;
         [ReadOnly(true)]

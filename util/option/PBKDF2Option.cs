@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using util.crypt;
 using util.ext;
 using util.prop;
+using util.prop.edit;
 
 namespace util.option
 {
@@ -14,7 +15,7 @@ namespace util.option
     public class PBKDF2Option
     {
         public int SaltSize = 32;
-        [RangeLimit(20000, 100000), EditByWheel(5000)]
+        [NumberWheel(20000, 100000, 5000, 30000)]
         public int Turns { get; set; } = 30000;
 
         public override string ToString()

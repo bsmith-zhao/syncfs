@@ -9,6 +9,7 @@ using util.crypt.sodium;
 using util.ext;
 using util.option;
 using util.prop;
+using util.prop.edit;
 using util.rep.aead;
 
 namespace sync.app
@@ -33,7 +34,7 @@ namespace sync.app
         [Browsable(false)]
         public string VfsExe { get; set; } = "vfs.exe";
 
-        [EditByWheel(1), RangeLimit(1, 20)]
+        [NumberWheel(1, 20, 1, 10)]
         public int LogCount { get; set; } = 10;
 
         public PwdDeriveEntry newKgEntry(PwdDeriveType type)
