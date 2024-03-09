@@ -220,14 +220,14 @@ namespace vfs
             String path,
             UInt32 flag)
         {
-            new {path, flag }.debug();
+            //new { path, flag }.debug();
 
             var fd = desc as FileDesc;
             try
             {
                 if (0 != (flag & CleanupDelete))
                 {
-                    new { f="delete", path, flag }.debug();
+                    //new { mark = "delete", path, flag }.debug();
 
                     fd.closeFile();
                     var srcPath = fd.path;
@@ -471,7 +471,7 @@ namespace vfs
             Object desc,
             String path)
         {
-            new { path }.debug();
+            //new { path }.debug();
 
             var fd = desc as FileDesc;
             try
@@ -503,7 +503,7 @@ namespace vfs
             String newPath,
             Boolean replace)
         {
-            new { oldPath, newPath, replace }.debug();
+            //new { oldPath, newPath, replace }.debug();
 
             var fd = desc as FileDesc;
             try
