@@ -18,7 +18,7 @@ namespace util.option
     [TypeConverter(typeof(ExpandClass))]
     public class AeadFsOption
     {
-        const string DefaultEncode = "utf-8";
+        const string DefaultEncode = "UTF-8";
 
         [UnifyEncode(DefaultEncode)]
         [Editor(typeof(EncodeDropList), typeof(UITypeEditor))]
@@ -31,8 +31,9 @@ namespace util.option
         public int FileIdSize { get; set; } = 16;
 
         public int BlockSize = 16.kb();
-        [RangeLimit("4K", "128K"), EditByWheel("4K"), ByteSize]
         [DisplayName("BlockSize"), JsonIgnore]
+        //[RangeLimit("4K", "128K"), EditByWheel("4K"), ByteSize]
+        [ByteSizeByWheel("4K", "128K", "4K")]
         public string BlockBytes
         {
             get => ((long)BlockSize).byteSize();

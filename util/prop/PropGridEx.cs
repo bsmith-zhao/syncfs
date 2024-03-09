@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using util.ext;
+using util.prop.edit;
 
 namespace util.prop
 {
@@ -40,9 +41,9 @@ namespace util.prop
 
         static Type propOwner(this Type cls, string name)
         {
-            while (cls.GetProperty(name, 
-                BindingFlags.Public 
-                | BindingFlags.DeclaredOnly 
+            while (cls.GetProperty(name,
+                BindingFlags.Public
+                | BindingFlags.DeclaredOnly
                 | BindingFlags.Instance) == null
                 && cls.BaseType != null)
             {
@@ -60,10 +61,17 @@ namespace util.prop
                 {
                     var item = e.ChangedItem;
 
-                    if (adjustValue(item)
-                        || limitValue(item)
-                        )
-                        ui.Refresh();
+                    if (!item.attr<AdjustValue>(out var adj,
+                                out var prop, out var owner))
+                        return;
+
+                    var src = item.Value;
+                    var dst = adj.adjust(src);
+                    if (src == dst)
+                        return;
+
+                    prop.SetValue(owner, dst);
+                    ui.Refresh();
 
                     notify?.Invoke(s, e);
                 });
@@ -74,45 +82,22 @@ namespace util.prop
                 e.trydo(() => 
                 {
                     var item = ui.SelectedGridItem;
-                    if (item == null || item.field() == null
-                        || !item.attr<EditByWheel>(out var wheel, out var prop, out var owner)
-                        || !wheel.modify(item.Value, e.Delta > 0, out var dst))
+                    if (item.field() == null
+                        || !item.attr<WheelEdit>(out var wheel, 
+                                                out var prop, 
+                                                out var owner)
+                        || !wheel.next(item.Value, 
+                                        out var dst, e.Delta > 0))
                         return;
 
                     var old = item.Value;
-                    if (item.hasAttr<ByteSize>())
-                        prop.SetValue(owner, $"{dst}".byteSize().byteSize());
-                    else
-                        prop.SetValue(owner, dst);
-                    limitValue(item);
-
-                    if ($"{old}" == $"{item.Value}")
-                        return;
-
+                    prop.SetValue(owner, dst);
                     ui.Refresh();
 
                     notify?.Invoke(ui, new PropertyValueChangedEventArgs(item, old));
                 });
             };
         }
-
-        static bool adjustValue(GridItem item)
-        {
-            if (!item.attr<AdjustValue>(out var attr, 
-                out var prop, out var owner))
-                return false;
-            var src = prop.GetValue(owner);
-            var dst = attr.adjust(src);
-            if (src == dst)
-                return false;
-            prop.SetValue(owner, dst);
-            return true;
-        }
-
-        static bool limitValue(GridItem item)
-            => item.attr<RangeLimit>(out var rng, out var prop, out var owner)
-                && rng.limit(item.Value, 
-                    dst => prop.SetValue(owner, dst));
 
         public static bool hasAttr<T>(this GridItem item)
             where T : Attribute

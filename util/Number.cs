@@ -80,7 +80,8 @@ namespace util
         public static void atLeast<T>(this T value, ref T min) where T : IComparable
             => min = value.CompareTo(min) >= 0 ? value : min;
 
-        public static T limit<T>(this T value, T min, T max) where T : IComparable
+        public static T limit<T>(this T value, T min, T max) 
+            where T : IComparable
         {
             if (value.CompareTo(min) < 0)
                 return min;
@@ -140,6 +141,11 @@ namespace util
         {
             return Convert.ToInt16(text, n);
         }
+
+        public static bool inside<T>(this T src, T min, T max)
+            where T : IComparable
+            => src.CompareTo(min) >= 0 
+            && src.CompareTo(max) <= 0;
 
         public static string hex(this int value, int len)
             => value.ToString($"X{len}");

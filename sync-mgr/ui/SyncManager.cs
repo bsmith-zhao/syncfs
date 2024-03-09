@@ -605,7 +605,7 @@ namespace sync.ui
                 space = st.space,
                 sync = (tn.Tag as SyncTag).entry,
             };
-            Msg.recover(() =>
+            true.msgRetain(() =>
             {
                 var dlg = new WorkRunner { item = wi };
                 dlg.dialog(this);
@@ -624,7 +624,7 @@ namespace sync.ui
             if (!canBatchRun)
                 return;
 
-            this.msgRecover(() => new BatchRunner
+            true.msgRetain(() => new BatchRunner
             {
                 spaces = treeUI.Nodes
                 .pick<TreeNode>(tn => tn.Nodes.Count > 0)
@@ -926,7 +926,7 @@ namespace sync.ui
             {
                 using (var view = openView())
                 {
-                    this.msgRecover(() =>
+                    true.msgRetain(() =>
                     {
                         new ViewBrowser()
                         {
@@ -949,7 +949,7 @@ namespace sync.ui
             {
                 using (var rep = openRep())
                 {
-                    this.msgRecover(() =>
+                    true.msgRetain(() =>
                     {
                         new RepManager()
                         {

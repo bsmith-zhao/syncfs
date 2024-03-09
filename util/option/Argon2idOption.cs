@@ -8,6 +8,7 @@ using util.crypt;
 using util.crypt.sodium;
 using util.ext;
 using util.prop;
+using util.prop.edit;
 
 namespace util.option
 {
@@ -16,7 +17,9 @@ namespace util.option
     {
         [RangeLimit(2, 1024), EditByWheel(1)]
         public int CPU { get; set; } = 32;
-        [RangeLimit("32M", "512M"), EditByWheel("16M"), ByteSize]
+
+        //[RangeLimit("32M", "512M"), EditByWheel("16M"), ByteSize]
+        [ByteSizeByWheel("32M", "512M", "16M", "64M")]
         public string Memory { get; set; } = "64M";
 
         public override string ToString()

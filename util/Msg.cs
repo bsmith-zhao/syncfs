@@ -9,20 +9,7 @@ namespace util
         public static void msg(this object src)
             => output?.Invoke($"{src}");
 
-        public static void msgRecover(this object obj, Action func)
-        {
-            var fout = output;
-            try
-            {
-                func();
-            }
-            finally
-            {
-                output = fout;
-            }
-        }
-
-        public static void recover(Action func)
+        public static void msgRetain(this bool src, Action func)
         {
             var fout = output;
             try

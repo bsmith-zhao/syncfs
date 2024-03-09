@@ -12,10 +12,10 @@ namespace util.prop.edit
 {
     public class EncodeDropList : UITypeEditor
     {
-        static string[] encs = new string[] 
+        public static string[] Encodes = new string[] 
         {
-            "utf-8",
-            "gbk"
+            "UTF-8",
+            "GBK"
         };
 
         public override UITypeEditorEditStyle
@@ -34,7 +34,7 @@ namespace util.prop.edit
             if (srv != null)
             {
                 var ui = new ListBox().theme();
-                ui.Items.AddRange(encs);
+                ui.Items.AddRange(Encodes);
                 ui.MouseClick += (s, e) =>
                 {
                     if (ui.SelectedIndex >= 0)
