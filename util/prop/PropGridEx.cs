@@ -18,7 +18,7 @@ namespace util.prop
         {
             grid.SelectedGridItemChanged += (s, e) =>
             {
-                e.trydo(() => 
+                true.trydo(() => 
                 {
                     var item = e.NewSelection;
                     var owner = item.owner();
@@ -57,29 +57,28 @@ namespace util.prop
         {
             ui.PropertyValueChanged += (s, e) =>
             {
-                e.trydo(() => 
+                true.trydo(() => 
                 {
                     var item = e.ChangedItem;
-
-                    if (!item.attr<AdjustValue>(out var adj,
+                    if (item.attr<AdjustValue>(out var adj,
                                 out var prop, out var owner))
-                        return;
-
-                    var src = item.Value;
-                    var dst = adj.adjust(src);
-                    if (src == dst)
-                        return;
-
-                    prop.SetValue(owner, dst);
-                    ui.Refresh();
-
-                    notify?.Invoke(s, e);
+                    {
+                        var src = item.Value;
+                        var dst = adj.adjust(src);
+                        if (dst != src)
+                        {
+                            prop.SetValue(owner, dst);
+                            ui.Refresh();
+                        }
+                    }
                 });
+
+                notify?.Invoke(s, e);
             };
 
             ui.MouseWheel += (s, e) =>
             {
-                e.trydo(() => 
+                true.trydo(() => 
                 {
                     var item = ui.SelectedGridItem;
                     if (item.field() == null

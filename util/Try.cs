@@ -21,7 +21,7 @@ namespace util.ext
             notify?.Invoke(err);
         }
 
-        public static void trylog(this object src,
+        public static void trylog(this bool src,
             Action func)
         {
             try { func(); }
@@ -31,7 +31,7 @@ namespace util.ext
             }
         }
 
-        public static void trydo(this object src, Action func)
+        public static void trydo(this bool src, Action func)
         {
             try { func(); }
             catch (Exception err)
@@ -40,7 +40,7 @@ namespace util.ext
             }
         }
 
-        public static T tryget<T>(this object src, Func<T> func)
+        public static T tryget<T>(this bool src, Func<T> func)
         {
             try { return func(); }
             catch (Exception err)
@@ -50,7 +50,7 @@ namespace util.ext
             return default(T);
         }
 
-        public static T trygetQuiet<T>(this object src, 
+        public static T trygetQuiet<T>(this bool src, 
             Func<T> func)
         {
             try

@@ -60,7 +60,7 @@ namespace sync.ui
         {
             set => value.update(ref ec, () =>
             {
-                this.trydo(() =>
+                true.trydo(() =>
                 {
                     ec?.OnActive?.Invoke();
                     propUI.SelectedObject = ec?.Args;
@@ -80,7 +80,7 @@ namespace sync.ui
             languageBtn.initLang(translate);
             toolbar.adjustBtns();
 
-            this.trydo(loadSpaceList);
+            true.trydo(loadSpaceList);
         }
 
         void updateTitle()
@@ -218,7 +218,7 @@ namespace sync.ui
 
         private void GramUI_LabelModified(link.Item it)
         {
-            this.trydo(saveWorkTree);
+            true.trydo(saveWorkTree);
         }
 
         private void TreeUI_AfterLabelEdit(object sender, NodeLabelEditEventArgs e)
@@ -237,13 +237,13 @@ namespace sync.ui
                 treeCheckEvent.suspend(() =>
                     tn.Nodes.eachNode(n => n.Checked = tn.Checked));
 
-                this.trydo(() => saveWorkTree(tn));
+                true.trydo(() => saveWorkTree(tn));
             }
-            this.trydo(() => saveByNode(tn));
+            true.trydo(() => saveByNode(tn));
         }
 
         void updateBtns()
-            => this.trydo(() => toolbar.layoutOnce(updateToolbar));
+            => true.trydo(() => toolbar.layoutOnce(updateToolbar));
 
         void updateToolbar()
         {
@@ -287,7 +287,7 @@ namespace sync.ui
 
         private void PropUI_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
         {
-            this.trydo(() =>
+            true.trydo(() =>
             {
                 ec.save();
 
@@ -299,13 +299,13 @@ namespace sync.ui
 
         private void GramUI_ItemsMoved(Point a, Point b)
         {
-            this.trydo(saveWorkTree);
+            true.trydo(saveWorkTree);
         }
 
         private void treeNodeSelected(object s, TreeViewEventArgs e)
         {
             if (spaceGraph == null)
-                this.trydo(loadSpace);
+                true.trydo(loadSpace);
 
             updateEditors();
         }
@@ -393,7 +393,7 @@ namespace sync.ui
 
         private void addDirRepBtn_Click(object sender, EventArgs e)
         {
-            this.trydo(() => addRep(RepType.NormalDir));
+            true.trydo(() => addRep(RepType.NormalDir));
         }
 
         bool canAddRep => spaceGraph != null;
@@ -426,12 +426,12 @@ namespace sync.ui
 
         private void addAeadRepBtn_Click(object sender, EventArgs e)
         {
-            this.trydo(() => addRep(RepType.AeadFS));
+            true.trydo(() => addRep(RepType.AeadFS));
         }
 
         private void addSpaceBtn_Click(object sender, EventArgs e)
         {
-            this.trydo(addSpace);
+            true.trydo(addSpace);
         }
 
         public void addSpace()
@@ -486,7 +486,7 @@ namespace sync.ui
             if (!canDelete)
                 return;
 
-            this.trydo(() =>
+            true.trydo(() =>
             {
                 var space = this.selSpace;
                 if (treeActive)
@@ -534,7 +534,7 @@ namespace sync.ui
         void OnDeleteItem(IItem it)
         {
             if (it.Tag is IResTag rt)
-                this.trydo(() =>
+                true.trydo(() =>
                     $"{selSpace.dir}/{rt.id}".dirDelete(true));
 
             if (it.Tag is SyncTag st)
@@ -546,7 +546,7 @@ namespace sync.ui
 
         void killVfs(Process p)
         {
-            this.trydo(() => 
+            true.trydo(() => 
             {
                 p.Kill();
                 p.WaitForExit(200);
@@ -558,7 +558,7 @@ namespace sync.ui
 
         private void openDirBtn_Click(object sender, EventArgs e)
         {
-            this.trydo(openDir);
+            true.trydo(openDir);
         }
 
         void openDir()
@@ -637,7 +637,7 @@ namespace sync.ui
         {
             if (!canMoveUp)
                 return;
-            this.trydo(() 
+            true.trydo(() 
                 => treeSelectEvent.suspend(() 
                 => treeUI.moveUp(saveByNode)));
         }
@@ -647,7 +647,7 @@ namespace sync.ui
         {
             if (!canMoveDown)
                 return;
-            this.trydo(() 
+            true.trydo(() 
                 => treeSelectEvent.suspend(() 
                 => treeUI.moveDown(saveByNode)));
         }
@@ -678,7 +678,7 @@ namespace sync.ui
             {
                 if (hjs != hashJson(dst))
                 {
-                    this.trydo(() =>
+                    true.trydo(() =>
                     {
                         foreach (var lk in allSyncLinks(dst))
                         {
@@ -791,7 +791,7 @@ namespace sync.ui
             if (!canAddSync)
                 return;
 
-            this.trydo(() => addSyncLink(pick0 as INode, 
+            true.trydo(() => addSyncLink(pick0 as INode, 
                 pick1 as INode, SyncType.MasterSync));
         }
 
@@ -800,7 +800,7 @@ namespace sync.ui
             if (!canAddSync)
                 return;
 
-            this.trydo(() => addSyncLink(pick0 as INode,
+            true.trydo(() => addSyncLink(pick0 as INode,
                 pick1 as INode, SyncType.RoundSync));
         }
 
@@ -850,7 +850,7 @@ namespace sync.ui
             if (!canPasteArgs)
                 return;
 
-            this.trydo(() =>
+            true.trydo(() =>
             {
                 var src = copyTag.conf.Args.jcopy();
                 var conf = (activeTag as IConfTag).conf;
@@ -872,7 +872,7 @@ namespace sync.ui
             if (!this.trans("ConfirmSpread").confirm())
                 return;
 
-            this.trydo(() => 
+            true.trydo(() => 
             {
                 var plk = pickItem as Link;
                 string js = null;
@@ -1036,7 +1036,7 @@ namespace sync.ui
             if (!canModifyPwd)
                 return;
 
-            this.trydo(() => 
+            true.trydo(() => 
             {
                 if (repTag.args.modifyPwd())
                     propUI.Refresh();
@@ -1097,7 +1097,7 @@ namespace sync.ui
             if (!canAddView)
                 return;
 
-            this.trydo(() => 
+            true.trydo(() => 
             {
                 var viewId = $"view{newId()}";
                 var conf = new ViewConf();
@@ -1150,7 +1150,7 @@ namespace sync.ui
             if (!canLinkView)
                 return;
 
-            this.trydo(() => 
+            true.trydo(() => 
             {
                 addViewLink(pick0 as INode, pick1 as INode);
 

@@ -81,7 +81,7 @@ namespace vfs.mgr.conf
         AeadFsConf conf;
         public void OnActive()
         {
-            this.trydo(() =>
+            true.trydo(() =>
             {
                 conf = conf ?? AeadFsConf.loadByDir(dir);
             });

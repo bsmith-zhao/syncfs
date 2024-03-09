@@ -56,7 +56,7 @@ namespace xtext
 
         private void NoteForm_Load(object sender, EventArgs e)
         {
-            this.trydo(() => 
+            true.trydo(() => 
             {
                 if (App.ConfPath.fileExist())
                     App.Option = App.ConfPath.readText().obj<AppOption>();
@@ -77,7 +77,7 @@ namespace xtext
 
         private void openBtn_Click(object sender, EventArgs e)
         {
-            this.trydo(open);
+            true.trydo(open);
         }
 
         void open()
@@ -116,7 +116,7 @@ namespace xtext
 
         private void saveBtn_Click(object sender, EventArgs e)
         {
-            this.trydo(save);
+            true.trydo(save);
         }
 
         void save()
@@ -133,7 +133,7 @@ namespace xtext
 
         private void saveAsBtn_Click(object sender, EventArgs e)
         {
-            this.trydo(saveAs);
+            true.trydo(saveAs);
         }
 
         void saveAs()

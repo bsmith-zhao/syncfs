@@ -47,7 +47,7 @@ namespace vfs
             host.VolumeSerialNumber = 0;
 
             if (bakEnable)
-                this.trylog(() => rep.createDir(vfs.bak));
+                true.trylog(() => rep.createDir(vfs.bak));
 
             return STATUS_SUCCESS;
         }

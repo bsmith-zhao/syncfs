@@ -144,7 +144,7 @@ namespace sync.app.conf
         AeadFsConf conf;
         public override void OnActive()
         {
-            this.trydo(()=> 
+            true.trydo(()=> 
             {
                 conf = conf ?? AeadFsConf.load(confPath);
             });
@@ -154,7 +154,7 @@ namespace sync.app.conf
         {
             if (fld == nameof(Path))
             {
-                this.trydo(() => conf = AeadFsConf.load(confPath));
+                true.trydo(() => conf = AeadFsConf.load(confPath));
                 return true;
             }
             return false;

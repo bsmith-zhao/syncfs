@@ -34,7 +34,7 @@ namespace sync.ui
 
             this.Text = $"{this.Text} {Application.ProductVersion}";
 
-            this.trydo(loadWorks);
+            true.trydo(loadWorks);
         }
 
         public BatchRunner()
@@ -74,7 +74,7 @@ namespace sync.ui
             (spaces ?? enumAppSpaces()).each(sp =>
             {
                 this.trans("LoadSpace", sp.name, sp.dir).msg();
-                this.trydo(() =>
+                true.trydo(() =>
                 {
                     var ctx = new SpaceContext(sp);
                     sp.loadConf().syncs

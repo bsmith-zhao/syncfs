@@ -22,7 +22,7 @@ namespace util.prop.adjust
         public override object adjust(object value)
         {
             var enc = $"{value}".Trim();
-            return this.tryget(() => Encoding.GetEncoding(enc)) 
+            return true.tryget(() => Encoding.GetEncoding(enc)) 
                 != null ? enc : def;
         }
     }

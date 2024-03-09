@@ -22,7 +22,7 @@ namespace util
         static IEnumerable<string> defaultCodes()
         {
             if (CurrentPath.fileExist())
-                yield return dir.tryget(() 
+                yield return true.tryget(() 
                     => CurrentPath.readText().Trim());
             var cu = CultureInfo.CurrentCulture;
             yield return cu.NativeName;
@@ -35,7 +35,7 @@ namespace util
 
         public static void init()
         {
-            dir.trydo(() => 
+            true.trydo(() => 
             {
                 var code = defaultCodes().first(c => langPath(c).fileExist());
                 if (code != null)
@@ -68,7 +68,7 @@ namespace util
             if (values.TryGetValue(key, out string value))
             {
                 if (args.Length > 0)
-                    value = key.tryget(() => format(value, args));
+                    value = true.tryget(() => format(value, args));
                 if (value != null)
                     return value;
             }
@@ -137,7 +137,7 @@ namespace util
         public static void initLang(this ToolStripDropDownItem menu,
             Action update)
         {
-            menu.trydo(() =>
+            true.trydo(() =>
             {
                 menu.Tag = update;
                 menu.DropDownOpening += menuOpen;
@@ -171,7 +171,7 @@ namespace util
 
         static void menuClick(object s, EventArgs e)
         {
-            e.trydo(() =>
+            true.trydo(() =>
             {
                 var menu = s as ToolStripMenuItem;
                 var code = menu.Tag as string;

@@ -35,7 +35,7 @@ namespace sync
 
             this.Text = $"{this.Text} [{item.name}]";
 
-            this.trydo(()=> 
+            true.trydo(()=> 
             {
                 parseBtn.Enabled = item.canParse;
             });

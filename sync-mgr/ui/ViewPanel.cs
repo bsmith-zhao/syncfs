@@ -217,7 +217,7 @@ namespace sync.ui
 
         private void treeUI_DragDrop(object sender, DragEventArgs e)
         {
-            this.trydo(() => 
+            true.trydo(() => 
             {
                 clearTreeDropStyle();
 
@@ -281,7 +281,7 @@ namespace sync.ui
                 || it.Text == name)
                 return;
 
-            this.trydo(() => 
+            true.trydo(() => 
             {
                 var old = selDir.pathMerge(it.Text);
                 var path = selDir.pathMerge(name);
@@ -316,7 +316,7 @@ namespace sync.ui
                 || tn.Text == name)
                 return;
 
-            this.trydo(() => 
+            true.trydo(() => 
             {
                 var old = getPath(tn);
                 var path = getPath(tn.Parent).pathMerge(name);
@@ -351,12 +351,12 @@ namespace sync.ui
 
         private void TreeUI_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            this.trydo(() => reloadItems(e.Node));
+            true.trydo(() => reloadItems(e.Node));
         }
 
         private void TreeUI_AfterExpand(object sender, TreeViewEventArgs e)
         {
-            this.trydo(() => expandDirs(e.Node));
+            true.trydo(() => expandDirs(e.Node));
         }
 
         void reloadDirs(TreeNode pn)
@@ -435,7 +435,7 @@ namespace sync.ui
             if (!canRefresh)
                 return;
 
-            this.trydo(() =>
+            true.trydo(() =>
             {
                 reloadDirs(selNode);
                 if (selNode.IsExpanded)
@@ -462,7 +462,7 @@ namespace sync.ui
         bool canCreateDir => selNode != null;
         private void createDirBtn_Click(object sender, EventArgs e)
         {
-            this.trydo(createDir);
+            true.trydo(createDir);
         }
 
         void createDir()
@@ -489,7 +489,7 @@ namespace sync.ui
 
         void delete()
         {
-            this.trydo(()=>
+            true.trydo(()=>
             {
                 if (!canDelete)
                     return;

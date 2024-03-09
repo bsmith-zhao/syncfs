@@ -65,7 +65,7 @@ namespace util
 
         void saveConf(object conf = null)
         {
-            this.trydo(() => 
+            true.trydo(() => 
             {
                 conf = conf ?? type.@new();
                 conf.jsonIndent().bakSaveTo(Path);
@@ -83,7 +83,7 @@ namespace util
 
         private void openDirBtn_Click(object sender, EventArgs e)
         {
-            this.trydo(Path.pathDir().dirOpen);
+            true.trydo(Path.pathDir().dirOpen);
         }
     }
 }

@@ -65,7 +65,7 @@ namespace vfs
             {
                 if (stderr != null)
                 {
-                    err = this.trygetQuiet(err.obj<ErrorJson>).str() ?? err;
+                    err = true.trygetQuiet(err.obj<ErrorJson>).str() ?? err;
                     stderr?.Invoke(err);
                 }
             });

@@ -136,7 +136,7 @@ namespace sync.ui
         {
             if (owner == hash
                 || (owner == conf.Args && fld == nameof(SyncConf.Hash)))
-                this.trydo(() => 
+                true.trydo(() => 
                 {
                     string js = null;
                     foreach (var lk in link.Source.allLinks(lk => lk.Tag is SyncTag))

@@ -77,7 +77,7 @@ namespace vfs.mgr
 
         private void VfsManager_Load(object sender, EventArgs e)
         {
-            this.trydo(App.loadConf);
+            true.trydo(App.loadConf);
 
             updateTitle();
             languageBtn.initLang(translate);
@@ -90,7 +90,7 @@ namespace vfs.mgr
             var grp = vfsGroup;
             grp = mountGroup;
 
-            this.trydo(loadVfsList);
+            true.trydo(loadVfsList);
             loadMounts();
 
             updateBtns();
@@ -196,12 +196,17 @@ namespace vfs.mgr
 
         private void addAeadFSBtn_Click(object sender, EventArgs e)
         {
-            addAeadFs();
+            true.trydo(addAeadFs);
         }
 
         bool canModifyPwd => selRepConf?.canModifyPwd() == true;
 
         private void modifyPwdBtn_Click(object sender, EventArgs e)
+        {
+            true.trydo(modifyPwd);
+        }
+
+        void modifyPwd()
         {
             if (!canModifyPwd)
                 return;
@@ -242,7 +247,7 @@ namespace vfs.mgr
 
         private void refreshBtn_Click(object sender, EventArgs e)
         {
-            loadMounts();
+            true.trydo(loadMounts);
         }
 
         VfsTag getTag(ListViewItem item)
@@ -322,7 +327,7 @@ namespace vfs.mgr
 
         private void mountBtn_Click(object sender, EventArgs e)
         {
-            mount();
+            true.trydo(mount);
         }
 
         void mount()
@@ -384,7 +389,7 @@ namespace vfs.mgr
 
         private void unmountBtn_Click(object sender, EventArgs e)
         {
-            unmount();
+            true.trydo(unmount);
         }
 
         void unmount()
@@ -396,6 +401,11 @@ namespace vfs.mgr
         bool canDelete => selConf != null;
 
         private void deleteBtn_Click(object sender, EventArgs e)
+        {
+            true.trydo(delete);
+        }
+
+        void delete()
         {
             if (!canDelete)
                 return;
@@ -411,6 +421,11 @@ namespace vfs.mgr
         bool canOpenDir => selMount != null;
 
         private void openDirBtn_Click(object sender, EventArgs e)
+        {
+            true.trydo(openMountDir);
+        }
+
+        void openMountDir()
         {
             if (canOpenDir)
                 selMount.path.dirOpen();
