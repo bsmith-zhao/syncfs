@@ -220,27 +220,24 @@ namespace vfs
             String path,
             UInt32 flag)
         {
+            new {path, flag }.debug();
+
             var fd = desc as FileDesc;
             try
             {
                 if (0 != (flag & CleanupDelete))
                 {
+                    new { f="delete", path, flag }.debug();
+
                     fd.closeFile();
                     var srcPath = fd.path;
-                    if (bakEnable && vfs.bak.low() != srcPath.pathRoot().low())
+                    if (bakEnable 
+                        && fd.item.isFile() 
+                        && !vfs.bak.lowEqual(srcPath.pathRoot()))
                     {
-                        var bakPath = $"{vfs.bak}/{srcPath}";
-                        if (fd.item is DirItem dir 
-                            && rep.getItem(bakPath).isDir())
-                        {
-                            // ignore exist empty dir
-                            rep.deleteDir(dir.path);
-                        }
-                        else
-                        {
-                            bakPath = bakPath.pathSettle(rep.exist, "-");
-                            rep.moveItem(fd.item, bakPath);
-                        }
+                        var bakPath = $"{vfs.bak}/{srcPath}"
+                                .pathSettle(rep.exist, "-");
+                        rep.moveFile(srcPath, bakPath);
                     }
                     else
                     {
@@ -474,11 +471,19 @@ namespace vfs
             Object desc,
             String path)
         {
+            new { path }.debug();
+
             var fd = desc as FileDesc;
             try
             {
-                if (fd.item is DirItem dir
-                    && dir.enumItems().exist(it => true))
+                // when rename a dir to the same name of another dir
+                // and user choose merge dir to another dir
+                // need to check dir empty
+                // if return NOT_EMPTY, 
+                // winfsp will move dir sub items to another dir
+                // if no check empty, winfsp will simply delete dir
+                if (fd.item.asDir(out var dir) 
+                    && !dir.empty())
                 {
                     return STATUS_DIRECTORY_NOT_EMPTY;
                 }
@@ -498,10 +503,12 @@ namespace vfs
             String newPath,
             Boolean replace)
         {
+            new { oldPath, newPath, replace }.debug();
+
             var fd = desc as FileDesc;
             try
             {
-                if (oldPath.low() != newPath.low())
+                if (!oldPath.lowEqual(newPath))
                 {
                     var newItem = rep.getItem(newPath);
                     if (newItem != null)
@@ -512,12 +519,6 @@ namespace vfs
                 if (item != null)
                 {
                     rep.moveItem(item, newPath);
-                    //if (item.isDir)
-                    //    rep.moveDir(oldPath, newPath);
-                    //else
-                    //{
-                    //    rep.moveFile(oldPath, newPath);
-                    //}
                     fd.item = rep.getItem(newPath);
                 }
 
@@ -620,7 +621,7 @@ namespace vfs
 
             if (bakEnable
                 && vfs.bak.lowEqual(item.path))
-                info.FileAttributes |= (uint)FileAttributes.Encrypted;
+                info.FileAttributes |= (uint)FileAttributes.Compressed;
         }
 
         const int AllocUnit = 4096;

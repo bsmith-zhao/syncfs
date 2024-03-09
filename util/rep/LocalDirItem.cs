@@ -56,7 +56,8 @@ namespace util.rep
         //    return rep.newFileItem<T>(file, path);
         //}
 
-        bool decodePath(FileSystemInfo item, out string itemPath)
+        bool decodePath(FileSystemInfo item, 
+            out string itemPath)
         {
             itemPath = rep.decodeName(item);
             if (itemPath != null && path != null)
@@ -64,7 +65,8 @@ namespace util.rep
             return itemPath != null;
         }
 
-        bool parseItem(FileSystemInfo item, out string path)
+        bool parseItem(FileSystemInfo item, 
+            out string path)
         {
             path = null;
             if (item.isHidden() && item.isSystem())

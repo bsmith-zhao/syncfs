@@ -22,6 +22,10 @@ namespace util.rep
         public static DirItem asDir(this RepItem item)
             => item as DirItem;
 
+        public static bool asDir(this RepItem item,
+                                out DirItem dir)
+            => (dir = item as DirItem) != null;
+
         public static FileItem asFile(this RepItem item)
             => item as FileItem;
 
