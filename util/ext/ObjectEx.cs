@@ -44,12 +44,11 @@ namespace util.ext
             return update;
         }
 
-        public static object free<T>(this object src, ref T res)
+        public static void free<T>(this bool src, ref T res)
         {
             if (res is IDisposable d)
                 d.Dispose();
             res = default(T);
-            return src;
         }
 
         public static object prop<T>(this T obj, string name)

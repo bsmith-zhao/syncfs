@@ -14,7 +14,7 @@ using util;
 
 namespace vfs
 {
-    public class FileDesc
+    public partial class FileDesc
     {
         public VfsCore core;
 
@@ -23,9 +23,10 @@ namespace vfs
 
         public RepItem[] items;
 
-        Stream data;
+        public Stream data;
+        public bool isOpen => data != null;
+
         public string path => item.path;
-        public bool isDir => item.isDir();
         public DirItem dir => item.asDir();
 
         public FileDesc(VfsCore core,
@@ -36,32 +37,38 @@ namespace vfs
             this.rep = rep;
             this.item = item;
             this.data = fs;
-            write = this.data != null;
+            writeMode = this.data != null;
+
+            core.openItem(this);
         }
 
-        bool write = false;
+        bool writeMode = false;
+        bool canWrite => writeMode && data != null;
         Stream openFile(bool write)
         {
-            closeFile();
-            this.write = write;
+            if (write && !canWrite)
+                true.free(ref data);
+            this.writeMode = write;
+            if (data != null)
+                return data;
             return data = rep.openFile(path, write);
         }
 
         public Stream openRead()
-            => data ?? openFile(write: false);
-
-        bool writeMode => data != null && write;
+            => core.openFile(this, () 
+                => openFile(write: false));
 
         public Stream openWrite()
-            => writeMode ? data : openFile(write: true);
+            => core.openFile(this, () 
+                => openFile(write: true));
 
         public void flushFile()
-            => data?.Flush();
+            => core.lockdo(() 
+                => data?.Flush());
 
         public void closeFile()
-        {
-            this.free(ref data);
-        }
+            => core.closeItem(this, () 
+                => true.free(ref data));
 
         public Int32 getInfo(out FileInfo info)
         {

@@ -24,7 +24,7 @@ namespace util.ext
         public static long longMs(this DateTime t) 
             => long.Parse(t.ToString(LongMsFormat));
 
-        public static int ticks(this bool src)
+        public static int timeTicks(this bool src)
             => Environment.TickCount;
     }
 }

@@ -47,8 +47,7 @@ namespace vfs
             host.VolumeCreationTime = 0;
             host.VolumeSerialNumber = 0;
 
-            if (bakEnable)
-                true.trylog(() => rep.createDir(vfs.bak));
+            init();
 
             return STATUS_SUCCESS;
         }

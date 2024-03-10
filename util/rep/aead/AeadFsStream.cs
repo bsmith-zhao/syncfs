@@ -364,7 +364,7 @@ namespace util.rep.aead
         public override void Flush() => fs.Flush();
         public override void Close()
         {
-            this.free(ref fs);
+            true.free(ref fs);
         }
 
         byte[] mergeNonce(long packIdx)

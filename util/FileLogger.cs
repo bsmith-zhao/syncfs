@@ -39,7 +39,7 @@ namespace util
 
         public void Dispose()
         {
-            this.free(ref fout);
+            true.free(ref fout);
         }
 
         void output(string msg)

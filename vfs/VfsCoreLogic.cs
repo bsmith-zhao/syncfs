@@ -24,6 +24,14 @@ namespace vfs
             err.log(true.lastFunc(), args);
         }
 
+        void init()
+        {
+            if (bakEnable)
+                true.trylog(() => rep.createDir(vfs.bak));
+
+            beginMonitor();
+        }
+
         void delete(FileDesc fd,
             uint flag)
         {

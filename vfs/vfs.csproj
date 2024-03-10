@@ -51,10 +51,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileDesc.cs" />
+    <Compile Include="VfsCoreMonitor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VfsCore.cs" />
-    <Compile Include="VfsCoreExtend.cs" />
     <Compile Include="VfsCoreLogic.cs" />
     <Compile Include="VfsService.cs" />
     <Compile Include="rep\AeadFsArgs.cs" />

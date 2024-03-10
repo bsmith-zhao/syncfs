@@ -144,6 +144,13 @@ namespace util.ext
             return new List<T>(iter.OfType<T>());
         }
 
+        public static List<T> newList<T>(this IEnumerable<T> iter)
+        {
+            if (iter == null)
+                return new List<T>();
+            return new List<T>(iter.OfType<T>());
+        }
+
         public static List<T> newList<T>(this IEnumerable iter)
         {
             if (iter == null)
