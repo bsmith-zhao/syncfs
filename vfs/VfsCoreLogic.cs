@@ -17,7 +17,7 @@ namespace vfs
 {
     public partial class VfsCore
     {
-        const int MaxBuff = (int)(4 * Number.MB);
+        const int BuffSize = (int)(2 * Number.MB);
 
         void trace(Exception err, object args = null)
         {
@@ -31,7 +31,7 @@ namespace vfs
 
             try
             {
-                if (0 != (flag & CleanupDelete))
+                if (flag.markBy(CleanupDelete))
                 {
                     //new { mark = "delete", path, flag }.debug();
 
@@ -204,12 +204,7 @@ namespace vfs
             }
         }
 
-        //byte[] _buff;
-        //byte[] getBuff(int size)
-        //    => _buff?.Length >= size ? _buff
-        //    : (_buff = new byte[size]);
-
-        byte[] buff = new byte[MaxBuff];
+        byte[] buff = new byte[BuffSize];
 
         int write(FileDesc fd,
             IntPtr ptr, long offset, int count,
@@ -242,14 +237,12 @@ namespace vfs
                     {
                         markPad(fd, fs, offset);
 
-                        fs.Position = fs.Length;
-                        byte[] pad = new byte[offset - fs.Length];
-                        fs.write(pad);
+                        writePad(fs, (int)(offset - fs.Length));
                     }
                     fs.Position = offset;
                 }
 
-                write(fs, ptr, count);
+                writeData(fs, ptr, count);
 
                 finish = (uint)count;
                 return fd.getInfo(out info);
@@ -261,13 +254,23 @@ namespace vfs
             }
         }
 
-        void write(Stream fs, IntPtr ptr, int total)
+        void writePad(Stream fs, int total)
         {
-            //var buff = getBuff(total.atMost(MaxBuff));
+            int size;
+            while (total > 0)
+            {
+                size = total.atMost(BuffSize);
+                fs.Write(buff, 0, size);
+                total -= size;
+            }
+        }
+
+        void writeData(Stream fs, IntPtr ptr, int total)
+        {
             int actual;
             while (total > 0)
             {
-                actual = total.atMost(MaxBuff);
+                actual = total.atMost(BuffSize);
                 Marshal.Copy(ptr, buff, 0, actual);
                 fs.Write(buff, 0, actual);
                 total -= actual;
@@ -295,7 +298,7 @@ namespace vfs
 
                 fs.Position = offset;
 
-                var actual = read(fs, ptr, count);
+                var actual = readData(fs, ptr, count);
 
                 finish = (uint)actual;
                 return STATUS_SUCCESS;
@@ -307,13 +310,12 @@ namespace vfs
             }
         }
 
-        int read(Stream fs, IntPtr ptr, int total)
+        int readData(Stream fs, IntPtr ptr, int total)
         {
-            //var buff = getBuff(total.atMost(MaxBuff));
             int remain = total;
             int actual;
             while (remain > 0
-                && (actual = fs.Read(buff, 0, remain.atMost(MaxBuff))) > 0)
+                && (actual = fs.Read(buff, 0, remain.atMost(BuffSize))) > 0)
             {
                 Marshal.Copy(buff, 0, ptr, actual);
                 remain -= actual;

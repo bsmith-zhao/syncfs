@@ -168,10 +168,10 @@ namespace util
             return 0;
         }
 
-        public static bool and(this int flag, int mark)
+        public static bool markBy(this int flag, int mark)
             => (flag & mark) == mark;
 
-        public static bool and(this uint flag, uint mark)
+        public static bool markBy(this uint flag, uint mark)
             => (flag & mark) == mark;
     }
 }
