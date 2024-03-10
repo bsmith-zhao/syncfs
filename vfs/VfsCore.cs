@@ -15,7 +15,7 @@ using VolumeInfo = Fsp.Interop.VolumeInfo;
 
 namespace vfs
 {
-    public class VfsCore : FileSystemBase
+    public partial class VfsCore : FileSystemBase
     {
         public Reposit rep;
         public VfsArgs vfs;
@@ -54,28 +54,9 @@ namespace vfs
         }
 
         public override Int32 GetVolumeInfo(
-            out VolumeInfo volume)
+            out VolumeInfo vol)
         {
-            try
-            {
-                volume = default(VolumeInfo);
-
-                rep.getSpace(out var total, out var free);
-                volume.TotalSize = (UInt64)total;
-                volume.FreeSize = (UInt64)free;
-                volume.SetVolumeLabel(vfs.name);
-
-                return STATUS_SUCCESS;
-            }
-            catch (Exception err)
-            {
-                trace(err);
-                throw;
-            }
-            /*
-            * DriveInfo only supports drives and does not support UNC paths.
-            * It would be better to use GetDiskFreeSpaceEx here.
-            */
+            return getVolume(out vol);
         }
 
         public override Int32 GetSecurityByName(
@@ -83,25 +64,8 @@ namespace vfs
             out UInt32 attr/* or ReparsePointIndex */,
             ref Byte[] security)
         {
-            try
-            {
-                attr = 0;
-                var item = rep.getItem(path);
-                if (item != null)
-                {
-                    if (item.isDir())
-                        attr = (uint)FileAttributes.Directory;
-                    else
-                        attr = (uint)FileAttributes.Normal;
-                }
-                security = DefaultSecurity;
-                return STATUS_SUCCESS;
-            }
-            catch (Exception err)
-            {
-                trace(err, new { path });
-                throw;
-            }
+            return getSecurity(path, 
+                out attr, ref security);
         }
 
         public override Int32 Create(
@@ -116,40 +80,15 @@ namespace vfs
             out FileInfo info,
             out String name)
         {
-            FileDesc fd = null;
-            try
-            {
-                if (rep.exist(path))
-                {
-                    node = default(Object);
-                    desc = null;
-                    name = default(String);
-                    info = default(FileInfo);
-                    return STATUS_OBJECT_NAME_COLLISION;
-                }
+            node = null;
+            name = null;
 
-                Stream fs = null;
-                if (0 == (option & FILE_DIRECTORY_FILE))
-                    fs = rep.createFile(path);
-                else
-                    rep.createDir(path);
-
-                var item = rep.getItem(path);
-                fd = new FileDesc(this, rep, item, fs);
-
-                node = default(Object);
-                desc = fd;
-                name = default(String);
-
-                return fd.getInfo(out info);
-            }
-            catch (Exception err)
-            {
-                fd?.closeFile();
-                trace(err, new { path, option});
-                throw;
-            }
+            return create(path, 
+                option, access, attr, 
+                security, allocSize, 
+                out desc, out info);
         }
+
         public override Int32 Open(
             String path,
             UInt32 option,
@@ -159,33 +98,12 @@ namespace vfs
             out FileInfo info,
             out String name)
         {
-            FileDesc fd = null;
-            try
-            {
-                checkActive();
+            node = null;
+            name = null;
 
-                var item = rep.getItem(path);
-                if (item == null)
-                {
-                    desc = null;
-                    node = default(Object);
-                    name = default(String);
-                    info = default(FileInfo);
-                    return STATUS_OBJECT_NAME_NOT_FOUND;
-                }
-
-                fd = new FileDesc(this, rep, item);
-
-                desc = fd;
-                node = default(Object);
-                name = default(String);
-                return fd.getInfo(out info);
-            }
-            catch(Exception err)
-            {
-                trace(err, new {path});
-                throw;
-            }
+            return open(path, 
+                option, access,
+                out desc, out info);
         }
 
         public override Int32 Overwrite(
@@ -196,22 +114,9 @@ namespace vfs
             UInt64 alloc,
             out FileInfo info)
         {
-            var fd = desc as FileDesc;
-            try
-            {
-                fd.openWrite().SetLength(0);
-                return fd.getInfo(out info);
-            }
-            catch (Exception err)
-            {
-                trace(err, new { fd?.path});
-                throw;
-            }
-        }
-
-        void trace(Exception err, object args = null)
-        {
-            err.log(true.lastFunc(), args);
+            return overwrite(desc as FileDesc, 
+                attr, replace, alloc, 
+                out info);
         }
 
         public bool bakEnable => vfs.bak != null;
@@ -222,58 +127,15 @@ namespace vfs
             String path,
             UInt32 flag)
         {
-            //new { path, flag }.debug();
-
-            var fd = desc as FileDesc;
-            try
-            {
-                if (0 != (flag & CleanupDelete))
-                {
-                    //new { mark = "delete", path, flag }.debug();
-
-                    fd.closeFile();
-                    var srcPath = fd.path;
-                    if (bakEnable 
-                        && fd.item.isFile() 
-                        && !vfs.bak.lowEqual(srcPath.pathRoot()))
-                    {
-                        var bakPath = $"{vfs.bak}/{srcPath}"
-                                .pathSettle(rep.exist, "-");
-                        rep.moveFile(srcPath, bakPath);
-                    }
-                    else
-                    {
-                        rep.deleteItem(fd.item);
-                    }
-                }
-            }
-            catch (Exception err)
-            {
-                trace(err, new { fd?.path });
-                throw;
-            }
+            delete(desc as FileDesc, flag);
         }
 
         public override void Close(
             Object node,
             Object desc)
         {
-            var fd = desc as FileDesc;
-            try
-            {
-                fd.closeFile();
-            }
-            catch (Exception err)
-            {
-                trace(err, new { fd?.path });
-                throw;
-            }
+            close(desc as FileDesc);
         }
-
-        byte[] _buff;
-        byte[] getBuff(int size)
-            => _buff?.Length >= size ? _buff
-            : (_buff = new byte[size]);
 
         public override Int32 Read(
             Object node,
@@ -286,84 +148,6 @@ namespace vfs
             return read(desc as FileDesc,
                 ptr, (long)offset, (int)count,
                 out finish);
-
-            //var fd = desc as FileDesc;
-            //try
-            //{
-            //    var fs = fd.openRead();
-
-            //    if (offset >= (UInt64)fs.Length)
-            //    {
-            //        finish = 0;
-            //        return STATUS_END_OF_FILE;
-            //    }
-
-            //    fs.Position = (long)offset;
-
-            //    int size = (int)count;
-            //    var buff = getBuff(size);
-            //    finish = (uint)fs.Read(buff, 0, size);
-            //    Marshal.Copy(buff, 0, ptr, (int)finish);
-
-            //    return STATUS_SUCCESS;
-            //}
-            //catch (Exception err)
-            //{
-            //    trace(err, new { fd?.path, offset, count});
-            //    throw;
-            //}
-        }
-
-        int read(FileDesc fd,
-            IntPtr ptr,
-            long offset,
-            int count,
-            out uint finish)
-        {
-            try
-            {
-                var fs = fd.openRead();
-
-                markRead(fd, fs, offset, count);
-
-                if (offset >= fs.Length)
-                {
-                    finish = 0;
-                    return STATUS_END_OF_FILE;
-                }
-
-                fs.Position = offset;
-
-                var actual = read(fs, ptr, count);
-
-                //var buff = getBuff(count);
-                //var actual = fs.Read(buff, 0, count);
-                //if (actual > 0)
-                //    Marshal.Copy(buff, 0, ptr, actual);
-
-                finish = (uint)actual;
-                return STATUS_SUCCESS;
-            }
-            catch (Exception err)
-            {
-                trace(err, new { fd?.path, offset, count });
-                throw;
-            }
-        }
-
-        int read(Stream fs, IntPtr ptr, int total)
-        {
-            var buff = getBuff(total.atMost(MaxBuff));
-            int remain = total;
-            int actual;
-            while (remain > 0
-                && (actual = fs.Read(buff, 0, remain.atMost(MaxBuff))) > 0)
-            {
-                Marshal.Copy(buff, 0, ptr, actual);
-                remain -= actual;
-                ptr += actual;
-            }
-            return total - remain;
         }
 
         public override Int32 Write(
@@ -380,123 +164,6 @@ namespace vfs
             return write(desc as FileDesc,
                 ptr, (long)offset, (int)count,
                 append, coverOnly, out finish, out info);
-
-            //var fd = desc as FileDesc;
-            //try
-            //{
-            //    var fs = fd.openWrite();
-
-            //    if (cover)
-            //    {
-            //        if (offset >= (UInt64)fs.Length)
-            //        {
-            //            finish = default(UInt32);
-            //            info = default(FileInfo);
-            //            return STATUS_SUCCESS;
-            //        }
-            //        if (offset + count > (UInt64)fs.Length)
-            //            count = (UInt32)((UInt64)fs.Length - offset);
-            //    }
-
-            //    if (append)
-            //        fs.Position = fs.Length;
-            //    else
-            //    {
-            //        long off = (long)offset;
-            //        if (off > fs.Length)
-            //        {
-            //            fs.Position = fs.Length;
-            //            byte[] pad = new byte[off-fs.Length];
-            //            fs.write(pad);
-
-            //            padSize = padSize.atLeast(pad.Length);
-            //        }
-            //        fs.Position = off;
-            //    }
-
-            //    int size = (int)count;
-            //    byte[] buff = getBuff(size);
-            //    Marshal.Copy(ptr, buff, 0, size);
-            //    fs.Write(buff, 0, size);
-
-            //    finish = count;
-            //    return fd.getInfo(out info);
-            //}
-            //catch (Exception err)
-            //{
-            //    trace(err, new { fd?.path, offset, count, cover, append});
-            //    throw;
-            //}
-        }
-
-        int write(FileDesc fd, 
-            IntPtr ptr, long offset, int count,
-            bool append, bool coverOnly,
-            out uint finish,
-            out FileInfo info)
-        {
-            try
-            {
-                var fs = fd.openWrite();
-
-                markWrite(fd, fs, offset, count, append, coverOnly);
-
-                if (coverOnly)
-                {
-                    if (offset >= fs.Length)
-                    {
-                        finish = default(uint);
-                        info = default(FileInfo);
-                        return STATUS_SUCCESS;
-                    }
-                    count = count.atMost((int)(fs.Length - offset));
-                }
-
-                if (append)
-                    fs.Position = fs.Length;
-                else
-                {
-                    if (offset > fs.Length)
-                    {
-                        markPad(fd, fs, offset);
-
-                        fs.Position = fs.Length;
-                        byte[] pad = new byte[offset - fs.Length];
-                        fs.write(pad);
-                    }
-                    fs.Position = offset;
-                }
-
-                write(fs, ptr, count);
-
-                //byte[] buff = getBuff(count);
-                //Marshal.Copy(ptr, buff, 0, count);
-                //fs.Write(buff, 0, count);
-
-                finish = (uint)count;
-                return fd.getInfo(out info);
-            }
-            catch (Exception err)
-            {
-                trace(err, new { fd?.path, offset, count, coverOnly, append });
-                throw;
-            }
-        }
-
-        static int MaxBuff = (int)(1 * Number.MB);
-
-        void write(Stream fs, IntPtr ptr, int total)
-        {
-            var buff = getBuff(total.atMost(MaxBuff));
-            int actual;
-            while (total > 0)
-            {
-                actual = total.atMost(MaxBuff);
-                Marshal.Copy(ptr, buff, 0, actual);
-                fs.Write(buff, 0, actual);
-                total -= actual;
-                ptr += actual;
-            }
         }
 
         public override Int32 Flush(
@@ -504,23 +171,7 @@ namespace vfs
             Object desc,
             out FileInfo info)
         {
-            var fd = desc as FileDesc;
-            try
-            {
-                if (null == fd)
-                {
-                    /* we do not flush the whole volume, so just return SUCCESS */
-                    info = default(FileInfo);
-                    return STATUS_SUCCESS;
-                }
-                fd.flushFile();
-                return fd.getInfo(out info);
-            }
-            catch (Exception err)
-            {
-                trace(err, new { fd?.path });
-                throw;
-            }
+            return flush(desc as FileDesc, out info);
         }
 
         public override Int32 GetFileInfo(
@@ -528,16 +179,7 @@ namespace vfs
             Object desc,
             out FileInfo info)
         {
-            var fd = desc as FileDesc;
-            try
-            {
-                return fd.getInfo(out info);
-            }
-            catch (Exception err)
-            {
-                trace(err, new { fd?.path });
-                throw;
-            }
+            return getInfo(desc as FileDesc, out info);
         }
 
         public override Int32 SetBasicInfo(
@@ -550,16 +192,11 @@ namespace vfs
             UInt64 changeTime,
             out FileInfo info)
         {
-            var fd = desc as FileDesc;
-            try
-            {
-                return fd.getInfo(out info);
-            }
-            catch (Exception err)
-            {
-                trace(err, new { fd?.path });
-                throw;
-            }
+            return setInfo(desc as FileDesc, 
+                attr, 
+                createTime, accessTime, 
+                writeTime, changeTime, 
+                out info);
         }
 
         public override Int32 SetFileSize(
@@ -569,63 +206,17 @@ namespace vfs
             Boolean setAlloc,
             out FileInfo info)
         {
-            var fd = desc as FileDesc;
-            try
-            {
-                if (!setAlloc)
-                {
-                    var fs = fd.openWrite();
-                    if (fs.Length > (long)newSize)
-                        fs.SetLength((long)newSize);
-                }
-
-                return fd.getInfo(out info);
-            }
-            catch (Exception err)
-            {
-                trace(err, new { fd?.path, newSize, setAlloc});
-                throw;
-            }
+            return setSize(desc as FileDesc, 
+                (long)newSize, setAlloc, 
+                out info);
         }
-
-        //public override int SetDelete(
-        //    object node, 
-        //    object desc,
-        //    string path, 
-        //    bool isFile)
-        //{
-        //    new {path, isFile }.debug();
-        //    return base.SetDelete(node, desc, path, isFile);
-        //}
 
         public override Int32 CanDelete(
             Object node,
             Object desc,
             String path)
         {
-            //new { path }.debug();
-
-            var fd = desc as FileDesc;
-            try
-            {
-                // when rename a dir to the same name of another dir
-                // and user choose merge dir to another dir
-                // need to check dir empty
-                // if return NOT_EMPTY, 
-                // winfsp will move dir sub items to another dir
-                // if no check empty, winfsp will simply delete dir
-                if (fd.item.asDir(out var dir) 
-                    && !dir.empty())
-                {
-                    return STATUS_DIRECTORY_NOT_EMPTY;
-                }
-                return STATUS_SUCCESS;
-            }
-            catch (Exception err)
-            {
-                trace(err, new { path });
-                throw;
-            }
+            return checkDelete(desc as FileDesc, path);
         }
 
         public override Int32 Rename(
@@ -635,32 +226,9 @@ namespace vfs
             String newPath,
             Boolean replace)
         {
-            //new { oldPath, newPath, replace }.debug();
-
-            var fd = desc as FileDesc;
-            try
-            {
-                if (!oldPath.lowEqual(newPath))
-                {
-                    var newItem = rep.getItem(newPath);
-                    if (newItem != null)
-                        return STATUS_OBJECT_NAME_COLLISION;
-                }
-
-                var item = fd.item;
-                if (item != null)
-                {
-                    rep.moveItem(item, newPath);
-                    fd.item = rep.getItem(newPath);
-                }
-
-                return STATUS_SUCCESS;
-            }
-            catch (Exception err)
-            {
-                trace(err, new { fd?.path, oldPath, newPath, replace });
-                throw;
-            }
+            return move(desc as FileDesc, 
+                oldPath, newPath, 
+                replace);
         }
 
         public override Int32 GetSecurity(
@@ -690,186 +258,10 @@ namespace vfs
             out String path,
             out FileInfo info)
         {
-            var fd = desc as FileDesc;
-            try
-            {
-                checkActive();
-
-                if (fd.items == null)
-                {
-                    fd.items = fd.dir?.enumItems().ToArray();
-                }
-                int idx;
-                if (null == context)
-                {
-                    idx = 0;
-                    if (null != marker)
-                    {
-                        idx = fd.items.index(n => n.name == marker);
-                        if (idx >= 0)
-                            idx++;
-                        else
-                            idx = ~idx;
-                    }
-                }
-                else
-                    idx = (int)context;
-                if (fd.items.Length > idx)
-                {
-                    context = idx + 1;
-                    path = fd.items[idx].name;
-                    getItemInfo(fd.items[idx], out info);
-                    return true;
-                }
-                else
-                {
-                    path = default(String);
-                    info = default(FileInfo);
-                    return false;
-                }
-            }
-            catch (Exception err)
-            {
-                trace(err, new { fd?.path, match, marker, context });
-                throw;
-            }
-        }
-
-        public void getItemInfo(
-            RepItem item,
-            out FileInfo info)
-        {
-            info = new FileInfo();
-            info.FileAttributes = (uint)(item.isDir() ?
-                FileAttributes.Directory
-                : FileAttributes.Normal);
-            info.ReparseTag = 0;
-            info.FileSize = (ulong)item.size;
-            updateAllocSize(ref info);
-            info.CreationTime = (ulong)item.createTime;
-            info.LastAccessTime = (ulong)item.modifyTime;
-            info.LastWriteTime = (ulong)item.modifyTime;
-            info.ChangeTime = info.LastWriteTime;
-            info.IndexNumber = 0;
-            info.HardLinks = 0;
-
-            if (bakEnable
-                && vfs.bak.lowEqual(item.path))
-                info.FileAttributes |= (uint)FileAttributes.Compressed;
-        }
-
-        const int AllocUnit = 4096;
-
-        public void updateAllocSize(ref FileInfo info)
-                => info.AllocationSize 
-            = (info.FileSize + AllocUnit - 1) / AllocUnit * AllocUnit;
-
-        int checkTime;
-        void markCheck()
-            => checkTime = true.ticks();
-
-        const int CheckInterval = 20 * 1000;
-        const int ActiveInterval = 1 * 60 * 1000;
-
-        public Set<FileDesc> opens = new Set<FileDesc>();
-
-        int buffSize => _buff?.Length ?? 0;
-
-        void checkActive()
-        {
-            var now = true.ticks();
-            if (now < checkTime + CheckInterval)
-                return;
-            checkTime = now;
-
-            List<FileDesc> fsl = null;
-            opens.pick(f => now > f.activeTime + ActiveInterval)
-                .each(f => 
-                {
-                    fsl = fsl.add(f);
-                });
-
-            new
-            {
-                inactive = fsl?.Count ?? 0,
-                thdId = true.thdId(),
-                buffSize,
-                maxPad, maxRead, maxWrite
-            }.debug();
-
-            if (fsl == null)
-                return;
-
-            var fs = fsl.conv(f => f.detachFile()).ToArray();
-
-            Task.Run(()=> 
-            {
-                fs.each(f => f.Close());
-                new
-                {
-                    free = fs.Length,
-                    thdId = true.thdId()
-                }.debug();
-            });
-        }
-
-        int maxRead;
-        void markRead(FileDesc fd, Stream fs,
-            long offset, int count)
-        {
-            maxRead = maxRead.atLeast(count);
-
-            if (count > 4 * Number.MB)
-                new
-                {
-                    f = "read",
-                    fd.path,
-                    offset,
-                    count,
-                    fs.Length,
-                    fs.Position
-                }.debug();
-        }
-
-        int maxWrite;
-        void markWrite(FileDesc fd, Stream fs,
-            long offset, int count,
-            bool append, bool coverOnly)
-        {
-            maxWrite = maxWrite.atLeast(count);
-
-            if (count > 4 * Number.MB)
-                new
-                {
-                    f = "write",
-                    fd.path,
-                    offset,
-                    count,
-                    append,
-                    coverOnly,
-                    fs.Length,
-                    fs.Position
-                }.debug();
-        }
-
-        int maxPad;
-        void markPad(FileDesc fd, Stream fs,
-            long offset)
-        {
-            var pad = (int)(offset - fs.Length);
-            maxPad = maxPad.atLeast(pad);
-
-            if (pad > 16 * Number.MB)
-            {
-                new
-                {
-                    f="pad",
-                    fd.path,
-                    offset,
-                    fs.Length,
-                    fs.Position
-                }.debug();
-            }
+            return getDirEntry(desc as FileDesc, 
+                match, marker, 
+                ref context, 
+                out path, out info);
         }
     }
 }
