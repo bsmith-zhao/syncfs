@@ -15,6 +15,8 @@ namespace util.rep.aead
         public const short Version = 1;
         public static byte[] KeyContext = "file-key".utf8();
 
+        const int BuffSize = (int)(1 * Number.MB);
+
         FileStream fs;
         AeadFsConf conf;
         int headSize;
@@ -82,7 +84,6 @@ namespace util.rep.aead
         int tagSize;
         int blockSize;
         int packSize;
-        const int MaxBuff = (int)(1 * Number.MB);
         int unitSize;
         void init()
         {
@@ -90,7 +91,7 @@ namespace util.rep.aead
             tagSize = conf.tagSize();
             blockSize = conf.BlockSize;
             packSize = blockSize + tagSize;
-            unitSize = ((MaxBuff / blockSize) * blockSize)
+            unitSize = ((BuffSize / blockSize) * blockSize)
                     .atLeast(blockSize);
         }
 

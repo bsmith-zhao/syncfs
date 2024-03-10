@@ -38,7 +38,7 @@ namespace sync.sync
                 dirMoves = dirDiff.moves,
 
                 lastFiles = hash.loadUnits(lastFilesPath),
-                lastDirs = lastDirsPath.enumRows().toList(),
+                lastDirs = lastDirsPath.enumRows().newList(),
             })).lgc;
         }
 
@@ -179,7 +179,8 @@ namespace sync.sync
         }
 
         List<string[]> toPaths(List<HashItem[]> pairs)
-            => pairs.conv(p => new string[] { p[0].path, p[1].path });
+            => pairs.conv(p => new string[] { p[0].path, p[1].path })
+            .newList();
 
         void outputPairs(List<string[]> pairs, string name,
             Action<string> output, int? limit = null)

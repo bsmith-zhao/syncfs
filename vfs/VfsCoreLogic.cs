@@ -17,7 +17,7 @@ namespace vfs
 {
     public partial class VfsCore
     {
-        const int BuffSize = (int)(2 * Number.MB);
+        const int BuffSize = (int)(4 * Number.MB);
 
         void trace(Exception err, object args = null)
         {

@@ -66,14 +66,18 @@ namespace util.ext
                         yield return elem;
         }
 
-        public static IEnumerable<O> conv<I, O>(this IEnumerable iter, Func<I, O> func)
+        public static IEnumerable<O> conv<I, O>(
+            this IEnumerable iter, 
+            Func<I, O> func)
         {
             if (iter != null)
                 foreach (I e in iter)
                     yield return func(e);
         }
 
-        public static IEnumerable<O> conv<I, O>(this IEnumerable<I> iter, Func<I, O> func)
+        public static IEnumerable<O> conv<I, O>(
+            this IEnumerable<I> iter, 
+            Func<I, O> func)
         {
             if (iter != null)
                 foreach (I e in iter)
@@ -130,7 +134,7 @@ namespace util.ext
         public static T first<T>(this IEnumerable<T> iter)
             => iter != null ? iter.FirstOrDefault() : default(T);
 
-        public static List<T> toList<T>(this IEnumerable<T> iter)
+        public static List<T> newList<T>(this IEnumerable<T> iter)
         {
             if (iter == null)
                 return new List<T>();
@@ -144,12 +148,12 @@ namespace util.ext
             return new List<T>(iter.OfType<T>());
         }
 
-        public static List<T> newList<T>(this IEnumerable<T> iter)
-        {
-            if (iter == null)
-                return new List<T>();
-            return new List<T>(iter.OfType<T>());
-        }
+        //public static List<T> newList<T>(this IEnumerable<T> iter)
+        //{
+        //    if (iter == null)
+        //        return new List<T>();
+        //    return new List<T>(iter.OfType<T>());
+        //}
 
         public static List<T> newList<T>(this IEnumerable iter)
         {
@@ -186,7 +190,8 @@ namespace util.ext
                     yield return e;
         }
 
-        public static IEnumerable<T> each<T>(this IEnumerable<T> iter, Action<T> func)
+        public static IEnumerable<T> each<T>(
+            this IEnumerable<T> iter, Action<T> func)
         {
             if (null != iter)
                 foreach (var e in iter)
@@ -194,7 +199,9 @@ namespace util.ext
             return iter;
         }
 
-        public static Dictionary<K, V> toMap<K, V>(this IEnumerable<V> iter, Action<V, Dictionary<K,V>> func)
+        public static Dictionary<K, V> toMap<K, V>(
+            this IEnumerable<V> iter, 
+            Action<V, Dictionary<K,V>> func)
         {
             var map = new Dictionary<K, V>();
             foreach (var e in iter)
@@ -202,7 +209,8 @@ namespace util.ext
             return map;
         }
 
-        public static Dictionary<K, V> toMap<K, V>(this IEnumerable<V> iter, Func<V, K> func)
+        public static Dictionary<K, V> toMap<K, V>(
+            this IEnumerable<V> iter, Func<V, K> func)
         {
             var map = new Dictionary<K, V>();
             foreach (var e in iter)

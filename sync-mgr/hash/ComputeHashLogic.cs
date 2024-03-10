@@ -41,7 +41,7 @@ namespace sync.hash
 
             var lowMap = hash.loadUnits(args.dst).toMap(u=>u.lowPath);
 
-            files = args.src.enumAllFiles<HashItem>().toList();
+            files = args.src.enumAllFiles<HashItem>().newList();
 
             BeginCompute?.Invoke(files.Count);
 

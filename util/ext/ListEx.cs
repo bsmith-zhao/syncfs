@@ -38,15 +38,15 @@ namespace util.ext
             return list;
         }
 
-        public static List<R> conv<T, R>(this List<T> list, Func<T, R> func)
-        {
-            if (list == null)
-                return null;
-            var res = new List<R>();
-            foreach (var elem in list)
-                res.Add(func(elem));
-            return res;
-        }
+        //public static List<R> conv<T, R>(this List<T> list, Func<T, R> func)
+        //{
+        //    if (list == null)
+        //        return null;
+        //    var res = new List<R>();
+        //    foreach (var elem in list)
+        //        res.Add(func(elem));
+        //    return res;
+        //}
 
         public static string join<T>(this List<T> list, string sep)
             => list.ToArray().conv(e => e?.ToString()).join(sep);

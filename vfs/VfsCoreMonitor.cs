@@ -14,6 +14,13 @@ namespace vfs
     public partial class FileDesc
     {
         public int activeTime;
+        public bool isOpen => data != null;
+
+        public void detachFile(out Stream fs)
+        {
+            fs = this.data;
+            this.data = null;
+        }
     }
 
     public partial class VfsCore
@@ -83,33 +90,35 @@ namespace vfs
                     true.sleep(CheckInterval);
 
                     var now = true.timeTicks();
-                    var frees = new List<Stream>();
-                    int remain = 0;
+                    Stream[] frees;
+                    int active = 0;
                     lock (this)
                     {
-                        var fds = opens.pick(f
+                        var idles = opens.pick(f
                             => now > f.activeTime + ActiveInterval)
                             .newList();
-                        fds.each(f =>
+
+                        frees = idles.conv(f =>
                         {
-                            frees = frees.add(f.data);
-                            f.data = null;
                             opens.Remove(f);
-                        });
-                        remain = opens.Count;
+                            f.detachFile(out var fs);
+                            return fs;
+                        }).ToArray();
+
+                        active = opens.Count;
                     }
 
                     //new
                     //{
                     //    now,
-                    //    free = frees.Count,
-                    //    remain,
+                    //    free = frees.Length,
+                    //    active,
                     //    maxRead,
                     //    maxWrite,
                     //    maxPad
                     //}.debug();
 
-                    frees.each(f => f.Close());
+                    frees.each(f => f?.Close());
                 }
             }
             catch (Exception err)

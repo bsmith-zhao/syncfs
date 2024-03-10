@@ -229,7 +229,7 @@ namespace sync.ui
 
                 var srcDir = selDir;
                 var dstDir = getPath(dn);
-                foreach (var vi in items.toList<ListViewItem>())
+                foreach (var vi in items.conv<ListViewItem>().newList())
                 {
                     var name = vi.Text;
                     var srcPath = srcDir.pathMerge(name);
@@ -509,7 +509,8 @@ namespace sync.ui
                     if (!this.trans("ConfrimDeleteItems", cnt).confirm()
                         || !this.trans("RepeatConfrimDeleteItems", cnt).confirm())
                         return;
-                    var items = listUI.SelectedItems.toList<ListViewItem>();
+                    var items = listUI.SelectedItems
+                                .conv<ListViewItem>().newList();
                     var dir = selDir;
                     foreach (ListViewItem it in items)
                     {

@@ -23,8 +23,7 @@ namespace vfs
 
         public RepItem[] items;
 
-        public Stream data;
-        public bool isOpen => data != null;
+        Stream data;
 
         public string path => item.path;
         public DirItem dir => item.asDir();
