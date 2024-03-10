@@ -19,6 +19,7 @@ using util.rep;
 using vfs;
 using System.Security.Cryptography;
 using sync.mgr.Properties;
+using sync.work;
 
 namespace sync.ui
 {
@@ -398,7 +399,6 @@ namespace sync.ui
 
         bool canAddRep => spaceGraph != null;
 
-        class ManualCancel : Exception { }
         void addRep(RepType type)
         {
             if (!canAddRep)
@@ -894,7 +894,7 @@ namespace sync.ui
             {
                 func();
             }
-            catch (CancelPwd) { }
+            catch (CancelWork) { }
             catch (Exception err)
             {
                 err.handle();
@@ -922,7 +922,7 @@ namespace sync.ui
             if (!canBrowse)
                 return;
 
-            this.tryPwd(() =>
+            tryPwd(() =>
             {
                 using (var view = openView())
                 {
@@ -945,7 +945,7 @@ namespace sync.ui
             if (!canManage)
                 return;
 
-            this.tryPwd(() =>
+            tryPwd(() =>
             {
                 using (var rep = openRep())
                 {
@@ -983,7 +983,7 @@ namespace sync.ui
             if (!canMount)
                 return;
 
-            try
+            tryPwd(() =>
             {
                 var tag = pickItem.repTag();
                 var conf = tag.conf.Args as RepConf;
@@ -1003,22 +1003,17 @@ namespace sync.ui
                 var node = pickItem as RectNode;
                 var graph = spaceTag.graph;
 
-                args.mount(cmd, repArgs, before: p => 
+                args.mount(cmd, repArgs, before: p =>
                 {
                     updateMountStatus(tag.vfs = p, node, graph);
                 },
-                after: p => 
+                after: p =>
                 {
                     updateMountStatus(tag.vfs = null, node, graph);
                 },
                 stderr: s => s.msg(),
                 stdout: s => s.msg());
-            }
-            catch (CancelPwd) { }
-            catch (Exception err)
-            {
-                err.handle();
-            }
+            });
         }
 
         bool canUnmount => repTag?.vfs != null;
@@ -1026,7 +1021,7 @@ namespace sync.ui
         private void unmountBtn_Click(object sender, EventArgs e)
         {
             if (canUnmount)
-                repTag.vfs.Kill();
+                true.trydo(repTag.vfs.Kill);
         }
 
         bool canModifyPwd => repTag?.canModifyPwd == true;

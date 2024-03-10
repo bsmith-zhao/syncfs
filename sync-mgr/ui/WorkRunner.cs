@@ -48,7 +48,6 @@ namespace sync
             e.Control.Dock = DockStyle.Fill;
         }
 
-        class ManualCancel : Exception { }
         BackgroundWorker thd;
 
         void run(Action func)
@@ -69,7 +68,7 @@ namespace sync
             item.CheckCancel = () =>
             {
                 if (thd.CancellationPending)
-                    throw new ManualCancel();
+                    throw new CancelWork();
             };
             item.UpdateStatus = (action, status)
                 => this.asyncCall(() =>
@@ -82,7 +81,7 @@ namespace sync
             err => 
             {
                 $"".msg();
-                if (err is ManualCancel)
+                if (err is CancelWork)
                     $"<{this.trans("Cancel")}>".msg();
                 else if (err != null)
                     $"<{this.trans("Error")}>{err.Message}".msg();

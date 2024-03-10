@@ -16,6 +16,10 @@ using vfs.rep;
 
 namespace vfs.mgr.conf
 {
+    public class CancelPwd : Exception
+    {
+    }
+
     [TypeConverter(typeof(ExpandClass))]
     public class AeadRepConf : RepConf, IDynamicClass
     {

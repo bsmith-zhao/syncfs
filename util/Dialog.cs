@@ -195,6 +195,4 @@ namespace util
                 MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
     }
-
-    public class CancelPwd : Exception { }
 }

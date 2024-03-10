@@ -183,7 +183,7 @@ namespace sync.ui
             wk.CheckCancel = () =>
             {
                 if (thd.CancellationPending)
-                    throw new ManualCancel();
+                    throw new CancelWork();
             };
             wk.UpdateStatus = (act, st) 
                 => this.asyncCall(() =>
@@ -205,7 +205,7 @@ namespace sync.ui
                 "".msg();
                 if (null != err)
                 {
-                    if (err is ManualCancel)
+                    if (err is CancelWork)
                     {
                         updateStatus(cancelColor, "Cancel");
                         return;
@@ -230,8 +230,6 @@ namespace sync.ui
 
             runByIndex(lastIndex + 1);
         }
-
-        public class ManualCancel : Exception { }
 
         bool canRun => listUI.CheckedIndices.Count > 0
                         && !thd.isActive();

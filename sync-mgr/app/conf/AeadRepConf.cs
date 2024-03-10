@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using sync.work;
 using System.ComponentModel;
 using System.Drawing.Design;
 using util;
@@ -72,9 +73,7 @@ namespace sync.app.conf
         {
             if (!exist())
                 throw new Error<AeadFsReposit>("NotExist", confPath);
-            var conf = AeadFsConf.load(confPath);
-            if (!conf.decrypt(pwd))
-                repUid.queryPwd<CancelPwd>(conf.decrypt);
+            var conf = decryptConf();
             return new AeadFsReposit(dir, conf);
         }
 
@@ -82,7 +81,7 @@ namespace sync.app.conf
         {
             var conf = AeadFsConf.load(confPath);
             if (!conf.decrypt(pwd))
-                $"afs@{dir}".queryPwd(conf.decrypt);
+                repUid.queryPwd<CancelWork>(conf.decrypt);
             return conf;
         }
 
@@ -107,7 +106,7 @@ namespace sync.app.conf
             if (!confPath.fileExist())
             {
                 var opt = option.jclone();
-                if (!opt.dlgSetup() || !"".setPwd(out var pwd))
+                if (!opt.dlgSetup() || !repUid.setPwd(out var pwd))
                     return null;
 
                 saveConf(opt.createConf(), pwd, opt.PwdDerives);
@@ -125,7 +124,7 @@ namespace sync.app.conf
             if (!canModifyPwd())
                 return false;
 
-            if (!"".modifyPwd(conf.decrypt, out var newPwd))
+            if (!repUid.modifyPwd(conf.decrypt, out var newPwd))
                 return false;
 
             saveConf(conf, newPwd, App.Option.AeadFS.PwdDerives);
