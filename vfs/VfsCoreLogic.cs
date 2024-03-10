@@ -85,8 +85,6 @@ namespace vfs
             FileDesc fd = null;
             try
             {
-                checkActive();
-
                 var item = rep.getItem(path);
                 if (item == null)
                 {
@@ -256,26 +254,18 @@ namespace vfs
 
         void writePad(Stream fs, int total)
         {
-            int size;
-            while (total > 0)
-            {
-                size = total.atMost(BuffSize);
-                fs.Write(buff, 0, size);
-                total -= size;
-            }
+            total.writeByUnit(BuffSize, 
+                unit => fs.Write(buff, 0, unit));
         }
 
         void writeData(Stream fs, IntPtr ptr, int total)
         {
-            int actual;
-            while (total > 0)
+            total.writeByUnit(BuffSize, unit =>
             {
-                actual = total.atMost(BuffSize);
-                Marshal.Copy(ptr, buff, 0, actual);
-                fs.Write(buff, 0, actual);
-                total -= actual;
-                ptr += actual;
-            }
+                Marshal.Copy(ptr, buff, 0, unit);
+                ptr += unit;
+                fs.Write(buff, 0, unit);
+            });
         }
 
         int read(FileDesc fd,
@@ -312,16 +302,13 @@ namespace vfs
 
         int readData(Stream fs, IntPtr ptr, int total)
         {
-            int remain = total;
-            int actual;
-            while (remain > 0
-                && (actual = fs.Read(buff, 0, remain.atMost(BuffSize))) > 0)
-            {
-                Marshal.Copy(buff, 0, ptr, actual);
-                remain -= actual;
-                ptr += actual;
-            }
-            return total - remain;
+            return total.readByUnit(BuffSize, 
+                unit => fs.Read(buff, 0, unit),
+                actual =>
+                {
+                    Marshal.Copy(buff, 0, ptr, actual);
+                    ptr += actual;
+                });
         }
 
         int flush(
@@ -491,8 +478,6 @@ namespace vfs
         {
             try
             {
-                checkActive();
-
                 if (fd.items == null)
                 {
                     fd.items = fd.dir?.enumItems().ToArray();

@@ -110,5 +110,31 @@ namespace util.ext
             }
             return count - remain;
         }
+
+        public static int readByUnit(this int total, int unit,
+            Func<int, int> read, Action<int> proc)
+        {
+            int remain = total;
+            int actual;
+            while (remain > 0
+                && (actual = read(remain.atMost(unit))) > 0)
+            {
+                proc?.Invoke(actual);
+                remain -= actual;
+            }
+            return total - remain;
+        }
+
+        public static void writeByUnit(this int total, int unit,
+            Action<int> write)
+        {
+            int actual;
+            while (total > 0)
+            {
+                actual = total.atMost(unit);
+                write(actual);
+                total -= actual;
+            }
+        }
     }
 }

@@ -37,69 +37,29 @@ namespace vfs
             this.item = item;
             this.data = fs;
             write = this.data != null;
-
-            if (write)
-            {
-                markActive();
-                markOpen();
-            }
         }
-
-        public int activeTime;
-        void markActive()
-            => activeTime = true.ticks();
-        void markOpen()
-            => core.opens.Add(this);
-        void markClose()
-            => core.opens.Remove(this);
 
         bool write = false;
-        public Stream openRead()
+        Stream openFile(bool write)
         {
-            markActive();
-
-            if (data == null)
-            {
-                data = rep.readFile(path);
-                write = false;
-
-                markOpen();
-            }
-            return data;
+            closeFile();
+            this.write = write;
+            return data = rep.openFile(path, write);
         }
+
+        public Stream openRead()
+            => data ?? openFile(write: false);
+
+        bool writeMode => data != null && write;
 
         public Stream openWrite()
-        {
-            markActive();
-
-            if (data == null || !write)
-            {
-                closeFile();
-                data = rep.writeFile(path);
-                write = true;
-
-                markOpen();
-            }
-            return data;
-        }
-
-        public Stream detachFile()
-        {
-            markClose();
-
-            var fs = this.data;
-            this.data = null;
-            return fs;
-        }
+            => writeMode ? data : openFile(write: true);
 
         public void flushFile()
             => data?.Flush();
 
         public void closeFile()
         {
-            if (data != null)
-                markClose();
-
             this.free(ref data);
         }
 

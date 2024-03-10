@@ -14,15 +14,15 @@ namespace test.demo
     {
         public void test()
         {
-            // 03-06
-            superCheck(check("d:/note/5+2.txt",
-                new int[] { 1, 2, 8, 18, 27 },
-                new int[] { 4, 8 }));
+            // 0306
+            //superCheck(check("d:/note/5+2.0306.txt",
+            //    new int[] { 1, 2, 8, 18, 27 },
+            //    new int[] { 4, 8 }));
 
-            // 03-09
-            //superCheck(check("d:/note/5+2.txt",
-            //    new int[] { 1, 18, 21, 26, 33 },
-            //    new int[] { 2, 12 }));
+            // 0309
+            superCheck(check("d:/note/5+2.0309.txt",
+                new int[] { 1, 18, 21, 26, 33 },
+                new int[] { 2, 12 }));
 
             //unionCheck(check("e:/note/6+1.txt",
             //    new int[] { 8, 15, 21, 22, 25, 33 },

@@ -113,15 +113,7 @@ namespace util.rep
                                                     string name) 
             => dir.CreateSubdirectory(name);
 
-        //public override string parsePath(FileSystemInfo fi) 
-        //    => fi?.FullName.TrimEnd('\\', '/').jump(pathSkip)
-        //    ?.Replace("\\", "/");
-
         string toFullPath(string path) 
             => $"{repPath}/{path}";
-
-        //public override string parseName(string name, 
-        //    FileSystemInfo item, string dir) 
-        //    => name;
     }
 }

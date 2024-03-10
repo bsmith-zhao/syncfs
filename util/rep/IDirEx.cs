@@ -10,6 +10,12 @@ namespace util.rep
 {
     public static class IDirEx
     {
+        public static Stream openFile(this IDir dir, 
+            string path, bool write)
+            => write 
+            ? dir.writeFile(path) 
+            : dir.readFile(path);
+
         public static bool empty(this DirItem dir)
             => !dir.enumItems().exist(n => true);
 

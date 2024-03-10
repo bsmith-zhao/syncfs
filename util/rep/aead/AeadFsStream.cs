@@ -163,14 +163,15 @@ namespace util.rep.aead
             buffPos += srcLen + tagSize;
         }
 
-        public override int Read(byte[] dst, int offset, int count)
-            => dst.readFull(offset, count, readUnit);
-
-        int readUnit(byte[] dst, int offset, int count)
+        public override int Read(byte[] dst, int offset, int total)
         {
-            // limit to read at most 1 unit
-            count = count.atMost(unitSize);
+            return total.readByUnit(unitSize,
+                unit => readDecrypt(dst, offset, unit),
+                actual => offset += actual);
+        }
 
+        int readDecrypt(byte[] dst, int offset, int count)
+        {
             actionPos = streamPos;
 
             readBuff(count);
@@ -206,22 +207,17 @@ namespace util.rep.aead
             return count - remain;
         }
 
-        public override void Write(byte[] src, int offset, int count)
+        public override void Write(byte[] src, int offset, int total)
         {
-            int unit;
-            while (count > 0)
+            total.writeByUnit(unitSize, unit => 
             {
-                unit = writeUnit(src, offset, count);
+                writeEncrypt(src, offset, unit);
                 offset += unit;
-                count -= unit;
-            }
+            });
         }
 
-        int writeUnit(byte[] src, int offset, int count)
+        void writeEncrypt(byte[] src, int offset, int count)
         {
-            // limit to write at most 1 unit
-            int unit = (count = count.atMost(unitSize));
-
             actionPos = streamPos;
             var actionLen = streamLen;
 
@@ -260,8 +256,6 @@ namespace util.rep.aead
 
             streamPos = actionPos;
             streamLen = actionLen;
-
-            return unit;
         }
 
         public override long Seek(long offset, SeekOrigin origin)
