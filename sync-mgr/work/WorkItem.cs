@@ -10,7 +10,7 @@ using util.ext;
 
 namespace sync.work
 {
-    public class CancelWork : Exception
+    public class UserCancel : Exception
     {
     }
 

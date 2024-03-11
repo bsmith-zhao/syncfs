@@ -16,11 +16,8 @@ namespace vfs
         public int activeTime;
         public bool isOpen => data != null;
 
-        public void detachFile(out Stream fs)
-        {
-            fs = this.data;
-            this.data = null;
-        }
+        public Stream detachFile()
+            => true.set(ref data, null);
     }
 
     public partial class VfsCore
@@ -46,7 +43,7 @@ namespace vfs
             }
         }
 
-        public Stream openFile(FileDesc fd,
+        public Stream useFile(FileDesc fd,
             Func<Stream> func)
         {
             lock (this)
@@ -94,16 +91,10 @@ namespace vfs
                     int active = 0;
                     lock (this)
                     {
-                        var idles = opens.pick(f
+                        frees = opens.pick(f 
                             => now > f.activeTime + ActiveInterval)
-                            .newList();
-
-                        frees = idles.conv(f =>
-                        {
-                            opens.Remove(f);
-                            f.detachFile(out var fs);
-                            return fs;
-                        }).ToArray();
+                            .newList().each(f => opens.Remove(f))
+                            .conv(f => f.detachFile()).ToArray();
 
                         active = opens.Count;
                     }

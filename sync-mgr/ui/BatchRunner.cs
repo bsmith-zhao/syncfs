@@ -183,7 +183,7 @@ namespace sync.ui
             wk.CheckCancel = () =>
             {
                 if (thd.CancellationPending)
-                    throw new CancelWork();
+                    throw new UserCancel();
             };
             wk.UpdateStatus = (act, st) 
                 => this.asyncCall(() =>
@@ -205,7 +205,7 @@ namespace sync.ui
                 "".msg();
                 if (null != err)
                 {
-                    if (err is CancelWork)
+                    if (err is UserCancel)
                     {
                         updateStatus(cancelColor, "Cancel");
                         return;

@@ -10,11 +10,13 @@ namespace util
 {
     public static class Debug
     {
-#if DEBUG
         public static Action<object> output = Console.WriteLine;
-#else
-        public static Action<object> output = null;
-#endif
+
+        //#if DEBUG
+        //        public static Action<object> output = Console.WriteLine;
+        //#else
+        //        public static Action<object> output = null;
+        //#endif
 
         public static void debug(this object src)
         {

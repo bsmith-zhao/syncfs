@@ -365,7 +365,7 @@ namespace vfs.mgr
             catch (CancelPwd) { }
             catch (Exception err)
             {
-                err.handle();
+                err.notify();
             }
         }
 

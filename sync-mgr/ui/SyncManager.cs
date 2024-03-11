@@ -894,10 +894,10 @@ namespace sync.ui
             {
                 func();
             }
-            catch (CancelWork) { }
+            catch (UserCancel) { }
             catch (Exception err)
             {
-                err.handle();
+                err.notify();
             }
         }
 

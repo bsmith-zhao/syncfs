@@ -81,7 +81,7 @@ namespace sync.app.conf
         {
             var conf = AeadFsConf.load(confPath);
             if (!conf.decrypt(pwd))
-                repUid.queryPwd<CancelWork>(conf.decrypt);
+                repUid.queryPwd<UserCancel>(conf.decrypt);
             return conf;
         }
 

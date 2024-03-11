@@ -43,7 +43,7 @@ namespace vfs
                 {
                     //new { mark = "delete", path, flag }.debug();
 
-                    fd.closeFile();
+                    fd.close();
                     var srcPath = fd.path;
                     if (bakEnable
                         && fd.item.isFile()
@@ -147,7 +147,7 @@ namespace vfs
             }
             catch (Exception err)
             {
-                fd?.closeFile();
+                fd?.close();
                 trace(err, new { path, option });
                 throw;
             }
@@ -201,7 +201,7 @@ namespace vfs
         {
             try
             {
-                fd.closeFile();
+                fd.close();
             }
             catch (Exception err)
             {

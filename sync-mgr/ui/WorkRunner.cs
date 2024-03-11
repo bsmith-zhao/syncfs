@@ -68,7 +68,7 @@ namespace sync
             item.CheckCancel = () =>
             {
                 if (thd.CancellationPending)
-                    throw new CancelWork();
+                    throw new UserCancel();
             };
             item.UpdateStatus = (action, status)
                 => this.asyncCall(() =>
@@ -81,7 +81,7 @@ namespace sync
             err => 
             {
                 $"".msg();
-                if (err is CancelWork)
+                if (err is UserCancel)
                     $"<{this.trans("Cancel")}>".msg();
                 else if (err != null)
                     $"<{this.trans("Error")}>{err.Message}".msg();

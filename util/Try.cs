@@ -8,17 +8,17 @@ namespace util.ext
 {
     public static class Try
     {
-        public static Action<Exception> notify = showMessage;
+        public static Action<Exception> output = showMessage;
 
         static void showMessage(Exception err)
             => err.Message.msg();
 
-        public static void handle(this Exception err, 
+        public static void notify(this Exception err, 
             string func = null, object args = null)
         {
             func = func ?? true.lastFunc();
             err.log(func, args);
-            notify?.Invoke(err);
+            output?.Invoke(err);
         }
 
         public static void trylog(this bool src,
@@ -36,7 +36,7 @@ namespace util.ext
             try { func(); }
             catch (Exception err)
             {
-                err.handle(true.lastFunc());
+                err.notify(true.lastFunc());
             }
         }
 
@@ -45,7 +45,7 @@ namespace util.ext
             try { return func(); }
             catch (Exception err)
             {
-                err.handle(true.lastFunc());
+                err.notify(true.lastFunc());
             }
             return default(T);
         }

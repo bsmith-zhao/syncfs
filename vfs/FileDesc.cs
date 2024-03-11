@@ -43,29 +43,30 @@ namespace vfs
 
         bool writeMode = false;
         bool canWrite => writeMode && data != null;
-        Stream openFile(bool write)
+        Stream useFile(bool write)
         {
-            if (write && !canWrite)
-                true.free(ref data);
-            this.writeMode = write;
-            if (data != null)
-                return data;
-            return data = rep.openFile(path, write);
+            return core.useFile(this, () =>
+            {
+                if (write && !canWrite)
+                    true.free(ref data);
+                this.writeMode = write;
+                if (data != null)
+                    return data;
+                return data = rep.openFile(path, write);
+            });
         }
 
         public Stream openRead()
-            => core.openFile(this, () 
-                => openFile(write: false));
+            => useFile(write: false);
 
         public Stream openWrite()
-            => core.openFile(this, () 
-                => openFile(write: true));
+            => useFile(write: true);
 
         public void flushFile()
             => core.lockdo(() 
                 => data?.Flush());
 
-        public void closeFile()
+        public void close()
             => core.closeItem(this, () 
                 => true.free(ref data));
 
