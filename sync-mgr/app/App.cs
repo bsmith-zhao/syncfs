@@ -34,9 +34,6 @@ namespace sync.app
                 foreach (var sp in SpaceListPath.readText().obj<SpaceEntry[]>())
                     yield return sp;
         }
-        //=> SpaceListPath.fileExist()
-        //    ? SpaceListPath.readText().obj<List<SpaceEntry>>()
-        //    : new List<SpaceEntry>();
 
         public static void saveSpaces(IEnumerable<SpaceEntry> sps)
             => sps.jsonIndent().bakSaveTo(SpaceListPath);

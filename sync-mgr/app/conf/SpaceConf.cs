@@ -33,21 +33,21 @@ namespace sync.app
             entry.jsonIndent().bakSaveTo(path);
         }
 
-        public string confPath()
+        string confPath
             => $"{dir}/space.conf";
 
         public void createConf()
         {
-            if (confPath().fileExist())
+            if (confPath.fileExist())
                 return;
             saveConf(new SpaceConf());
         }
 
         public void saveConf(SpaceConf conf)
-            => conf.jsonIndent().bakSaveTo(confPath());
+            => conf.jsonIndent().bakSaveTo(confPath);
 
         public SpaceConf loadConf()
-            => confPath().readText().obj<SpaceConf>();
+            => confPath.readJson<SpaceConf>();
     }
 
     public class SpaceContext

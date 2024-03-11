@@ -439,8 +439,8 @@ namespace sync.ui
             if (!true.pickDir(out var dir))
                 return;
 
-            if (treeUI.Nodes.exist<TreeNode>(tn
-                => tn.spaceTag().space.dir.low() == dir.low()))
+            if (treeUI.Nodes.conv<TreeNode>().exist(tn
+                => tn.spaceTag().space.dir.lowEqual(dir)))
             {
                 this.trans("SpaceExist", dir).dlgError();
                 return;

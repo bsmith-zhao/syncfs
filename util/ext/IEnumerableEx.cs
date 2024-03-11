@@ -226,14 +226,5 @@ namespace util.ext
                         return true;
             return false;
         }
-
-        public static bool exist<T>(this IEnumerable iter, Func<T, bool> check)
-        {
-            if (null != iter)
-                foreach (T e in iter)
-                    if (check(e))
-                        return true;
-            return false;
-        }
     }
 }

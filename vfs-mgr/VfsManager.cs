@@ -257,7 +257,7 @@ namespace vfs.mgr
         {
             MountInfo.enumMounts().each(m =>
             {
-                if (listUI.Items.exist<ListViewItem>(it 
+                if (listUI.Items.conv<ListViewItem>().exist(it 
                     => getTag(it).mount?.proc.Id == m.proc.Id))
                     return;
 

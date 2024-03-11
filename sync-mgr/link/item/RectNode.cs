@@ -47,6 +47,7 @@ namespace link
                 Size = new Size(size.Width + LabelMargin*2, 0),
             };
             pickFrame = new RectFrame(this);
+            anchor.adjustPos(ref pos, ref size);
         }
 
         internal override void draw(Graphics g, DrawArgs e)

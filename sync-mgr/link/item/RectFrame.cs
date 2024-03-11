@@ -19,7 +19,8 @@ namespace link
             => new Rectangle(pos, size).zoom(Width+1);
 
         public RectItem owner;
-        public RectFrame(RectItem owner) => this.owner = owner;
+        public RectFrame(RectItem owner) 
+            => this.owner = owner;
 
         Point pos => owner.Pos;
         Size size => owner.Size;

@@ -169,7 +169,8 @@ namespace sync.ui
             while (null != dn)
             {
                 if (dn.Parent == selNode)
-                    return !items.exist<ListViewItem>(it => dn.Text == it.Text);
+                    return !items.conv<ListViewItem>()
+                        .exist(it => dn.Text == it.Text);
                 dn = dn.Parent;
             }
             return true;
@@ -546,7 +547,8 @@ namespace sync.ui
             refresh();
         }
 
-        bool canExport => selItems.exist<ListViewItem>(it => isFile(it));
+        bool canExport => selItems.conv<ListViewItem>()
+                            .exist(it => isFile(it));
         private void exportBtn_Click(object sender, EventArgs e)
         {
             if (!canExport)

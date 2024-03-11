@@ -94,8 +94,9 @@ namespace util.ext
 
         public static void update<T>(this T value, ref T obj, Action<T> before, Action<T> after)
         {
-            if (obj == null && value == null
-                || obj.Equals(value))
+            if (obj == null && value == null)
+                return;
+            if (obj?.Equals(value) == true)
                 return;
             T old = obj;
             before?.Invoke(value);

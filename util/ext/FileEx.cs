@@ -32,9 +32,10 @@ namespace util.ext
         }
 
         public static string readText(this string path)
-        {
-            return File.ReadAllText(path);
-        }
+            => File.ReadAllText(path);
+
+        public static T readJson<T>(this string path)
+            => File.ReadAllText(path).obj<T>();
 
         public static void bakSaveTo(this string text, string path)
         {
