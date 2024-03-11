@@ -10,13 +10,10 @@ namespace util
 {
     public static class Debug
     {
-        public static Action<object> output = Console.WriteLine;
+        public static Action<object> output = showMessage;
 
-        //#if DEBUG
-        //        public static Action<object> output = Console.WriteLine;
-        //#else
-        //        public static Action<object> output = null;
-        //#endif
+        static void showMessage(object obj)
+            => obj.msg();
 
         public static void debug(this object src)
         {

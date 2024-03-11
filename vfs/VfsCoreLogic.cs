@@ -17,7 +17,7 @@ namespace vfs
 {
     public partial class VfsCore
     {
-        const int BuffSize = (int)(4 * Number.MB);
+        const int BuffSize = (int)(8 * Number.MB);
 
         void trace(Exception err, object args = null)
         {
@@ -29,7 +29,8 @@ namespace vfs
             if (bakEnable)
                 true.trylog(() => rep.createDir(vfs.bak));
 
-            beginMonitor();
+            beginStreamMonitor();
+            beginIOMonitor();
         }
 
         void delete(FileDesc fd,
@@ -248,6 +249,8 @@ namespace vfs
                     fs.Position = offset;
                 }
 
+                markActualWrite(fd, fs, count);
+
                 writeData(fs, ptr, count);
 
                 finish = (uint)count;
@@ -288,7 +291,7 @@ namespace vfs
 
                 markRead(fd, fs, offset, count);
 
-                if (offset >= fs.Length)
+                if (offset < 0 || offset >= fs.Length)
                 {
                     finish = 0;
                     return STATUS_END_OF_FILE;
@@ -297,6 +300,8 @@ namespace vfs
                 fs.Position = offset;
 
                 var actual = readData(fs, ptr, count);
+
+                markActualRead(fd, fs, count, actual);
 
                 finish = (uint)actual;
                 return STATUS_SUCCESS;
@@ -347,6 +352,8 @@ namespace vfs
         {
             try
             {
+                // new {fd.path, fd.isOpen }.debug();
+
                 return fd.getInfo(out info);
             }
             catch (Exception err)
@@ -379,17 +386,28 @@ namespace vfs
         public int setSize(
             FileDesc fd,
             long newSize,
-            Boolean setAlloc,
+            bool setAlloc,
             out FileInfo info)
         {
             try
             {
+                //new { fd.path, newSize, setAlloc }.debug();
+
+                Stream fs = null;
                 if (!setAlloc)
                 {
-                    var fs = fd.openWrite();
+                    fs = fd.openWrite();
                     if (fs.Length > newSize)
+                    {
                         fs.SetLength(newSize);
+                    }
                 }
+
+                //new
+                //{
+                //    fd.path,
+                //    actual = fs?.Length ?? 0
+                //}.debug();
 
                 return fd.getInfo(out info);
             }
@@ -549,10 +567,10 @@ namespace vfs
                 info.FileAttributes |= (uint)FileAttributes.Compressed;
         }
 
-        const int AllocUnit = 4096;
+        const int SectorSize = 4096;
 
         public void updateAllocSize(ref FileInfo info)
                 => info.AllocationSize
-            = (info.FileSize + AllocUnit - 1) / AllocUnit * AllocUnit;
+            = (info.FileSize + SectorSize - 1) / SectorSize * SectorSize;
     }
 }

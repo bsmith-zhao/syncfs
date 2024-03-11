@@ -15,7 +15,7 @@ namespace util.rep.aead
         public const short Version = 1;
         public static byte[] KeyContext = "file-key".utf8();
 
-        const int BuffSize = (int)(1 * Number.MB);
+        const int BuffSize = (int)(2 * Number.MB);
 
         FileStream fs;
         AeadFsConf conf;
@@ -287,31 +287,32 @@ namespace util.rep.aead
                     var frontPad = streamLen % blockSize;
                     if (frontPad > 0)
                     {
-                        frontPad = (blockSize - frontPad).atMost(len - streamLen);
-                        appendData(new byte[frontPad]);
+                        frontPad = (blockSize - frontPad)
+                            .atMost(len - streamLen);
+                        this.append(new byte[frontPad]);
                     }
                     // zero spare pack range
                     var spareCount = (len - streamLen) / blockSize;
                     if (spareCount > 0)
                     {
-                        if (frontPad == 0)
-                        {
-                            // move inner stream pos to end
-                            fs.Position = fs.Length;
-                        }
+                        // for inner non-zero padding file system
                         var zero = new byte[packSize];
                         while (spareCount-- > 0)
                         {
                             // direct write zero pack to inner stream
-                            fs.write(zero);
+                            fs.append(zero);
                             streamLen += blockSize;
                         }
+
+                        // for inner zero padding file system
+                        //fs.append(spareCount * packSize);
+                        //streamLen += spareCount * blockSize;
                     }
                     // last padding range
                     var lastPad = len - streamLen;
                     if (lastPad > 0)
                     {
-                        appendData(new byte[lastPad]);
+                        this.append(new byte[lastPad]);
                     }
                 }
                 else if (len < streamLen)
@@ -330,7 +331,7 @@ namespace util.rep.aead
                     streamLen = blockEnd;
                     if (padBuff != null)
                     {
-                        appendData(padBuff);
+                        this.append(padBuff);
                     }
                 }
             }
@@ -340,11 +341,11 @@ namespace util.rep.aead
             }
         }
 
-        void appendData(byte[] data)
-        {
-            streamPos = streamLen;
-            Write(data, 0, data.Length);
-        }
+        //void appendData(byte[] data)
+        //{
+        //    streamPos = streamLen;
+        //    Write(data, 0, data.Length);
+        //}
 
         public override bool CanRead => fs.CanRead;
         public override bool CanSeek => fs.CanSeek;

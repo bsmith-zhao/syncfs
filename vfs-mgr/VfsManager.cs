@@ -168,25 +168,25 @@ namespace vfs.mgr
             vfsGroup.addItem(item);
         }
 
-        void addAeadFs()
-        {
-            var repConf = new AeadRepConf();
+        //void addAeadFs()
+        //{
+        //    var repConf = new AeadRepConf();
 
-            if (!repConf.createRep(out var dir))
-                return;
+        //    if (!repConf.createRep())
+        //        return;
 
-            var conf = new VfsConf
-            {
-                Path = "V:",
-                Name = dir.pathName().discard(s => s.empty()) ?? "VFS",
-                Type = RepType.AeadFS,
-                Source = repConf
-            };
+        //    var conf = new VfsConf
+        //    {
+        //        Path = "V:",
+        //        Name = repConf.vfsName().discard(s => s.empty()) ?? "VFS",
+        //        Type = RepType.AeadFS,
+        //        Source = repConf
+        //    };
 
-            addVfsItem(conf);
+        //    addVfsItem(conf);
 
-            saveVfsList();
-        }
+        //    saveVfsList();
+        //}
 
         void saveVfsList()
         {
@@ -196,7 +196,7 @@ namespace vfs.mgr
 
         private void addAeadFSBtn_Click(object sender, EventArgs e)
         {
-            true.trydo(addAeadFs);
+            addVfs(RepType.AeadFS);
         }
 
         bool canModifyPwd => selRepConf?.canModifyPwd() == true;
@@ -429,6 +429,34 @@ namespace vfs.mgr
         {
             if (canOpenDir)
                 selMount.path.dirOpen();
+        }
+
+        private void addNormalDirBtn_Click(object sender, EventArgs e)
+        {
+            addVfs(RepType.NormalDir);
+        }
+
+        void addVfs(RepType type)
+        {
+            true.trydo(() =>
+            {
+                var repConf = RepConf.newConf(type);
+
+                if (!repConf.createRep())
+                    return;
+
+                var conf = new VfsConf
+                {
+                    Path = "V:",
+                    Name = repConf.vfsName().discard(s => s.empty()) ?? "VFS",
+                    Type = type,
+                    Source = repConf
+                };
+
+                addVfsItem(conf);
+
+                saveVfsList();
+            });
         }
     }
 }

@@ -10,6 +10,20 @@ namespace util.ext
 {
     public static class StreamEx
     {
+        public static void append(this Stream fs,
+            byte[] data)
+        {
+            fs.Position = fs.Length;
+            fs.write(data);
+        }
+
+        public static void append(this Stream fs,
+            long size)
+        {
+            fs.SetLength(fs.Length + size);
+            fs.Position = fs.Length;
+        }
+
         public static bool readRow(this StreamReader rd, 
                                     out string row)
             => (row = rd.ReadLine()) != null;

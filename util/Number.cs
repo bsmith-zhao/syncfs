@@ -16,6 +16,9 @@ namespace util
 
         public static string[] ByteUnits = { "", "K", "M", "G", "T" };
 
+        public static string byteSize(this int size)
+            => ((long)size).byteSize();
+
         public static string byteSize(this long size, int point = -1)
         {
             if (size <= KB)
@@ -71,24 +74,17 @@ namespace util
             return total <= 0 ? 0 : (int)(value * 100 / total);
         }
 
-        public static T atMost<T>(this T value, T max) where T : IComparable
-            => value.CompareTo(max) <= 0 ? value : max;
-
-        public static T atLeast<T>(this T value, T min) where T : IComparable
-            => value.CompareTo(min) >= 0 ? value : min;
-
-        public static void atLeast<T>(this T value, ref T min) where T : IComparable
-            => min = value.CompareTo(min) >= 0 ? value : min;
-
-        public static T limit<T>(this T value, T min, T max) 
+        public static T atMost<T>(this T value, T max) 
             where T : IComparable
-        {
-            if (value.CompareTo(min) < 0)
-                return min;
-            if (value.CompareTo(max) > 0)
-                return max;
-            return value;
-        }
+            => value.CompareTo(max) > 0 ? max : value;
+
+        public static T atLeast<T>(this T value, T min)
+            where T : IComparable
+            => value.CompareTo(min) < 0 ? min : value;
+
+        public static T limit<T>(this T value, T min, T max)
+            where T : IComparable
+            => value.atLeast(min).atMost(max);
 
         public static byte[] bytes(this long value)
         {

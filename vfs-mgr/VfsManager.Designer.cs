@@ -38,6 +38,7 @@
             this.typeHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.sourceHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.toolbar = new System.Windows.Forms.ToolStrip();
+            this.addNormalDirBtn = new System.Windows.Forms.ToolStripButton();
             this.addAeadFSBtn = new System.Windows.Forms.ToolStripButton();
             this.mountBtn = new System.Windows.Forms.ToolStripButton();
             this.unmountBtn = new System.Windows.Forms.ToolStripButton();
@@ -136,6 +137,7 @@
             this.toolbar.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.toolbar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addAeadFSBtn,
+            this.addNormalDirBtn,
             this.mountBtn,
             this.unmountBtn,
             this.openDirBtn,
@@ -149,6 +151,16 @@
             this.toolbar.Size = new System.Drawing.Size(1454, 70);
             this.toolbar.TabIndex = 7;
             this.toolbar.Text = "toolStrip1";
+            // 
+            // addNormalDirBtn
+            // 
+            this.addNormalDirBtn.Image = global::vfs.mgr.Properties.Resources.AddNormalDir;
+            this.addNormalDirBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.addNormalDirBtn.Name = "addNormalDirBtn";
+            this.addNormalDirBtn.Size = new System.Drawing.Size(183, 67);
+            this.addNormalDirBtn.Text = "AddNormalDir";
+            this.addNormalDirBtn.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.addNormalDirBtn.Click += new System.EventHandler(this.addNormalDirBtn_Click);
             // 
             // addAeadFSBtn
             // 
@@ -318,6 +330,7 @@
         public System.Windows.Forms.ColumnHeader mountedHeader;
         public System.Windows.Forms.ColumnHeader mountHeader;
         private System.Windows.Forms.ToolStripDropDownButton languageBtn;
+        public System.Windows.Forms.ToolStripButton addNormalDirBtn;
     }
 }
 

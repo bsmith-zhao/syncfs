@@ -33,10 +33,10 @@ namespace vfs
         public override Int32 Init(Object args)
         {
             var host = args as FileSystemHost;
-            host.SectorSize = 4096;
+            host.SectorSize = SectorSize;
             host.SectorsPerAllocationUnit = 1;
             host.MaxComponentLength = 255;
-            host.FileInfoTimeout = 1000;
+            host.FileInfoTimeout = 2000;
             host.CaseSensitiveSearch = false;
             host.CasePreservedNames = true;
             host.UnicodeOnDisk = true;

@@ -22,10 +22,10 @@ namespace util.ext
             => Activator.CreateInstance(type);
 
         public static string thisFunc(this bool src)
-            => src.callTrace(-2);
+            => src.callTrace(-1);
 
         public static string lastFunc(this bool src)
-            => src.callTrace(-3);
+            => src.callTrace(-2);
 
         public static string callTrace(this bool src, int level)
         {
@@ -33,8 +33,11 @@ namespace util.ext
             {
                 if (level < 0)
                     level = -level;
+#if DEBUG
+                level ++;
+#endif
                 var func = new StackFrame(level).GetMethod();
-                return $"{func.DeclaringType.Name}.{func.Name}";
+                return $"{func.ReflectedType.Name}.{func.Name}";
             }
             catch { }
             return null;

@@ -75,6 +75,7 @@
     <Compile Include="util\crypt\HKDFTest.cs" />
     <Compile Include="util\crypt\HmacIvCbcTest.cs" />
     <Compile Include="demo\crypt\SCryptDemo.cs" />
+    <Compile Include="util\NumberTest.cs" />
     <Compile Include="util\rep\AeadFsLongPath.cs" />
     <Compile Include="util\rep\AeadFsSetLength.cs" />
     <Compile Include="util\rep\DirRepositTest.cs" />

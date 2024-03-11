@@ -104,7 +104,7 @@ namespace util.ext
             after?.Invoke(old);
         }
 
-        public static T set<T>(this bool api, ref T obj, T value)
+        public static T swap<T>(this bool api, ref T obj, T value)
         {
             var old = obj;
             obj = value;

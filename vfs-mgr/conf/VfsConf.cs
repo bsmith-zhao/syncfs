@@ -28,19 +28,20 @@ namespace vfs.mgr.conf
         public object Source
         {
             get => _src is RepConf ra ? ra
-                : (_src = _src.json().obj(argsClass())) as RepConf;
+                : (_src = _src.json()
+                .obj(RepConf.confClass(Type))) as RepConf;
             set => _src = value;
         }
 
-        Type argsClass()
-        {
-            switch (Type)
-            {
-                case RepType.AeadFS:
-                    return typeof(AeadRepConf);
-            }
-            return null;
-        }
+        //Type argsClass()
+        //{
+        //    switch (Type)
+        //    {
+        //        case RepType.AeadFS:
+        //            return typeof(AeadRepConf);
+        //    }
+        //    return null;
+        //}
 
         public RepConf getRepConf() => Source as RepConf;
         public RepArgs newRepArgs() => getRepConf().newRepArgs();

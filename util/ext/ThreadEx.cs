@@ -42,6 +42,20 @@ namespace util.ext
             Task.WaitAll(tasks.ToArray());
         }
 
+        public static void runByThd(this bool api,
+                        ThreadStart func)
+            => new Thread(func).Start();
+
+        public static void runByThd(this bool api, 
+                        ref Thread thd,
+                        ThreadStart func)
+        {
+            if (thd != null)
+                return;
+            thd = new Thread(func);
+            thd.Start();
+        }
+
         public static bool isActive(this BackgroundWorker thd)
             => thd?.IsBusy == true;
 

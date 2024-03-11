@@ -17,7 +17,7 @@ namespace vfs
         public bool isOpen => data != null;
 
         public Stream detachFile()
-            => true.set(ref data, null);
+            => true.swap(ref data, null);
     }
 
     public partial class VfsCore
@@ -65,20 +65,13 @@ namespace vfs
             }
         }
 
-        Thread monThd;
-
-        public void beginMonitor()
-        {
-            if (monThd != null)
-                return;
-            monThd = new Thread(closeFreeFiles);
-            monThd.Start();
-        }
+        public void beginStreamMonitor()
+            => true.runByThd(streamMonitor);
 
         const int CheckInterval = 20 * 1000;
         const int ActiveInterval = 1 * 60 * 1000;
 
-        void closeFreeFiles()
+        void streamMonitor()
         {
             try
             {
@@ -116,28 +109,6 @@ namespace vfs
             {
                 trace(err);
             }
-        }
-
-        int maxRead;
-        void markRead(FileDesc fd, Stream fs,
-            long offset, int count)
-        {
-            maxRead = maxRead.atLeast(count);
-        }
-
-        int maxWrite;
-        void markWrite(FileDesc fd, Stream fs,
-            long offset, int count,
-            bool append, bool coverOnly)
-        {
-            maxWrite = maxWrite.atLeast(count);
-        }
-
-        int maxPad;
-        void markPad(FileDesc fd, Stream fs,
-            long offset)
-        {
-            maxPad = maxPad.atLeast((int)(offset - fs.Length));
         }
     }
 }

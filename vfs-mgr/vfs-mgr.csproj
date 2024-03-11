@@ -59,6 +59,7 @@
     <Compile Include="conf\AeadRepConf.cs" />
     <Compile Include="conf\AppOption.cs" />
     <Compile Include="conf\BackupConf.cs" />
+    <Compile Include="conf\DirRepConf.cs" />
     <Compile Include="conf\RepConf.cs" />
     <Compile Include="conf\VfsConf.cs" />
     <Compile Include="MountInfo.cs" />
@@ -152,6 +153,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\RoundSync.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AddNormalDir.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

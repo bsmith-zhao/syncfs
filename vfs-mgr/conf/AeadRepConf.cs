@@ -58,12 +58,13 @@ namespace vfs.mgr.conf
             conf.saveByDir(dir, newPwd, newPwdDerives());
         }
 
-        public bool createRep(out string dir)
+        public override string vfsName()
+            => dir.pathName();
+
+        public override bool createRep()
         {
             if (!true.pickDir(out dir))
                 return false;
-
-            Path = dir;
 
             if (confPath.fileExist())
                 return true;

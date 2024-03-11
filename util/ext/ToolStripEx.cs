@@ -10,15 +10,6 @@ namespace util.ext
 {
     public static class ToolStripEx
     {
-        public static void alignWidth(this ToolStripItem btn,
-            params ToolStripItem[] others)
-        {
-            int max = btn.Width;
-            others.each(b => b.Width.atLeast(ref max));
-            btn.Width = max;
-            others.each(b => b.Width = max);
-        }
-
         public static void adjustBtns(this ToolStrip tb,
             int minWidth = 80, Action addon = null)
         {
