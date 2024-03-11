@@ -453,7 +453,9 @@ namespace sync.ui
             };
 
             sp.createConf();
-            addSpaceNode(sp);
+
+            var sn = addSpaceNode(sp);
+            treeUI.SelectedNode = sn;
 
             saveSpaceList();
         }
