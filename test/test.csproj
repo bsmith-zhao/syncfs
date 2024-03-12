@@ -64,7 +64,8 @@
     <Compile Include="demo\crypt\HmacThreadsSpeed.cs" />
     <Compile Include="demo\error\LocOfException.cs" />
     <Compile Include="demo\io\VBFileIO.cs" />
-    <Compile Include="demo\Lottery.cs" />
+    <Compile Include="lotto\LotteryCheck.cs" />
+    <Compile Include="lotto\LotteryBet.cs" />
     <Compile Include="demo\obj\StructParamPass.cs" />
     <Compile Include="ITest.cs" />
     <Compile Include="util\crypt\AesEmeTest.cs" />
@@ -118,16 +119,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\sync-mgr\sync-mgr.csproj">
-      <Project>{a5bf82e2-4729-4632-9cb0-a76259479598}</Project>
-      <Name>sync-mgr</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\util\util.csproj">
-      <Project>{6dee4979-4c60-459c-b8b7-163062381e13}</Project>
-      <Name>util</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="HkdfDotNet">
       <Version>1.0.1</Version>
     </PackageReference>
@@ -135,6 +126,11 @@
       <Version>4.0.0.143</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\util\util.csproj">
+      <Project>{6dee4979-4c60-459c-b8b7-163062381e13}</Project>
+      <Name>util</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
