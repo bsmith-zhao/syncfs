@@ -17,7 +17,7 @@ namespace util.ext
             fs.write(data);
         }
 
-        public static void append(this Stream fs,
+        public static void extend(this Stream fs,
             long size)
         {
             fs.SetLength(fs.Length + size);
@@ -82,8 +82,8 @@ namespace util.ext
         public static bool read(
             this Stream fin, 
             byte[] data, int offset, int count, 
-            out int len)
-            => (len = fin.Read(data, offset, count)) > 0;
+            out int actual)
+            => (actual = fin.Read(data, offset, count)) > 0;
 
         public static void readExact(this Stream fin, byte[] data)
         {
@@ -115,12 +115,12 @@ namespace util.ext
             Func<byte[], int, int, int> read)
         {
             int remain = count;
-            int len;
+            int actual;
             while (remain > 0
-                && (len = read(dst, offset, remain)) > 0)
+                && (actual = read(dst, offset, remain)) > 0)
             {
-                remain -= len;
-                offset += len;
+                remain -= actual;
+                offset += actual;
             }
             return count - remain;
         }
