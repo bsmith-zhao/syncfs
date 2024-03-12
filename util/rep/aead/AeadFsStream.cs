@@ -292,17 +292,26 @@ namespace util.rep.aead
                         this.append(new byte[frontPad]);
                     }
                     // zero spare pack range
-                    var spareCount = (len - streamLen) / blockSize;
-                    if (spareCount > 0)
+                    var spareSize = (int)((len - streamLen) / blockSize * packSize);
+                    if (spareSize > 0)
                     {
-                        // for inner non-zero padding file system
-                        var zero = new byte[packSize];
-                        while (spareCount-- > 0)
+                        var spareBuff = new byte[(BuffSize / packSize)
+                                                .atLeast(1) * packSize];
+                        spareSize.writeByUnit(spareBuff.Length, unit => 
                         {
-                            // direct write zero pack to inner stream
-                            fs.append(zero);
-                            streamLen += blockSize;
-                        }
+                            fs.append(spareBuff, 0, unit);
+                            streamLen += unit / packSize * blockSize;
+                        });
+
+                        // one pack write
+                        // for inner non-zero padding file system
+                        //var zero = new byte[packSize];
+                        //while (spareCount-- > 0)
+                        //{
+                        //    // direct write zero pack to inner stream
+                        //    fs.append(zero);
+                        //    streamLen += blockSize;
+                        //}
 
                         // for inner zero padding file system
                         //fs.append(spareCount * packSize);

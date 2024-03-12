@@ -229,7 +229,7 @@ namespace vfs
                 {
                     if (offset >= fs.Length)
                     {
-                        finish = default(uint);
+                        finish = 0;
                         info = default(FileInfo);
                         return STATUS_SUCCESS;
                     }
@@ -241,11 +241,7 @@ namespace vfs
                 else
                 {
                     if (offset > fs.Length)
-                    {
-                        markPad(fd, fs, offset);
-
-                        writePad(fs, (int)(offset - fs.Length));
-                    }
+                        extend(fd, fs, offset - fs.Length);
                     fs.Position = offset;
                 }
 
@@ -263,10 +259,11 @@ namespace vfs
             }
         }
 
-        void writePad(Stream fs, int total)
+        void extend(FileDesc fd, Stream fs, long delta)
         {
-            total.writeByUnit(BuffSize, 
-                unit => fs.Write(buff, 0, unit));
+            markExtend(fd, fs, delta);
+
+            fs.extend(delta);
         }
 
         void writeData(Stream fs, IntPtr ptr, int total)

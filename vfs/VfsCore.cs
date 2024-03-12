@@ -105,19 +105,6 @@ namespace vfs
                 out desc, out info);
         }
 
-        public override Int32 Overwrite(
-            Object node,
-            Object desc,
-            UInt32 attr,
-            Boolean replace,
-            UInt64 alloc,
-            out FileInfo info)
-        {
-            return overwrite(desc as FileDesc, 
-                attr, replace, alloc, 
-                out info);
-        }
-
         public bool bakEnable => vfs.bak != null;
 
         public override void Cleanup(
@@ -144,9 +131,12 @@ namespace vfs
             UInt32 count,
             out UInt32 finish)
         {
-            return read(desc as FileDesc,
-                ptr, (long)offset, (int)count,
-                out finish);
+            //lock (wrLock)
+            {
+                return read(desc as FileDesc,
+                    ptr, (long)offset, (int)count,
+                    out finish);
+            }
         }
 
         public override Int32 Write(
@@ -160,9 +150,43 @@ namespace vfs
             out UInt32 finish,
             out FileInfo info)
         {
-            return write(desc as FileDesc,
-                ptr, (long)offset, (int)count,
-                append, coverOnly, out finish, out info);
+            //lock (wrLock)
+            {
+                return write(desc as FileDesc,
+                    ptr, (long)offset, (int)count,
+                    append, coverOnly, out finish, out info);
+            }
+        }
+
+        public override Int32 SetFileSize(
+            Object node,
+            Object desc,
+            UInt64 newSize,
+            Boolean setAlloc,
+            out FileInfo info)
+        {
+            //lock (wrLock)
+            {
+                return setSize(desc as FileDesc,
+                (long)newSize, setAlloc,
+                out info);
+            }
+        }
+
+        public override Int32 Overwrite(
+            Object node,
+            Object desc,
+            UInt32 attr,
+            Boolean replace,
+            UInt64 alloc,
+            out FileInfo info)
+        {
+            //lock (wrLock)
+            {
+                return overwrite(desc as FileDesc,
+                attr, replace, alloc,
+                out info);
+            }
         }
 
         public override Int32 Flush(
@@ -195,18 +219,6 @@ namespace vfs
                 attr, 
                 createTime, accessTime, 
                 writeTime, changeTime, 
-                out info);
-        }
-
-        public override Int32 SetFileSize(
-            Object node,
-            Object desc,
-            UInt64 newSize,
-            Boolean setAlloc,
-            out FileInfo info)
-        {
-            return setSize(desc as FileDesc, 
-                (long)newSize, setAlloc, 
                 out info);
         }
 

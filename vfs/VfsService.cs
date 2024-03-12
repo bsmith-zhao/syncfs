@@ -27,7 +27,7 @@ namespace vfs
                 rep = rep,
                 vfs = vfs,
             });
-            if (0 > host.Mount(vfs.path, null, true, 0))
+            if (0 > host.Mount(vfs.path, Synchronized: true))
                 throw new IOException("cannot mount file system");
             this.host = host;
         }

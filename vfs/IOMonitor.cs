@@ -12,7 +12,7 @@ namespace vfs
 {
     public partial class VfsCore
     {
-        void markPad(FileDesc a, Stream b, long c) { }
+        void markExtend(FileDesc a, Stream b, long c) { }
         void markRead(FileDesc a, Stream b, long c, int d) { }
         void markActualRead(FileDesc a, Stream b, int c, int d) { }
         void markWrite(FileDesc a, Stream b, long c, int d, bool e, bool f) { }

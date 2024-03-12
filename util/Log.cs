@@ -26,5 +26,11 @@ namespace util
         }
 
         static object logTime => DateTime.Now;
+
+        public static void trace(this object obj)
+        {
+            obj.msg();
+            obj.log();
+        }
     }
 }

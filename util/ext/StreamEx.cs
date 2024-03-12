@@ -17,11 +17,17 @@ namespace util.ext
             fs.write(data);
         }
 
+        public static void append(this Stream fs,
+            byte[] data, int offset, int count)
+        {
+            fs.Position = fs.Length;
+            fs.Write(data, offset, count);
+        }
+
         public static void extend(this Stream fs,
             long size)
         {
             fs.SetLength(fs.Length + size);
-            fs.Position = fs.Length;
         }
 
         public static bool readRow(this StreamReader rd, 
@@ -107,14 +113,14 @@ namespace util.ext
             => (actual = fin.readFull(data, 0, data.Length)) > 0;
 
         public static int readFull(this Stream fin,
-            byte[] dst, int offset, int count)
-            => dst.readFull(offset, count, fin.Read);
+            byte[] dst, int offset, int total)
+            => dst.readFull(offset, total, fin.Read);
 
         public static int readFull(this byte[] dst,
-            int offset, int count,
+            int offset, int total,
             Func<byte[], int, int, int> read)
         {
-            int remain = count;
+            int remain = total;
             int actual;
             while (remain > 0
                 && (actual = read(dst, offset, remain)) > 0)
@@ -122,7 +128,7 @@ namespace util.ext
                 remain -= actual;
                 offset += actual;
             }
-            return count - remain;
+            return total - remain;
         }
 
         public static int readByUnit(this int total, int unit,
