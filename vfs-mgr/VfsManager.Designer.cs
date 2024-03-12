@@ -38,8 +38,8 @@
             this.typeHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.sourceHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.toolbar = new System.Windows.Forms.ToolStrip();
-            this.addNormalDirBtn = new System.Windows.Forms.ToolStripButton();
             this.addAeadFSBtn = new System.Windows.Forms.ToolStripButton();
+            this.addNormalDirBtn = new System.Windows.Forms.ToolStripButton();
             this.mountBtn = new System.Windows.Forms.ToolStripButton();
             this.unmountBtn = new System.Windows.Forms.ToolStripButton();
             this.openDirBtn = new System.Windows.Forms.ToolStripButton();
@@ -61,7 +61,7 @@
             this.msgUI.Location = new System.Drawing.Point(0, 642);
             this.msgUI.Multiline = true;
             this.msgUI.Name = "msgUI";
-            this.msgUI.Size = new System.Drawing.Size(1057, 179);
+            this.msgUI.Size = new System.Drawing.Size(961, 179);
             this.msgUI.TabIndex = 0;
             // 
             // propUI
@@ -78,7 +78,7 @@
             // 
             this.splitter1.Cursor = System.Windows.Forms.Cursors.SizeWE;
             this.splitter1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.splitter1.Location = new System.Drawing.Point(1057, 70);
+            this.splitter1.Location = new System.Drawing.Point(961, 70);
             this.splitter1.Name = "splitter1";
             this.splitter1.Size = new System.Drawing.Size(10, 751);
             this.splitter1.TabIndex = 2;
@@ -90,7 +90,7 @@
             this.splitter2.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.splitter2.Location = new System.Drawing.Point(0, 632);
             this.splitter2.Name = "splitter2";
-            this.splitter2.Size = new System.Drawing.Size(1057, 10);
+            this.splitter2.Size = new System.Drawing.Size(961, 10);
             this.splitter2.TabIndex = 3;
             this.splitter2.TabStop = false;
             // 
@@ -107,7 +107,7 @@
             this.listUI.Location = new System.Drawing.Point(0, 70);
             this.listUI.Name = "listUI";
             this.listUI.ShowItemToolTips = true;
-            this.listUI.Size = new System.Drawing.Size(1057, 562);
+            this.listUI.Size = new System.Drawing.Size(961, 562);
             this.listUI.TabIndex = 6;
             this.listUI.UseCompatibleStateImageBehavior = false;
             this.listUI.View = System.Windows.Forms.View.Details;
@@ -130,7 +130,7 @@
             // sourceHeader
             // 
             this.sourceHeader.Text = "Source";
-            this.sourceHeader.Width = 315;
+            this.sourceHeader.Width = 283;
             // 
             // toolbar
             // 
@@ -148,19 +148,9 @@
             this.languageBtn});
             this.toolbar.Location = new System.Drawing.Point(0, 0);
             this.toolbar.Name = "toolbar";
-            this.toolbar.Size = new System.Drawing.Size(1454, 70);
+            this.toolbar.Size = new System.Drawing.Size(1358, 70);
             this.toolbar.TabIndex = 7;
             this.toolbar.Text = "toolStrip1";
-            // 
-            // addNormalDirBtn
-            // 
-            this.addNormalDirBtn.Image = global::vfs.mgr.Properties.Resources.AddNormalDir;
-            this.addNormalDirBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.addNormalDirBtn.Name = "addNormalDirBtn";
-            this.addNormalDirBtn.Size = new System.Drawing.Size(183, 67);
-            this.addNormalDirBtn.Text = "AddNormalDir";
-            this.addNormalDirBtn.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.addNormalDirBtn.Click += new System.EventHandler(this.addNormalDirBtn_Click);
             // 
             // addAeadFSBtn
             // 
@@ -171,6 +161,16 @@
             this.addAeadFSBtn.Text = "AddAeadFS";
             this.addAeadFSBtn.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.addAeadFSBtn.Click += new System.EventHandler(this.addAeadFSBtn_Click);
+            // 
+            // addNormalDirBtn
+            // 
+            this.addNormalDirBtn.Image = global::vfs.mgr.Properties.Resources.AddNormalDir;
+            this.addNormalDirBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.addNormalDirBtn.Name = "addNormalDirBtn";
+            this.addNormalDirBtn.Size = new System.Drawing.Size(183, 67);
+            this.addNormalDirBtn.Text = "AddNormalDir";
+            this.addNormalDirBtn.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.addNormalDirBtn.Click += new System.EventHandler(this.addNormalDirBtn_Click);
             // 
             // mountBtn
             // 
@@ -257,7 +257,7 @@
             this.panel1.Controls.Add(this.descSplit);
             this.panel1.Controls.Add(this.descUI);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel1.Location = new System.Drawing.Point(1067, 70);
+            this.panel1.Location = new System.Drawing.Point(971, 70);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(387, 751);
             this.panel1.TabIndex = 9;
@@ -287,7 +287,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1454, 821);
+            this.ClientSize = new System.Drawing.Size(1358, 821);
             this.Controls.Add(this.listUI);
             this.Controls.Add(this.splitter2);
             this.Controls.Add(this.msgUI);

@@ -10,10 +10,6 @@ using util.ext;
 
 namespace sync.work
 {
-    public class UserCancel : Exception
-    {
-    }
-
     public abstract class WorkItem
     {
         public abstract string group { get; }

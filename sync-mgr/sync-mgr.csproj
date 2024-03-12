@@ -90,6 +90,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="sync\SyncEx.cs" />
+    <Compile Include="work\UserCancel.cs" />
     <Compile Include="work\WorkItem.cs" />
     <Compile Include="link\action\BaseAction.cs" />
     <Compile Include="link\action\EditLabelAction.cs" />

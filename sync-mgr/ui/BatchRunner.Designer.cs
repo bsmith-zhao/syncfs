@@ -56,7 +56,7 @@
             this.msgUI.MaxLength = 256;
             this.msgUI.Multiline = true;
             this.msgUI.Name = "msgUI";
-            this.msgUI.Size = new System.Drawing.Size(1175, 331);
+            this.msgUI.Size = new System.Drawing.Size(815, 331);
             this.msgUI.TabIndex = 109;
             // 
             // listUI
@@ -72,7 +72,7 @@
             this.listUI.MultiSelect = false;
             this.listUI.Name = "listUI";
             this.listUI.ShowItemToolTips = true;
-            this.listUI.Size = new System.Drawing.Size(1175, 343);
+            this.listUI.Size = new System.Drawing.Size(815, 343);
             this.listUI.TabIndex = 111;
             this.listUI.UseCompatibleStateImageBehavior = false;
             this.listUI.View = System.Windows.Forms.View.Details;
@@ -83,7 +83,7 @@
             // nameHeader
             // 
             this.nameHeader.Text = "Name";
-            this.nameHeader.Width = 941;
+            this.nameHeader.Width = 717;
             // 
             // statusHeader
             // 
@@ -111,7 +111,7 @@
             this.toolbar.Location = new System.Drawing.Point(0, 0);
             this.toolbar.Name = "toolbar";
             this.toolbar.Padding = new System.Windows.Forms.Padding(0, 0, 1, 5);
-            this.toolbar.Size = new System.Drawing.Size(1175, 44);
+            this.toolbar.Size = new System.Drawing.Size(815, 44);
             this.toolbar.TabIndex = 118;
             this.toolbar.Text = "toolbar";
             // 
@@ -151,7 +151,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1175, 361);
+            this.panel1.Size = new System.Drawing.Size(815, 361);
             this.panel1.TabIndex = 119;
             // 
             // actPanel
@@ -162,7 +162,7 @@
             this.actPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.actPanel.Location = new System.Drawing.Point(0, 331);
             this.actPanel.Name = "actPanel";
-            this.actPanel.Size = new System.Drawing.Size(1175, 30);
+            this.actPanel.Size = new System.Drawing.Size(815, 30);
             this.actPanel.TabIndex = 110;
             // 
             // statusUI
@@ -172,7 +172,7 @@
             this.statusUI.Location = new System.Drawing.Point(339, 0);
             this.statusUI.Name = "statusUI";
             this.statusUI.ReadOnly = true;
-            this.statusUI.Size = new System.Drawing.Size(836, 28);
+            this.statusUI.Size = new System.Drawing.Size(476, 28);
             this.statusUI.TabIndex = 122;
             this.statusUI.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -192,7 +192,7 @@
             this.panel3.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panel3.Location = new System.Drawing.Point(0, 366);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(1175, 387);
+            this.panel3.Size = new System.Drawing.Size(815, 387);
             this.panel3.TabIndex = 120;
             // 
             // splitter2
@@ -201,7 +201,7 @@
             this.splitter2.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.splitter2.Location = new System.Drawing.Point(0, 361);
             this.splitter2.Name = "splitter2";
-            this.splitter2.Size = new System.Drawing.Size(1175, 5);
+            this.splitter2.Size = new System.Drawing.Size(815, 5);
             this.splitter2.TabIndex = 121;
             this.splitter2.TabStop = false;
             // 
@@ -209,7 +209,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1175, 753);
+            this.ClientSize = new System.Drawing.Size(815, 753);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.splitter2);
             this.Controls.Add(this.panel3);
