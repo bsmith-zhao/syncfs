@@ -399,6 +399,11 @@ namespace vfs
                         fs.SetLength(newSize);
                     }
                 }
+                //else
+                //{
+                //    fs = fd.openWrite();
+                //    fs.SetLength(newSize);
+                //}
 
                 //new
                 //{

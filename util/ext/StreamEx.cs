@@ -91,6 +91,13 @@ namespace util.ext
             out int actual)
             => (actual = fin.Read(data, offset, count)) > 0;
 
+        public static void readExact(this Stream fin, 
+            long pos, byte[] data)
+        {
+            fin.Position = pos;
+            readExact(fin, data, 0, data.Length);
+        }
+
         public static void readExact(this Stream fin, byte[] data)
         {
             readExact(fin, data, 0, data.Length);

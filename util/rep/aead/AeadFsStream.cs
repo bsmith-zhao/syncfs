@@ -292,29 +292,21 @@ namespace util.rep.aead
                         this.append(new byte[frontPad]);
                     }
                     // zero spare pack range
-                    var spareSize = (int)((len - streamLen) / blockSize * packSize);
-                    if (spareSize > 0)
+                    var spareCount = (int)((len - streamLen) / blockSize);
+                    if (spareCount > 0)
                     {
+                        var spareSize = spareCount * packSize;
+                        // for inner non-zero padding file system
                         var spareBuff = new byte[(BuffSize / packSize)
                                                 .atLeast(1) * packSize];
-                        spareSize.writeByUnit(spareBuff.Length, unit => 
+                        spareSize.writeByUnit(spareBuff.Length, unit =>
                         {
                             fs.append(spareBuff, 0, unit);
                             streamLen += unit / packSize * blockSize;
                         });
 
-                        // one pack write
-                        // for inner non-zero padding file system
-                        //var zero = new byte[packSize];
-                        //while (spareCount-- > 0)
-                        //{
-                        //    // direct write zero pack to inner stream
-                        //    fs.append(zero);
-                        //    streamLen += blockSize;
-                        //}
-
                         // for inner zero padding file system
-                        //fs.append(spareCount * packSize);
+                        //fs.extend(spareSize);
                         //streamLen += spareCount * blockSize;
                     }
                     // last padding range
@@ -328,19 +320,18 @@ namespace util.rep.aead
                 {
                     var blockCount = len / blockSize;
                     var blockEnd = blockCount * blockSize;
-                    var padSize = len - blockEnd;
-                    byte[] padBuff = null;
-                    if (padSize > 0)
+                    var tailSize = len - blockEnd;
+                    byte[] tailBuff = null;
+                    if (tailSize > 0)
                     {
-                        padBuff = new byte[padSize];
-                        streamPos = blockEnd;
-                        this.readExact(padBuff);
+                        tailBuff = new byte[tailSize];
+                        this.readExact(blockEnd, tailBuff);
                     }
                     fs.SetLength(headSize + blockCount * packSize);
                     streamLen = blockEnd;
-                    if (padBuff != null)
+                    if (tailBuff != null)
                     {
-                        this.append(padBuff);
+                        this.append(tailBuff);
                     }
                 }
             }
@@ -349,12 +340,6 @@ namespace util.rep.aead
                 streamPos = oldPos.atMost(streamLen);
             }
         }
-
-        //void appendData(byte[] data)
-        //{
-        //    streamPos = streamLen;
-        //    Write(data, 0, data.Length);
-        //}
 
         public override bool CanRead => fs.CanRead;
         public override bool CanSeek => fs.CanSeek;
