@@ -205,9 +205,9 @@ namespace util.ext
             return total - remain;
         }
 
-        public static void writeByUnit(this int total, 
+        public static void writeByUnit(this int total,
             int unitLimit, Action<int> write)
-            => ((long)total).writeByUnit(unitLimit, write);
+            => writeByUnit((long)total, unitLimit, write);
 
         public static void writeByUnit(this long total, 
             int unitLimit, Action<int> write)

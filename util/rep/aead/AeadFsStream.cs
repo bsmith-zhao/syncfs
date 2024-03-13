@@ -294,7 +294,7 @@ namespace util.rep.aead
                         // for inner non-zero padding file system
                         var spareBuff = new byte[spareCount.atMost(BuffSize / packSize)
                                                 .atLeast(1) * packSize];
-                        (spareCount * packSize).writeByUnit(spareBuff.Length, unit
+                        (spareCount* packSize).writeByUnit(spareBuff.Length, unit
                               => fs.append(spareBuff, 0, unit));
                     }
                     // last padding range
