@@ -191,13 +191,13 @@ namespace util.ext
         //    return total - remain;
         //}
 
-        public static int readByUnit(this int total, int unit,
-            Func<int, int> read, Action<int> proc)
+        public static int readByUnit(this int total, 
+            int unitLimit, Func<int, int> read, Action<int> proc)
         {
             int remain = total;
             int actual;
             while (remain > 0
-                && (actual = read(remain.atMost(unit))) > 0)
+                && (actual = read(remain.atMost(unitLimit))) > 0)
             {
                 proc?.Invoke(actual);
                 remain -= actual;
@@ -205,17 +205,17 @@ namespace util.ext
             return total - remain;
         }
 
-        public static void writeByUnit(this int total, int unit,
-            Action<int> write)
-            => ((long)total).writeByUnit(unit, write);
+        public static void writeByUnit(this int total, 
+            int unitLimit, Action<int> write)
+            => ((long)total).writeByUnit(unitLimit, write);
 
-        public static void writeByUnit(this long total, int unit,
-            Action<int> write)
+        public static void writeByUnit(this long total, 
+            int unitLimit, Action<int> write)
         {
             int actual;
             while (total > 0)
             {
-                actual = (int)total.atMost(unit);
+                actual = (int)total.atMost(unitLimit);
                 write(actual);
                 total -= actual;
             }

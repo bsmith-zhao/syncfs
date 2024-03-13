@@ -84,15 +84,15 @@ namespace util.rep.aead
         int tagSize;
         int blockSize;
         int packSize;
-        int unitSize;
+        int unitLimit;
         void init()
         {
             counter = nonce.i64(nonce.Length - 8);
             tagSize = conf.tagSize();
             blockSize = conf.BlockSize;
             packSize = blockSize + tagSize;
-            unitSize = ((BuffSize / blockSize) * blockSize)
-                    .atLeast(blockSize);
+            unitLimit = (BuffSize / blockSize)
+                    .atLeast(1) * blockSize;
         }
 
         long streamLen() => getDataSize(fs.Length - headSize,
@@ -165,7 +165,7 @@ namespace util.rep.aead
 
         public override int Read(byte[] dst, int offset, int total)
         {
-            return total.readByUnit(unitSize,
+            return total.readByUnit(unitLimit,
                 unit => readDecrypt(dst, offset, unit),
                 actual => offset += actual);
         }
@@ -210,10 +210,10 @@ namespace util.rep.aead
 
         public override void Write(byte[] src, int offset, int total)
         {
-            total.writeByUnit(unitSize, unit => 
+            total.writeByUnit(unitLimit, actual => 
             {
-                encryptWrite(src, offset, unit);
-                offset += unit;
+                encryptWrite(src, offset, actual);
+                offset += actual;
             });
         }
 
