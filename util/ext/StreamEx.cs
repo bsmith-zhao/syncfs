@@ -11,16 +11,6 @@ namespace util.ext
     public static class StreamEx
     {
         public static void append(this Stream fs,
-            long size)
-        {
-            if (size > 0)
-            {
-                fs.Position = fs.Length;
-                fs.write(new byte[size]);
-            }
-        }
-
-        public static void append(this Stream fs,
             byte[] data)
         {
             if (data?.Length > 0)
@@ -173,52 +163,6 @@ namespace util.ext
                 offset += actual;
             }
             return total - remain;
-        }
-            //=> dst.readFull(offset, total, fin.Read);
-
-        //public static int readFull(this byte[] dst,
-        //    int offset, int total,
-        //    Func<byte[], int, int, int> read)
-        //{
-        //    int remain = total;
-        //    int actual;
-        //    while (remain > 0
-        //        && (actual = read(dst, offset, remain)) > 0)
-        //    {
-        //        remain -= actual;
-        //        offset += actual;
-        //    }
-        //    return total - remain;
-        //}
-
-        public static int readByUnit(this int total, 
-            int unitLimit, Func<int, int> read, Action<int> proc)
-        {
-            int remain = total;
-            int actual;
-            while (remain > 0
-                && (actual = read(remain.atMost(unitLimit))) > 0)
-            {
-                proc?.Invoke(actual);
-                remain -= actual;
-            }
-            return total - remain;
-        }
-
-        public static void writeByUnit(this int total,
-            int unitLimit, Action<int> write)
-            => writeByUnit((long)total, unitLimit, write);
-
-        public static void writeByUnit(this long total, 
-            int unitLimit, Action<int> write)
-        {
-            int actual;
-            while (total > 0)
-            {
-                actual = (int)total.atMost(unitLimit);
-                write(actual);
-                total -= actual;
-            }
         }
     }
 }

@@ -165,7 +165,7 @@ namespace util.rep.aead
 
         public override int Read(byte[] dst, int offset, int total)
         {
-            return total.readByUnit(unitLimit,
+            return total.sliceByUnit(unitLimit,
                 unit => readDecrypt(dst, offset, unit),
                 actual => offset += actual);
         }
@@ -210,7 +210,7 @@ namespace util.rep.aead
 
         public override void Write(byte[] src, int offset, int total)
         {
-            total.writeByUnit(unitLimit, actual => 
+            total.sliceByUnit(unitLimit, actual => 
             {
                 encryptWrite(src, offset, actual);
                 offset += actual;
@@ -286,7 +286,7 @@ namespace util.rep.aead
                     // front padding range
                     var frontPad = (blockSize % (blockSize - (streamLen() % blockSize)))
                                     .atMost(delta);
-                    this.append(frontPad);
+                    this.append(new byte[frontPad]);
                     // zero spare pack range
                     var spareCount = (len - streamLen()) / blockSize;
                     if (spareCount > 0)
@@ -294,11 +294,11 @@ namespace util.rep.aead
                         // for inner non-zero padding file system
                         var spareBuff = new byte[spareCount.atMost(BuffSize / packSize)
                                                 .atLeast(1) * packSize];
-                        (spareCount* packSize).writeByUnit(spareBuff.Length, unit
+                        (spareCount* packSize).sliceByUnit(spareBuff.Length, unit
                               => fs.append(spareBuff, 0, unit));
                     }
                     // last padding range
-                    this.append(len - streamLen());
+                    this.append(new byte[len - streamLen()]);
                 }
                 else if (delta < 0)
                 {
