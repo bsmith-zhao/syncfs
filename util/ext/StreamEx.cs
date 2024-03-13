@@ -11,10 +11,23 @@ namespace util.ext
     public static class StreamEx
     {
         public static void append(this Stream fs,
+            long size)
+        {
+            if (size > 0)
+            {
+                fs.Position = fs.Length;
+                fs.write(new byte[size]);
+            }
+        }
+
+        public static void append(this Stream fs,
             byte[] data)
         {
-            fs.Position = fs.Length;
-            fs.write(data);
+            if (data?.Length > 0)
+            {
+                fs.Position = fs.Length;
+                fs.write(data);
+            }
         }
 
         public static void append(this Stream fs,
@@ -73,6 +86,13 @@ namespace util.ext
             }
         }
 
+        public static void write(this Stream fout, 
+            long pos, byte[] data, int offset, int count)
+        {
+            fout.Position = pos;
+            fout.Write(data, offset, count);
+        }
+
         public static void write(this Stream fout, byte[] data)
         {
             fout.Write(data, 0, data.Length);
@@ -98,18 +118,40 @@ namespace util.ext
             readExact(fin, data, 0, data.Length);
         }
 
+        public static byte[] readExact(this Stream fin,
+            long pos, long size)
+        {
+            if (size <= 0)
+                return null;
+            fin.Position = pos;
+            var data = new byte[size];
+            readExact(fin, data, 0, data.Length);
+            return data;
+        }
+
+        public static byte[] readExactRange(this Stream fin,
+            long begin, long end)
+            => readExact(fin, begin, end - begin);
+
         public static void readExact(this Stream fin, byte[] data)
         {
             readExact(fin, data, 0, data.Length);
         }
 
         public static void readExact(this Stream fin, 
-            byte[] data, int offset, int count)
+            byte[] data, int offset, int total)
         {
-            int actual = readFull(fin, data, offset, count);
-            if (actual != count)
+            int actual = readFull(fin, data, offset, total);
+            if (actual != total)
                 throw new IOException(typeof(Stream)
-                    .trans("ReadMismatch", count, actual));
+                    .trans("ReadMismatch", total, actual));
+        }
+
+        public static int readFull(this Stream fin,
+            long pos, byte[] data, int offset, int total)
+        {
+            fin.Position = pos;
+            return readFull(fin, data, offset, total);
         }
 
         public static int readFull(this Stream fin, byte[] data)
@@ -121,22 +163,33 @@ namespace util.ext
 
         public static int readFull(this Stream fin,
             byte[] dst, int offset, int total)
-            => dst.readFull(offset, total, fin.Read);
-
-        public static int readFull(this byte[] dst,
-            int offset, int total,
-            Func<byte[], int, int, int> read)
         {
             int remain = total;
             int actual;
             while (remain > 0
-                && (actual = read(dst, offset, remain)) > 0)
+                && (actual = fin.Read(dst, offset, remain)) > 0)
             {
                 remain -= actual;
                 offset += actual;
             }
             return total - remain;
         }
+            //=> dst.readFull(offset, total, fin.Read);
+
+        //public static int readFull(this byte[] dst,
+        //    int offset, int total,
+        //    Func<byte[], int, int, int> read)
+        //{
+        //    int remain = total;
+        //    int actual;
+        //    while (remain > 0
+        //        && (actual = read(dst, offset, remain)) > 0)
+        //    {
+        //        remain -= actual;
+        //        offset += actual;
+        //    }
+        //    return total - remain;
+        //}
 
         public static int readByUnit(this int total, int unit,
             Func<int, int> read, Action<int> proc)
@@ -154,11 +207,15 @@ namespace util.ext
 
         public static void writeByUnit(this int total, int unit,
             Action<int> write)
+            => ((long)total).writeByUnit(unit, write);
+
+        public static void writeByUnit(this long total, int unit,
+            Action<int> write)
         {
             int actual;
             while (total > 0)
             {
-                actual = total.atMost(unit);
+                actual = (int)total.atMost(unit);
                 write(actual);
                 total -= actual;
             }

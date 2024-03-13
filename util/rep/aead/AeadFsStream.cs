@@ -44,12 +44,13 @@ namespace util.rep.aead
         }
 
         public static long getDataSize(long fileSize, AeadFsConf conf)
-        {
-            var packTotal = fileSize - getHeadSize(conf);
-            return (packTotal / conf.packSize()) * conf.BlockSize
-                    + ((packTotal % conf.packSize()) - conf.tagSize())
-                    .atLeast(0);
-        }
+            => getDataSize(fileSize - getHeadSize(conf),
+                conf.packSize(), conf.BlockSize, conf.tagSize());
+
+        static long getDataSize(long packTotal,
+            int packSize, int blockSize, int tagSize)
+            => (packTotal / packSize) * blockSize
+            + ((packTotal % packSize) - tagSize).atLeast(0);
 
         public static int getHeadSize(AeadFsConf conf)
             => Type.Length + 2 + conf.FileIdSize + conf.nonceSize();
@@ -77,7 +78,6 @@ namespace util.rep.aead
 
             fileId = header.sub(Type.Length + 2, conf.FileIdSize);
             nonce = header.tail(conf.nonceSize());
-            streamLen = getDataSize(fs.Length, conf);
         }
 
         long counter;
@@ -94,6 +94,9 @@ namespace util.rep.aead
             unitSize = ((BuffSize / blockSize) * blockSize)
                     .atLeast(blockSize);
         }
+
+        long streamLen() => getDataSize(fs.Length - headSize,
+                            packSize, blockSize, tagSize);
 
         void throwIOError(string key, params object[] args)
             => throw new IOException(this.trans(key, args.append(fs.Name)));
@@ -127,25 +130,21 @@ namespace util.rep.aead
         void readBuff(int dataLen)
         {
             initBuff(dataLen);
-            buffLen = readFile(buff, buffLen, buffIdx);
+            buffLen = readFile(buffIdx, buff, buffLen);
         }
 
         void writeBuff()
         {
             if (buffPos <= 0)
                 return;
-            seekFile(buffIdx);
-            fs.Write(buff, 0, buffPos);
+            fs.write(filePos(buffIdx), buff, 0, buffPos);
         }
 
-        void seekFile(long packIdx)
-            => fs.Position = headSize + packIdx * packSize;
+        long filePos(long packIdx)
+            => headSize + packIdx * packSize;
 
-        int readFile(byte[] dst, int dstLen, long packIdx)
-        {
-            seekFile(packIdx);
-            return fs.readFull(dst, 0, dstLen);
-        }
+        int readFile(long packIdx, byte[] dst, int count)
+            => fs.readFull(filePos(packIdx), dst, 0, count);
 
         int seekPack()
         {
@@ -171,16 +170,17 @@ namespace util.rep.aead
                 actual => offset += actual);
         }
 
-        int readDecrypt(byte[] dst, int offset, int count)
+        int readDecrypt(byte[] dst, int offset, int total)
         {
             actionPos = streamPos;
+            var actionLen = streamLen();
 
-            readBuff(count);
-            int remain = count;
+            readBuff(total);
+            int remain = total;
             int dataLen, readLen;
             while (remain > 0)
             {
-                if (actionPos >= streamLen)
+                if (actionPos >= actionLen)
                     break;
                 dataLen = seekPack() - tagSize;
                 readLen = remain.atMost(dataLen - blockOff);
@@ -205,22 +205,22 @@ namespace util.rep.aead
             }
 
             streamPos = actionPos;
-            return count - remain;
+            return total - remain;
         }
 
         public override void Write(byte[] src, int offset, int total)
         {
             total.writeByUnit(unitSize, unit => 
             {
-                writeEncrypt(src, offset, unit);
+                encryptWrite(src, offset, unit);
                 offset += unit;
             });
         }
 
-        void writeEncrypt(byte[] src, int offset, int count)
+        void encryptWrite(byte[] src, int offset, int count)
         {
             actionPos = streamPos;
-            var actionLen = streamLen;
+            var actionLen = streamLen();
 
             initBuff(count);
             int writeLen;
@@ -235,7 +235,7 @@ namespace util.rep.aead
                 }
                 else
                 {
-                    var dataLen = readFile(pack, pack.Length, blockIdx) - tagSize;
+                    var dataLen = readFile(blockIdx, pack, pack.Length) - tagSize;
                     if (dataLen != (actionLen - blockIdx * blockSize).atMost(blockSize))
                         throwIOError("DataError",
                                     dataLen, 
@@ -256,7 +256,6 @@ namespace util.rep.aead
             writeBuff();
 
             streamPos = actionPos;
-            streamLen = actionLen;
         }
 
         public override long Seek(long offset, SeekOrigin origin)
@@ -268,7 +267,7 @@ namespace util.rep.aead
             else if (origin == SeekOrigin.Current)
                 pos += offset;
             else if (origin == SeekOrigin.End)
-                pos = streamLen - offset;
+                pos = streamLen() - offset;
 
             return Position = pos;
         }
@@ -281,79 +280,56 @@ namespace util.rep.aead
             var oldPos = streamPos;
             try
             {
-                if (len > streamLen)
+                var delta = len - streamLen();
+                if (delta > 0)
                 {
                     // front padding range
-                    var frontPad = streamLen % blockSize;
-                    if (frontPad > 0)
-                    {
-                        frontPad = (blockSize - frontPad)
-                            .atMost(len - streamLen);
-                        this.append(new byte[frontPad]);
-                    }
+                    var frontPad = (blockSize % (blockSize - (streamLen() % blockSize)))
+                                    .atMost(delta);
+                    this.append(frontPad);
                     // zero spare pack range
-                    var spareCount = (int)((len - streamLen) / blockSize);
+                    var spareCount = (len - streamLen()) / blockSize;
                     if (spareCount > 0)
                     {
-                        var spareSize = spareCount * packSize;
                         // for inner non-zero padding file system
-                        var spareBuff = new byte[(BuffSize / packSize)
+                        var spareBuff = new byte[spareCount.atMost(BuffSize / packSize)
                                                 .atLeast(1) * packSize];
-                        spareSize.writeByUnit(spareBuff.Length, unit =>
-                        {
-                            fs.append(spareBuff, 0, unit);
-                            streamLen += unit / packSize * blockSize;
-                        });
-
-                        // for inner zero padding file system
-                        //fs.extend(spareSize);
-                        //streamLen += spareCount * blockSize;
+                        (spareCount * packSize).writeByUnit(spareBuff.Length, unit
+                              => fs.append(spareBuff, 0, unit));
                     }
                     // last padding range
-                    var lastPad = len - streamLen;
-                    if (lastPad > 0)
-                    {
-                        this.append(new byte[lastPad]);
-                    }
+                    this.append(len - streamLen());
                 }
-                else if (len < streamLen)
+                else if (delta < 0)
                 {
-                    var blockCount = len / blockSize;
-                    var blockEnd = blockCount * blockSize;
-                    var tailSize = len - blockEnd;
-                    byte[] tailBuff = null;
-                    if (tailSize > 0)
-                    {
-                        tailBuff = new byte[tailSize];
-                        this.readExact(blockEnd, tailBuff);
-                    }
-                    fs.SetLength(headSize + blockCount * packSize);
-                    streamLen = blockEnd;
-                    if (tailBuff != null)
-                    {
-                        this.append(tailBuff);
-                    }
+                    var lastPack = len / blockSize;
+                    // read last block tail data
+                    var tailBuff = this.readExactRange(lastPack * blockSize, len);
+                    // truncate to last block start pos
+                    fs.SetLength(filePos(lastPack));
+                    // write back last block tail
+                    this.append(tailBuff);
                 }
             }
             finally
             {
-                streamPos = oldPos.atMost(streamLen);
+                streamPos = oldPos.atMost(streamLen());
             }
         }
 
         public override bool CanRead => fs.CanRead;
         public override bool CanSeek => fs.CanSeek;
         public override bool CanWrite => fs.CanWrite;
-        long streamLen = 0;
-        public override long Length => streamLen;
+        //long streamLen = 0;
+        public override long Length => streamLen();
         long streamPos = 0;
         public override long Position
         {
             get => streamPos;
             set
             {
-                if (value < 0 || value > streamLen)
-                    throwIOError("OutOfRange", value, streamLen);
+                if (value < 0 || value > streamLen())
+                    throwIOError("OutOfRange", value, streamLen());
                 streamPos = value;
             }
         }
