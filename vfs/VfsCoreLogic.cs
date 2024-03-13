@@ -250,7 +250,7 @@ namespace vfs
                 writeData(fs, ptr, count);
 
                 finish = (uint)count;
-                return fd.getInfo(out info);
+                return fd.getWriteInfo(out info);
             }
             catch (Exception err)
             {
@@ -408,8 +408,11 @@ namespace vfs
                 //new
                 //{
                 //    fd.path,
-                //    actual = fs?.Length ?? 0
-                //}.debug();
+                //    f="setSize",
+                //    newSize,
+                //    setSize = fs?.Length ?? 0,
+                //    setAlloc
+                //}.log();
 
                 return fd.getInfo(out info);
             }

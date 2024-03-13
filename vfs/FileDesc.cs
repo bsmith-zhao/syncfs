@@ -70,7 +70,10 @@ namespace vfs
             => core.closeItem(this, () 
                 => true.free(ref data));
 
-        public Int32 getInfo(out FileInfo info)
+        public Int32 getWriteInfo(out FileInfo info)
+            => getInfo(out info, true);
+
+        public Int32 getInfo(out FileInfo info, bool write = false)
         {
             core.getItemInfo(item, out info);
             if (data != null)
@@ -78,6 +81,17 @@ namespace vfs
                 info.FileSize = (ulong)data.Length;
                 core.updateAllocSize(ref info);
             }
+
+            //if (item.isFile() && log)
+            //    new
+            //    {
+            //        path,
+            //        f = "getInfo",
+            //        call = true.lastFunc(),
+            //        size = info.FileSize,
+            //        alloc = info.AllocationSize
+            //    }.log();
+
             return FileSystemBase.STATUS_SUCCESS;
         }
     }

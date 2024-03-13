@@ -12,14 +12,14 @@ namespace util
         public static Action<string> output;
 
         public static void log(this object src)
-            => output?.Invoke($"[{logTime}]{src}");
+            => output?.Invoke($"\r\n[{logTime}]{src}");
 
         public static void log(this Exception err, string func = null, object args = null)
         {
             if (output == null)
                 return;
             func = func ?? true.lastFunc();
-            log($"[{func}]({args})<{err.TargetSite.shortName()}>{err.Message}");
+            log($"\r\n[{func}]({args})<{err.TargetSite.shortName()}>{err.Message}");
 #if DEBUG
             output?.Invoke(err.StackTrace);
 #endif
