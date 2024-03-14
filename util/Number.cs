@@ -170,14 +170,14 @@ namespace util
         public static bool markBy(this uint flag, uint mark)
             => (flag & mark) == mark;
 
-        public static int sliceByUnit(this int total,
-            int unitLimit,
+        public static int slice(this int total,
+            int limit,
             Func<int, int> adjust, Action<int> proc)
         {
             int remain = total;
             int actual;
             while (remain > 0
-                && (actual = adjust(remain.atMost(unitLimit))) > 0)
+                && (actual = adjust(remain.atMost(limit))) > 0)
             {
                 proc.Invoke(actual);
                 remain -= actual;
@@ -185,19 +185,19 @@ namespace util
             return total - remain;
         }
 
-        public static void sliceByUnit(this int total,
-            int unitLimit, Action<int> proc)
-            => sliceByUnit((long)total, unitLimit, proc);
+        public static void slice(this int total,
+            int limit, Action<int> proc)
+            => slice((long)total, limit, proc);
 
-        public static void sliceByUnit(this long total,
-            int unitLimit, Action<int> proc)
+        public static void slice(this long total,
+            int limit, Action<int> proc)
         {
-            int actual;
+            int unit;
             while (total > 0)
             {
-                actual = (int)total.atMost(unitLimit);
-                proc(actual);
-                total -= actual;
+                unit = (int)total.atMost(limit);
+                proc(unit);
+                total -= unit;
             }
         }
     }

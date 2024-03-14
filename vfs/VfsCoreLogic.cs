@@ -268,7 +268,7 @@ namespace vfs
 
         void writeData(Stream fs, IntPtr ptr, int total)
         {
-            total.sliceByUnit(BuffSize, unit =>
+            total.slice(BuffSize, unit =>
             {
                 Marshal.Copy(ptr, buff, 0, unit);
                 ptr += unit;
@@ -312,7 +312,7 @@ namespace vfs
 
         int readData(Stream fs, IntPtr ptr, int total)
         {
-            return total.sliceByUnit(BuffSize, 
+            return total.slice(BuffSize, 
                 unit => fs.Read(buff, 0, unit),
                 actual =>
                 {

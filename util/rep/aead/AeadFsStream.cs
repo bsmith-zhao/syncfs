@@ -84,14 +84,14 @@ namespace util.rep.aead
         int tagSize;
         int blockSize;
         int packSize;
-        int unitLimit;
+        int sliceLimit;
         void init()
         {
             counter = nonce.i64(nonce.Length - 8);
             tagSize = conf.tagSize();
             blockSize = conf.BlockSize;
             packSize = blockSize + tagSize;
-            unitLimit = (BuffSize / blockSize)
+            sliceLimit = (BuffSize / blockSize)
                     .atLeast(1) * blockSize;
         }
 
@@ -130,7 +130,7 @@ namespace util.rep.aead
         void readBuff(int dataLen)
         {
             initBuff(dataLen);
-            buffLen = readFile(buffIdx, buff, buffLen);
+            buffLen = readPack(buffIdx, buff, buffLen);
         }
 
         void writeBuff()
@@ -143,8 +143,8 @@ namespace util.rep.aead
         long filePos(long packIdx)
             => headSize + packIdx * packSize;
 
-        int readFile(long packIdx, byte[] dst, int count)
-            => fs.readFull(filePos(packIdx), dst, 0, count);
+        int readPack(long packIdx, byte[] dst, int size)
+            => fs.readFull(filePos(packIdx), dst, 0, size);
 
         int seekPack()
         {
@@ -165,12 +165,12 @@ namespace util.rep.aead
 
         public override int Read(byte[] dst, int offset, int total)
         {
-            return total.sliceByUnit(unitLimit,
-                unit => readDecrypt(dst, offset, unit),
+            return total.slice(sliceLimit,
+                unit => readUnit(dst, offset, unit),
                 actual => offset += actual);
         }
 
-        int readDecrypt(byte[] dst, int offset, int total)
+        int readUnit(byte[] dst, int offset, int total)
         {
             actionPos = streamPos;
             var actionLen = streamLen();
@@ -210,14 +210,14 @@ namespace util.rep.aead
 
         public override void Write(byte[] src, int offset, int total)
         {
-            total.sliceByUnit(unitLimit, actual => 
+            total.slice(sliceLimit, unit => 
             {
-                encryptWrite(src, offset, actual);
-                offset += actual;
+                writeUnit(src, offset, unit);
+                offset += unit;
             });
         }
 
-        void encryptWrite(byte[] src, int offset, int count)
+        void writeUnit(byte[] src, int offset, int count)
         {
             actionPos = streamPos;
             var actionLen = streamLen();
@@ -235,7 +235,7 @@ namespace util.rep.aead
                 }
                 else
                 {
-                    var dataLen = readFile(blockIdx, pack, pack.Length) - tagSize;
+                    var dataLen = readPack(blockIdx, pack, pack.Length) - tagSize;
                     if (dataLen != (actionLen - blockIdx * blockSize).atMost(blockSize))
                         throwIOError("DataError",
                                     dataLen, 
@@ -294,7 +294,7 @@ namespace util.rep.aead
                         // for inner non-zero padding file system
                         var spareBuff = new byte[spareCount.atMost(BuffSize / packSize)
                                                 .atLeast(1) * packSize];
-                        (spareCount* packSize).sliceByUnit(spareBuff.Length, unit
+                        (spareCount* packSize).slice(spareBuff.Length, unit
                               => fs.append(spareBuff, 0, unit));
                     }
                     // last padding range
